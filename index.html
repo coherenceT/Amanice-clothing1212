@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMA-NICE CLOTHING | Thrift Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles & Variables */
+        :root {
+            --cream: #FFF8F0; /* Cream background */
+            --white: #FFFFFF; /* White */
+            --silver: #C0C0C0; /* Silver */
+            --dark-silver: #A0A0A0; /* Darker silver for accents */
+            --dark: #333333; /* Dark text */
+            --accent: #8B4513; /* Rich brown accent to match logo */
+            --blue: #4285F4; /* Blue for cart icon */
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            color: var(--dark);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--silver);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 150px; /* doubled on mobile */
+            height: 150px; /* doubled on mobile */
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .nav-toggle {
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            padding: 1rem;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: var(--shadow);
+            border-top: 1px solid var(--silver);
+        }
+
+        .nav-menu.active {
+            display: flex;
+        }
+
+        .nav-menu a {
+            color: var(--dark);
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: background-color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            background-color: rgba(192, 192, 192, 0.3);
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--blue);
+            margin-left: 1rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--blue);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Cart pop animation */
+        @keyframes cart-pop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+
+        .cart-icon.pop {
+            animation: cart-pop 350ms ease-in-out;
+        }
+
+        /* Cart Modal */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cart-modal.active {
+            display: flex;
+        }
+
+        .cart-content {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .cart-header {
+            background: linear-gradient(135deg, var(--accent), #a05a2c);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            padding: 1rem;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--silver);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .item-price-range {
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+        }
+
+        .cart-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--silver);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--dark-silver);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 2rem 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), #a05a2c);
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .whatsapp-btn, .accent-btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .whatsapp-btn:hover, .accent-btn:hover {
+            transform: translateY(-3px);
+            background-color: #a05a2c;
+        }
+
+        /* Featured Products Section */
+        .featured-products {
+            padding: 2rem 1rem;
+            background-color: var(--cream);
+        }
+
+        .featured-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .featured-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .featured-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .featured-image {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .featured-info {
+            padding: 1.5rem;
+        }
+
+        .featured-name {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-description {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .featured-price {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        /* Sections */
+        .section {
+            padding: 2rem 1rem;
+            background-color: var(--cream);
+        }
+
+        .section-alt {
+            background-color: rgba(192, 192, 192, 0.1);
+            border-top: 1px solid var(--silver);
+            border-bottom: 1px solid var(--silver);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        /* Categories Section */
+        .categories {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            padding: 1.5rem 1rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            border-top: 4px solid var(--accent);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .category-title {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-size: 1.3rem;
+        }
+
+        .category-items {
+            list-style: none;
+            text-align: left;
+        }
+
+        .category-items li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        .category-items li:last-child {
+            border-bottom: none;
+        }
+
+        .category-items a {
+            color: var(--dark);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .category-items a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* Pill buttons for category item names */
+        .product-link {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            background-color: var(--accent);
+            color: #ffffff !important;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-decoration: none !important;
+            border: 1px solid var(--accent);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .product-link:hover {
+            background-color: #a05a2c;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            transform: translateY(-2px);
+        }
+
+        /* Product Detail Sections */
+        .product-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .product-detail.active {
+            display: flex;
+        }
+
+        .product-detail-content {
+            background-color: var(--white);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .product-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--silver);
+        }
+
+        .product-detail-title {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .close-detail {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        .product-detail-body {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        @media (min-width: 768px) {
+            .product-detail-body {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .product-detail-image {
+            height: 300px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+
+        .product-detail-info {
+            padding: 1rem 0;
+        }
+
+        .product-detail-features {
+            margin: 1.5rem 0;
+        }
+
+        .product-detail-features p {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgba(192, 192, 192, 0.1);
+            border-radius: var(--radius);
+        }
+
+        .price-range {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* pill shape */
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #a05a2c;
+        }
+
+        /* Shipping Section */
+        .shipping-table {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: var(--shadow);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .shipping-table th, .shipping-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--silver);
+        }
+
+        .shipping-table th {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .shipping-table tr:nth-child(even) {
+            background-color: rgba(192, 192, 192, 0.1);
+        }
+
+        .shipping-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .shipping-price {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .shipping-note {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #25A525;
+            font-size: 0.9rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0.5rem;
+            background-color: rgba(37, 165, 37, 0.1);
+            border-radius: var(--radius);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(135deg, var(--accent), #a05a2c);
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .facebook {
+            color: #1877F2;
+            background-color: white;
+        }
+
+        .tiktok {
+            color: #000000;
+            background-color: white;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .address {
+            margin: 0.5rem 0;
+            line-height: 1.4;
+        }
+
+        .pricing-note {
+            margin-top: 1rem;
+            color: var(--silver);
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .nav-toggle {
+                display: none;
+            }
+            
+            .nav-menu {
+                position: static;
+                display: flex;
+                flex-direction: row;
+                width: auto;
+                padding: 0;
+                background: none;
+                box-shadow: none;
+                border-top: none;
+            }
+            
+            .logo-img {
+                width: 142px; /* Increased by 1.5x from 95px */
+                height: 142px; /* Increased by 1.5x from 95px */
+            }
+            
+            .logo-text {
+                font-size: 1.8rem;
+            }
+            
+            .categories {
+                grid-template-columns: 1fr 1fr;
+                max-width: 1000px;
+                margin: 0 auto 2rem;
+            }
+            
+            .section {
+                padding: 3rem 2rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .logo-img {
+                width: 142px; /* Increased by 1.5x from 95px */
+                height: 142px; /* Increased by 1.5x from 95px */
+            }
+            
+            .logo-text {
+                font-size: 2rem;
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr 1fr 1fr; /* one line on desktop */
+            }
+            
+            .categories {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="Assets/logo.png" alt="AMA-NICE CLOTHING Logo" class="logo-img">
+                <div class="logo-text">AMA-NICE CLOTHING</div>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <button class="nav-toggle" id="navToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#home">Home</a>
+                <a href="#featured">Featured</a>
+                <a href="#categories">Collections</a>
+                <a href="#shipping">Shipping</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3 class="cart-title">Your Cart</h3>
+                <button class="close-cart" id="closeCart">&times;</button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be inserted here -->
+            </div>
+            <div class="cart-footer">
+                <button class="whatsapp-btn" id="sendOrderBtn">
+                    <i class="fab fa-whatsapp"></i> Send Order via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1>Thrift Store with Premium Fashion for Everyone</h1>
+        <p>Discover the perfect blend of style and comfort with our collections</p>
+        <a href="https://wa.me/27731635803?text=Hi%20AMA-NICE!%20I'm%20interested%20in%20your%20clothing." class="whatsapp-btn" target="_blank">
+            <i class="fab fa-whatsapp"></i> Order on WhatsApp
+        </a>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="featured-products" id="featured">
+        <h2 class="featured-title">Featured Products</h2>
+        <div class="featured-grid">
+            <div class="featured-card">
+                <img src="Assets/Kids packs 1.jpg" alt="Kids Clothing Packs" class="featured-image">
+                <div class="featured-info">
+                    <h3 class="featured-name">Kids Clothing Packs</h3>
+                    <p class="featured-description">Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.</p>
+                    <div class="featured-price">R120</div>
+                    <button class="add-to-cart-btn" data-name="Kids Clothing Pack" data-price-range="R120">Add to Cart</button>
+                </div>
+            </div>
+            <div class="featured-card">
+                <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="featured-image">
+                <div class="featured-info">
+                    <h3 class="featured-name">Men's Sneakers</h3>
+                    <p class="featured-description">Stylish and comfortable sneakers for men in various sizes and styles.</p>
+                    <div class="featured-price">R100 - R790</div>
+                    <button class="add-to-cart-btn" data-name="Men's Sneakers" data-price-range="R100 - R790">Add to Cart</button>
+                </div>
+            </div>
+            <div class="featured-card">
+                <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="featured-image">
+                <div class="featured-info">
+                    <h3 class="featured-name">Women's Sneakers</h3>
+                    <p class="featured-description">Trendy sneakers for women in all sizes and colors.</p>
+                    <div class="featured-price">R100 - R590</div>
+                    <button class="add-to-cart-btn" data-name="Women's Sneakers" data-price-range="R100 - R590">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="section section-alt" id="categories">
+        <h2 class="section-title">Our Collections</h2>
+        <div class="categories">
+            <div class="category-card">
+                <div class="category-icon">👕</div>
+                <h3 class="category-title">Men's Collection</h3>
+                <ul class="category-items">
+                    <li><a href="#" class="product-link" data-product="men-jerseys">Jerseys</a></li>
+                    <li><a href="#" class="product-link" data-product="men-jackets">Jackets</a></li>
+                    <li><a href="#" class="product-link" data-product="men-hoodies">Hoodies</a></li>
+                    <li><a href="#" class="product-link" data-product="men-trackpants">Trackpants</a></li>
+                    <li><a href="#" class="product-link" data-product="men-formal-shoes">Formal Shoes</a></li>
+                    <li><a href="#" class="product-link" data-product="men-sneakers">Sneakers (6-14)</a></li>
+                    <li><a href="#" class="product-link" data-product="men-tshirts">Men T-shirts</a></li>
+                    <li><a href="#" class="product-link" data-product="men-sport-jerseys">Sport Jerseys</a></li>
+                    <li><a href="#" class="product-link" data-product="men-swimming-shorts">Swimming Shorts</a></li>
+                    <li><a href="#" class="product-link" data-product="men-cargo-shorts">Cargo Shorts</a></li>
+                    <li><a href="#" class="product-link" data-product="men-jean-jackets">Jean Jackets</a></li>
+                    <li><a href="#" class="product-link" data-product="men-jeans">Jeans</a></li>
+                    <li><a href="#" class="product-link" data-product="men-chinos">Chinos</a></li>
+                    <li><a href="#" class="product-link" data-product="men-formal-shirts">Formal Shirts</a></li>
+                    <li><a href="#" class="product-link" data-product="men-sandals">Sandals</a></li>
+                    <li><a href="#" class="product-link" data-product="men-socks">Socks</a></li>
+                </ul>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">👚</div>
+                <h3 class="category-title">Women's Collection</h3>
+                <ul class="category-items">
+                    <li><a href="#" class="product-link" data-product="women-jean-jackets">Jean Jackets</a></li>
+                    <li><a href="#" class="product-link" data-product="women-tracksuits">Tracksuits</a></li>
+                    <li><a href="#" class="product-link" data-product="women-jeans">Jeans</a></li>
+                    <li><a href="#" class="product-link" data-product="women-gym-tights">Gym Tights</a></li>
+                    <li><a href="#" class="product-link" data-product="women-shoes">Ladies Shoes</a></li>
+                    <li><a href="#" class="product-link" data-product="women-sneakers">Sneakers</a></li>
+                    <li><a href="#" class="product-link" data-product="women-dresses">Dresses</a></li>
+                    <li><a href="#" class="product-link" data-product="women-normal-jackets">Normal Jackets</a></li>
+                    <li><a href="#" class="product-link" data-product="women-sandals">Sandals</a></li>
+                    <li><a href="#" class="product-link" data-product="women-formal-trousers">Ladies Formal Trousers</a></li>
+                    <li><a href="#" class="product-link" data-product="women-tight-types">All Tight Types</a></li>
+                    <li><a href="#" class="product-link" data-product="women-blouses">Blouses</a></li>
+                    <li><a href="#" class="product-link" data-product="women-skirts">Skirts</a></li>
+                    <li><a href="#" class="product-link" data-product="women-tshirts">T-shirts</a></li>
+                    <li><a href="#" class="product-link" data-product="women-nightwear">Nightwear (Gowns & Bonnets)</a></li>
+                    <li><a href="#" class="product-link" data-product="women-bras">Bra's</a></li>
+                    <li><a href="#" class="product-link" data-product="women-socks">Socks</a></li>
+                </ul>
+            </div>
+            <div class="category-card">
+                <div class="category-icon">👶</div>
+                <h3 class="category-title">Kids Collection</h3>
+                <ul class="category-items">
+                    <li><a href="#" class="product-link" data-product="kids-jackets">Jackets</a></li>
+                    <li><a href="#" class="product-link" data-product="kids-hoodies">Hoodies</a></li>
+                    <li><a href="#" class="product-link" data-product="kids-trackpants">Trackpants</a></li>
+                    <li><a href="#" class="product-link" data-product="kids-jeans">Jeans</a></li>
+                    <li><a href="#" class="product-link" data-product="kids-tshirts">T-shirts</a></li>
+                    <li><a href="#" class="product-link" data-product="kids-shorts">Shorts</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Detail Sections -->
+    <!-- Men's Collection Product Details -->
+    <div id="men-jerseys" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Jerseys</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens Sports Jerseys.jpg" alt="Men's Jerseys" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Men's Jerseys" data-price-range="R50 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-jackets" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Jackets</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens Jackets.jpg" alt="Men's Jackets" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R350</div>
+                    <button class="add-to-cart-btn" data-name="Men's Jackets" data-price-range="R50 - R350">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-hoodies" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Hoodies</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens hoodiess.jpg" alt="Men's Hoodies" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R250</div>
+                    <button class="add-to-cart-btn" data-name="Men's Hoodies" data-price-range="R50 - R250">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-trackpants" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Trackpants</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/MENS TRACKPANTS.jpg" alt="Men's Trackpants" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R250</div>
+                    <button class="add-to-cart-btn" data-name="Men's Trackpants" data-price-range="R50 - R250">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-formal-shoes" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Formal Shoes</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens formal shoes.jpg" alt="Men's Formal Shoes" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R100 - R390</div>
+                    <button class="add-to-cart-btn" data-name="Men's Formal Shoes" data-price-range="R100 - R390">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-sneakers" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Sneakers</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R100 - R790</div>
+                    <button class="add-to-cart-btn" data-name="Men's Sneakers" data-price-range="R100 - R790">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Women's Collection Product Details -->
+    <div id="women-sneakers" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Sneakers</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R100 - R590</div>
+                    <button class="add-to-cart-btn" data-name="Women's Sneakers" data-price-range="R100 - R590">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-dresses" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Dresses</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Ladies dresses.jpg" alt="Women's Dresses" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R30 - R250</div>
+                    <button class="add-to-cart-btn" data-name="Women's Dresses" data-price-range="R30 - R250">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kids Collection Product Details -->
+    <div id="kids-jackets" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Kids Jackets</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Kids jackets.jpg" alt="Kids Jackets" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R20 - R250</div>
+                    <button class="add-to-cart-btn" data-name="Kids Jackets" data-price-range="R20 - R250">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Men's Product Details -->
+    <div id="men-tshirts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's T-shirts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens T Shirts.jpg" alt="Men's T-shirts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R30 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Men's T-shirts" data-price-range="R30 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-sport-jerseys" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Sport Jerseys</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens sports jerseys 2.jpg" alt="Men's Sport Jerseys" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Men's Sport Jerseys" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-swimming-shorts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Swimming Shorts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens swimming shorts .jpg" alt="Men's Swimming Shorts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Men's Swimming Shorts" data-price-range="R50 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-cargo-shorts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Cargo Shorts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens Cargo Shorts.jpg" alt="Men's Cargo Shorts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Men's Cargo Shorts" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-jean-jackets" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Jean Jackets</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens jean jackets.jpg" alt="Men's Jean Jackets" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R80 - R350</div>
+                    <button class="add-to-cart-btn" data-name="Men's Jean Jackets" data-price-range="R80 - R350">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-jeans" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Jeans</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens jeans.jpg" alt="Men's Jeans" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R80 - R300</div>
+                    <button class="add-to-cart-btn" data-name="Men's Jeans" data-price-range="R80 - R300">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-chinos" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Chinos</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens chinos.jpg" alt="Men's Chinos" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R80 - R250</div>
+                    <button class="add-to-cart-btn" data-name="Men's Chinos" data-price-range="R80 - R250">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-formal-shirts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Formal Shirts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens formal shirts .jpg" alt="Men's Formal Shirts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Men's Formal Shirts" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-sandals" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Sandals</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens sandals.jpg" alt="Men's Sandals" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Men's Sandals" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="men-socks" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Men's Socks</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Mens socks.jpg" alt="Men's Socks" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R20 - R80</div>
+                    <button class="add-to-cart-btn" data-name="Men's Socks" data-price-range="R20 - R80">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Women's Product Details -->
+    <div id="women-jean-jackets" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Jean Jackets</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens Jean jackets.jpg" alt="Women's Jean Jackets" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R80 - R350</div>
+                    <button class="add-to-cart-btn" data-name="Women's Jean Jackets" data-price-range="R80 - R350">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-tracksuits" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Tracksuits</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens tracksuits.jpg" alt="Women's Tracksuits" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R100 - R400</div>
+                    <button class="add-to-cart-btn" data-name="Women's Tracksuits" data-price-range="R100 - R400">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-jeans" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Jeans</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens Jeans.jpg" alt="Women's Jeans" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R70 - R300</div>
+                    <button class="add-to-cart-btn" data-name="Women's Jeans" data-price-range="R70 - R300">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-gym-tights" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Gym Tights</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Gym tights.jpg" alt="Women's Gym Tights" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Women's Gym Tights" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-shoes" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Shoes</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Ladies shoes.jpg" alt="Women's Shoes" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R80 - R590</div>
+                    <button class="add-to-cart-btn" data-name="Women's Shoes" data-price-range="R80 - R590">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-normal-jackets" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Normal Jackets</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens Jackets.jpg" alt="Women's Normal Jackets" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R350</div>
+                    <button class="add-to-cart-btn" data-name="Women's Normal Jackets" data-price-range="R50 - R350">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-sandals" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Sandals</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens sandals.jpg" alt="Women's Sandals" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Women's Sandals" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-formal-trousers" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Formal Trousers</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/WOMENS FORMAL PANTS.jpg" alt="Women's Formal Trousers" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R60 - R250</div>
+                    <button class="add-to-cart-btn" data-name="Women's Formal Trousers" data-price-range="R60 - R250">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-tight-types" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's All Tight Types</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/All tight types.jpg" alt="Women's All Tight Types" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R50 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Women's All Tight Types" data-price-range="R50 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-blouses" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Blouses</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Ladies Blouses.jpg" alt="Women's Blouses" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R40 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Women's Blouses" data-price-range="R40 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-skirts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Skirts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens skirts.jpg" alt="Women's Skirts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R40 - R200</div>
+                    <button class="add-to-cart-btn" data-name="Women's Skirts" data-price-range="R40 - R200">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-tshirts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's T-shirts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens T shirts.jpg" alt="Women's T-shirts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R30 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Women's T-shirts" data-price-range="R30 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-nightwear" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Nightwear (Gowns & Bonnets)</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Womens nightwear.jpg" alt="Women's Nightwear" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R40 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Women's Nightwear (Gowns & Bonnets)" data-price-range="R40 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-bras" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Bras</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Bras.jpg" alt="Women's Bras" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R30 - R120</div>
+                    <button class="add-to-cart-btn" data-name="Women's Bras" data-price-range="R30 - R120">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="women-socks" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Women's Socks</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Socks for women.jpg" alt="Women's Socks" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R20 - R80</div>
+                    <button class="add-to-cart-btn" data-name="Women's Socks" data-price-range="R20 - R80">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Kids Product Details -->
+    <div id="kids-hoodies" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Kids Hoodies</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Boys hoodies.jpg" alt="Kids Hoodies" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R30 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Kids Hoodies" data-price-range="R30 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="kids-trackpants" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Kids Trackpants</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Kids trackpants.jpg" alt="Kids Trackpants" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R30 - R150</div>
+                    <button class="add-to-cart-btn" data-name="Kids Trackpants" data-price-range="R30 - R150">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="kids-jeans" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Kids Jeans</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Kids jeans.jpg" alt="Kids Jeans" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R40 - R180</div>
+                    <button class="add-to-cart-btn" data-name="Kids Jeans" data-price-range="R40 - R180">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="kids-tshirts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Kids T-shirts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Kids T shirts.jpg" alt="Kids T-shirts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R20 - R100</div>
+                    <button class="add-to-cart-btn" data-name="Kids T-shirts" data-price-range="R20 - R100">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="kids-shorts" class="product-detail">
+        <div class="product-detail-content">
+            <div class="product-detail-header">
+                <h3 class="product-detail-title">Kids Shorts</h3>
+                <button class="close-detail">&times;</button>
+            </div>
+            <div class="product-detail-body">
+                <img src="Assets/Kids shorts.jpg" alt="Kids Shorts" class="product-detail-image">
+                <div class="product-detail-info">
+                    <div class="product-detail-features">
+                        <p>All sizes</p>
+                        <p>All colors</p>
+                        <p>All styles</p>
+                    </div>
+                    <div class="price-range">Price Range: R20 - R100</div>
+                    <button class="add-to-cart-btn" data-name="Kids Shorts" data-price-range="R20 - R100">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shipping Information -->
+    <section class="section" id="shipping">
+        <h2 class="section-title">Shipping & Delivery</h2>
+        <table class="shipping-table">
+            <thead>
+                <tr>
+                    <th>Shipping Option</th>
+                    <th>Price</th>
+                    <th>Delivery Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Standard size shipping</td>
+                    <td class="shipping-price">R60</td>
+                    <td>7 to 9 days</td>
+                </tr>
+                <tr>
+                    <td>Standard size shipping</td>
+                    <td class="shipping-price">R110</td>
+                    <td>3 to 5 days</td>
+                </tr>
+                <tr>
+                    <td>Large size shipping</td>
+                    <td class="shipping-price">R110</td>
+                    <td>7 to 9 days</td>
+                </tr>
+                <tr>
+                    <td>Large size shipping</td>
+                    <td class="shipping-price">R140</td>
+                    <td>3 to 5 days</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="shipping-note">
+            All orders are handled by Pep Paxi by default unless customer can provide alternative shipping method
+        </p>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <h2>Get In Touch</h2>
+        <p>Have questions? Contact us via WhatsApp for quick responses!</p>
+        <a href="https://wa.me/27731635803?text=Hi%20AMA-NICE!%20I%20have%20a%20question." class="whatsapp-btn" target="_blank" style="background-color: var(--white); color: var(--accent);">
+            <i class="fab fa-whatsapp"></i> WhatsApp: 073 163 5803
+        </a>
+        
+        <div class="social-icons">
+            <a href="https://www.facebook.com/share/17F9kkQE6v/" class="social-icon facebook" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://vm.tiktok.com/ZSHvaLC7daRSk-kt3dG/" class="social-icon tiktok" target="_blank">
+                <i class="fab fa-tiktok"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 AMA-NICE CLOTHING. All rights reserved.</p>
+        <div class="address">
+            <p>385 Murphy Street (Main building)</p>
+            <p>Shop 14 timber street (2nd branch)</p>
+        </div>
+        <p class="pricing-note">RE: Pricing depends on sizes and condition</p>
+        <p>Premium South African Fashion</p>
+    </footer>
+
+    <script>
+        // Shopping Cart functionality
+        let cart = [];
+        const cartIcon = document.getElementById('cartIcon');
+        const cartModal = document.getElementById('cartModal');
+        const closeCart = document.getElementById('closeCart');
+        const cartItems = document.getElementById('cartItems');
+        const cartCount = document.getElementById('cartCount');
+        const sendOrderBtn = document.getElementById('sendOrderBtn');
+
+        // Use event delegation for add to cart buttons (works with dynamically created buttons)
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.add-to-cart-btn')) {
+                const button = e.target.closest('.add-to-cart-btn');
+                const name = button.getAttribute('data-name');
+                const priceRange = button.getAttribute('data-price-range');
+                
+                if (name && priceRange) {
+                    // Add item to cart
+                    cart.push({ name, priceRange });
+                    updateCart();
+                    
+                    // Pop animation on cart icon instead of alert
+                    if (cartIcon) {
+                        cartIcon.classList.remove('pop');
+                        // Force reflow to allow re-triggering the animation
+                        // eslint-disable-next-line no-unused-expressions
+                        cartIcon.offsetWidth;
+                        cartIcon.classList.add('pop');
+                    }
+                    
+                    // Close product detail modal if open
+                    const productDetail = button.closest('.product-detail');
+                    if (productDetail) {
+                        productDetail.classList.remove('active');
+                    }
+                }
+            }
+        });
+
+        // Remove item event listener (event delegation - only add once)
+        cartItems.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-item')) {
+                const button = e.target.closest('.remove-item');
+                const index = parseInt(button.getAttribute('data-index'));
+                cart.splice(index, 1);
+                updateCart();
+            }
+        });
+
+        // Update cart display
+        function updateCart() {
+            // Update cart count
+            cartCount.textContent = cart.length;
+            
+            // Update cart items
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
+                return;
+            }
+            
+            cart.forEach((item, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price-range">${item.priceRange}</div>
+                    </div>
+                    <button class="remove-item" data-index="${index}">&times;</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+        }
+
+        // Toggle cart modal
+        if (cartIcon) {
+            cartIcon.addEventListener('click', () => {
+                cartModal.classList.add('active');
+            });
+        }
+
+        if (closeCart) {
+            closeCart.addEventListener('click', () => {
+                cartModal.classList.remove('active');
+            });
+        }
+
+        // Close cart modal when clicking outside
+        cartModal.addEventListener('click', function(e) {
+            if (e.target === cartModal) {
+                cartModal.classList.remove('active');
+            }
+        });
+
+        // Send order via WhatsApp
+        if (sendOrderBtn) {
+            sendOrderBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert('Your cart is empty!');
+                    return;
+                }
+                
+                // Format message for WhatsApp
+                let message = "Hi AMA-NICE! I'd like to order the following items:\n\n";
+                
+                cart.forEach(item => {
+                    message += `• ${item.name} - ${item.priceRange}\n`;
+                });
+                
+                message += "\nPlease let me know about availability and payment details.";
+                
+                // Encode message for URL
+                const encodedMessage = encodeURIComponent(message);
+                
+                // Open WhatsApp with the message
+                window.open(`https://wa.me/27731635803?text=${encodedMessage}`, '_blank');
+            });
+        }
+
+        // Mobile Navigation Toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+        
+        // Close menu when clicking on a link
+        if (navMenu) {
+            navMenu.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    navMenu.classList.remove('active');
+                }
+            });
+        }
+        
+        // Smooth scrolling for anchor links
+        document.addEventListener('click', function(e) {
+            const anchor = e.target.closest('a[href^="#"]');
+            if (anchor) {
+                const targetId = anchor.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }
+        });
+
+        // Product detail functionality using event delegation
+        document.addEventListener('click', function(e) {
+            const productLink = e.target.closest('.product-link');
+            if (productLink) {
+                e.preventDefault();
+                const productId = productLink.getAttribute('data-product');
+                
+                if (productId) {
+                    // Hide all product details
+                    document.querySelectorAll('.product-detail').forEach(detail => {
+                        detail.classList.remove('active');
+                    });
+                    
+                    // Show the selected product detail
+                    const productDetail = document.getElementById(productId);
+                    if (productDetail) {
+                        productDetail.classList.add('active');
+                    } else {
+                        alert('Product details coming soon!');
+                    }
+                }
+            }
+        });
+
+        // Close product detail using event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.close-detail')) {
+                const button = e.target.closest('.close-detail');
+                const productDetail = button.closest('.product-detail');
+                if (productDetail) {
+                    productDetail.classList.remove('active');
+                }
+            }
+        });
+
+        // Close product detail when clicking outside
+        document.querySelectorAll('.product-detail').forEach(detail => {
+            detail.addEventListener('click', function(e) {
+                if (e.target === detail) {
+                    detail.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize cart
+        updateCart();
+    </script>
+</body>
+</html>
