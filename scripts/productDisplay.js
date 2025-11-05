@@ -23,10 +23,10 @@ class ProductDisplay {
         const womenProducts = products.filter(p => p.category === 'women');
         const kidsProducts = products.filter(p => p.category === 'kids');
 
-        // Update featured products (show first 3 from all categories - can be customized)
+        // Update featured products - pass all products to find sneakers and kids packs
         // Only update if there are products, otherwise keep default featured
         if (products.length > 0) {
-            this.updateFeaturedProducts(products.slice(0, 3));
+            this.updateFeaturedProducts(products);
         }
 
         // Update category sections - this ensures ALL products appear in their correct category
@@ -222,7 +222,7 @@ class ProductDisplay {
                 stockInfo = `<p><strong>Stock Available:</strong> ${product.stockQuantity || 0}</p>`;
             }
 
-            const priceDisplay = product.priceRange || `R${product.price.toFixed(2)}`;
+            const priceDisplay = product.priceRange || (product.price ? `R${product.price.toFixed(2)}` : 'Price on request');
 
             modal.innerHTML = `
                 <div class="product-detail-content">
@@ -243,13 +243,27 @@ class ProductDisplay {
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>
                             <div class="price-range">Price: ${priceDisplay}</div>
-                            <button class="add-to-cart-btn" data-name="${product.type}" data-price-range="${priceDisplay}">Add to Cart</button>
                         </div>
                     </div>
                 </div>
             `;
 
             document.body.appendChild(modal);
+            
+            // Add click handlers for this modal
+            const closeBtn = modal.querySelector('.close-detail');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
+            }
+            
+            // Close when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
         });
     }
 

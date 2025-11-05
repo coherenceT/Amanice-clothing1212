@@ -893,6 +893,8 @@
             document.getElementById('sneakerImagePreview').classList.remove('show');
             currentSneakerSizes = [];
             document.getElementById('sneakerSizesList').innerHTML = '';
+            // Ensure default stock is 1
+            document.getElementById('sneakerSizeStock').value = '1';
         }
 
         // Handle kids packs form submission
@@ -1185,7 +1187,7 @@
                                 <p><strong>Gender:</strong> ${product.gender}</p>
                                 ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
                                 ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
-                                <p><strong>Price:</strong> ${product.priceRange || 'R' + product.price.toFixed(2)}</p>
+                                <p><strong>Price:</strong> ${product.priceRange || (product.price ? 'R' + product.price.toFixed(2) : 'Price on request')}</p>
                                 <p><strong>Stock:</strong> ${stockInfo}</p>
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>

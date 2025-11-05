@@ -45,10 +45,11 @@ function initProductDetails() {
     document.addEventListener('click', function(e) {
         const productLink = e.target.closest('.product-link');
         if (productLink) {
-            e.preventDefault();
+            // Only prevent default if it's a data-product link (not a regular href link)
             const productId = productLink.getAttribute('data-product');
             
             if (productId) {
+                e.preventDefault();
                 // Hide all product details
                 document.querySelectorAll('.product-detail').forEach(detail => {
                     detail.classList.remove('active');
@@ -59,9 +60,10 @@ function initProductDetails() {
                 if (productDetail) {
                     productDetail.classList.add('active');
                 } else {
-                    alert('Product details coming soon!');
+                    console.warn('Product detail not found:', productId);
                 }
             }
+            // If no data-product, allow normal link navigation (e.g., sneakers.html, kids-packs.html)
         }
     });
 

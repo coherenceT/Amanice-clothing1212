@@ -353,7 +353,7 @@
                 if (stockCount > 10) stockClass = 'stock-available';
                 else if (stockCount > 0) stockClass = 'stock-low';
 
-                const priceDisplay = sneaker.priceRange || `R${sneaker.price.toFixed(2)}`;
+                const priceDisplay = sneaker.priceRange || (sneaker.price ? `R${sneaker.price.toFixed(2)}` : 'Price on request');
                 const brand = sneaker.shoeBrand || 'Various';
                 const category = sneaker.category === 'men' ? "Men's" : sneaker.category === 'women' ? "Women's" : '';
 

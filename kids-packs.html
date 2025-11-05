@@ -281,7 +281,7 @@
                 if (stockCount > 10) stockClass = 'stock-available';
                 else if (stockCount > 0) stockClass = 'stock-low';
 
-                const priceDisplay = pack.priceRange || `R${pack.price.toFixed(2)}`;
+                const priceDisplay = pack.priceRange || (pack.price ? `R${pack.price.toFixed(2)}` : 'Price on request');
 
                 return `
                     <div class="pack-card">
