@@ -144,6 +144,59 @@ class ProductDisplay {
         }).join('');
     }
 
+    updateRecentlyAdded(products) {
+        const recentlyAddedSection = document.getElementById('recently-added');
+        const recentlyAddedGrid = document.getElementById('recentlyAddedGrid');
+        
+        if (!recentlyAddedSection || !recentlyAddedGrid) return;
+
+        // Filter products that have dateAdded and sort by most recent
+        const recentProducts = products
+            .filter(p => p.dateAdded && !p.isDefault)
+            .sort((a, b) => {
+                const dateA = new Date(a.dateAdded);
+                const dateB = new Date(b.dateAdded);
+                return dateB - dateA; // Most recent first
+            })
+            .slice(0, 6); // Show only the 6 most recent
+
+        // Hide section if no recently added products
+        if (recentProducts.length === 0) {
+            recentlyAddedSection.style.display = 'none';
+            return;
+        }
+
+        // Show section
+        recentlyAddedSection.style.display = 'block';
+
+        // Display recently added products
+        recentlyAddedGrid.innerHTML = recentProducts.map(product => {
+            const priceDisplay = product.priceRange || (product.price ? `R${product.price.toFixed(2)}` : 'Price on request');
+            const productId = `product-${product.id}`;
+            
+            // Get stock info
+            let stockInfo = '';
+            if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
+                const totalStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                stockInfo = `${totalStock} available`;
+            } else {
+                stockInfo = `${product.stockQuantity || 0} available`;
+            }
+
+            return `
+                <div class="recently-added-card" onclick="document.getElementById('${productId}')?.classList.add('active')">
+                    <img src="${product.image}" alt="${product.type}" class="recently-added-image">
+                    <div class="recently-added-info">
+                        <h3 class="featured-name">${product.type}</h3>
+                        <p class="featured-description">${product.description || `${product.category.charAt(0).toUpperCase() + product.category.slice(1)}'s ${product.type}`}</p>
+                        <div class="featured-price">${priceDisplay}</div>
+                        <small style="color: #666; display: block; margin-top: 0.5rem;">Stock: ${stockInfo}</small>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
     updateCategorySection(category, products) {
         const categoryCards = document.querySelectorAll('.category-card');
         let categoryCard = null;
@@ -243,6 +296,7 @@ class ProductDisplay {
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>
                             <div class="price-range">Price: ${priceDisplay}</div>
+                            <button class="add-to-cart-btn" data-name="${product.type}" data-price-range="${priceDisplay}">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -277,29 +331,58 @@ class ProductDisplay {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.productDisplay = new ProductDisplay();
-        
-        // Listen for storage changes to auto-refresh when products are added
-        window.addEventListener('storage', () => {
-            if (window.productDisplay) {
-                window.productDisplay.refresh();
-            }
-        });
+        setupAutoRefresh();
     });
 } else {
     window.productDisplay = new ProductDisplay();
-    
-    // Listen for storage changes to auto-refresh when products are added
+    setupAutoRefresh();
+}
+
+function setupAutoRefresh() {
+    // Listen for storage changes to auto-refresh when products are added (cross-tab sync)
     window.addEventListener('storage', () => {
         if (window.productDisplay) {
             window.productDisplay.refresh();
         }
     });
+    
+    // Listen for custom events (same-tab updates)
+    window.addEventListener('productsUpdated', () => {
+        if (window.productDisplay) {
+            window.productDisplay.refresh();
+        }
+    });
+    
+    // Refresh when page becomes visible (in case products were added in another tab)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && window.productDisplay) {
+            window.productDisplay.refresh();
+        }
+    });
+    
+    // Poll for localStorage changes every 3 seconds (detects manual refreshes/reloads)
+    // This helps catch changes even if storage events don't fire
+    let lastProductsHash = '';
+    setInterval(() => {
+        try {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            const deleted = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
+            const currentHash = JSON.stringify({ products: products.length, deleted: deleted.length });
+            
+            if (lastProductsHash && lastProductsHash !== currentHash && window.productDisplay) {
+                window.productDisplay.refresh();
+            }
+            lastProductsHash = currentHash;
+        } catch (e) {
+            console.error('Error checking for product updates:', e);
+        }
+    }, 3000);
+    
+    // Also refresh on page focus (when user switches back to tab)
+    window.addEventListener('focus', () => {
+        if (window.productDisplay) {
+            window.productDisplay.refresh();
+        }
+    });
 }
-
-// Also refresh when page becomes visible (in case products were added in another tab)
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && window.productDisplay) {
-        window.productDisplay.refresh();
-    }
-});
 

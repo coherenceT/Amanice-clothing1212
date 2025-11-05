@@ -435,6 +435,9 @@
                 <button class="btn btn-secondary" id="tabKidsPacks" onclick="switchTab('kidspacks')" style="flex: 1; min-width: 150px;">
                     <i class="fas fa-gift"></i> Add Kids Packs
                 </button>
+                <button class="btn btn-secondary" id="tabRecentlyAdded" onclick="switchTab('recently-added')" style="flex: 1; min-width: 150px;">
+                    <i class="fas fa-clock"></i> Recently Added
+                </button>
             </div>
         </div>
 
@@ -649,6 +652,16 @@
                 </form>
             </div>
 
+            <!-- Recently Added Page -->
+            <div class="form-section" id="recentlyAddedPage" style="display: none;">
+                <h2 class="section-title">
+                    <i class="fas fa-clock"></i> Recently Added Products
+                </h2>
+                <div id="recentlyAddedList" class="products-list">
+                    <!-- Recently added products will appear here -->
+                </div>
+            </div>
+
             <!-- Products List -->
             <div class="products-section">
                 <h2 class="section-title">Manage Products</h2>
@@ -685,6 +698,13 @@
                                 <option value="in-stock">In Stock (10+)</option>
                                 <option value="low-stock">Low Stock (1-10)</option>
                                 <option value="out-of-stock">Out of Stock</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="filterRecentlyAdded" style="font-size: 0.9rem; font-weight: 600;">Filter</label>
+                            <select id="filterRecentlyAdded" style="padding: 0.5rem;">
+                                <option value="all">All Products</option>
+                                <option value="recently-added">Recently Added</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0; display: flex; align-items: end;">
@@ -749,17 +769,19 @@
 
         // Tab switching
         function switchTab(tab) {
-            // Hide all forms
+            // Hide all forms and pages
             document.getElementById('regularProductForm').style.display = 'none';
             document.getElementById('sneakersProductForm').style.display = 'none';
             document.getElementById('kidspacksProductForm').style.display = 'none';
+            document.getElementById('recentlyAddedPage').style.display = 'none';
 
             // Reset all tab buttons
             document.getElementById('tabRegular').className = 'btn btn-secondary';
             document.getElementById('tabSneakers').className = 'btn btn-secondary';
             document.getElementById('tabKidsPacks').className = 'btn btn-secondary';
+            document.getElementById('tabRecentlyAdded').className = 'btn btn-secondary';
 
-            // Show selected form and activate tab
+            // Show selected form/page and activate tab
             if (tab === 'regular') {
                 document.getElementById('regularProductForm').style.display = 'block';
                 document.getElementById('tabRegular').className = 'btn btn-primary';
@@ -769,6 +791,22 @@
             } else if (tab === 'kidspacks') {
                 document.getElementById('kidspacksProductForm').style.display = 'block';
                 document.getElementById('tabKidsPacks').className = 'btn btn-primary';
+            } else if (tab === 'recently-added') {
+                document.getElementById('recentlyAddedPage').style.display = 'block';
+                document.getElementById('tabRecentlyAdded').className = 'btn btn-primary';
+                // Make it full width by changing grid layout
+                const adminGrid = document.querySelector('.admin-grid');
+                if (adminGrid) {
+                    adminGrid.style.gridTemplateColumns = '1fr';
+                }
+                // Load recently added products when tab is opened
+                displayRecentlyAdded();
+            } else {
+                // Reset grid layout for other tabs
+                const adminGrid = document.querySelector('.admin-grid');
+                if (adminGrid) {
+                    adminGrid.style.gridTemplateColumns = '1fr 2fr';
+                }
             }
         }
 
@@ -885,6 +923,11 @@
                 };
 
                 productManager.saveProduct(productData);
+                
+                // Trigger storage event for cross-tab sync
+                window.dispatchEvent(new Event('storage'));
+                // Also trigger custom event
+                window.dispatchEvent(new CustomEvent('productsUpdated'));
 
                 showAlert('Sneakers added successfully!', 'success');
                 loadProducts();
@@ -933,6 +976,11 @@
                 };
 
                 productManager.saveProduct(productData);
+                
+                // Trigger storage event for cross-tab sync
+                window.dispatchEvent(new Event('storage'));
+                // Also trigger custom event
+                window.dispatchEvent(new CustomEvent('productsUpdated'));
 
                 showAlert('Kids pack added successfully!', 'success');
                 loadProducts();
@@ -1065,6 +1113,11 @@
                 }
 
                 productManager.saveProduct(productData);
+                
+                // Trigger storage event for cross-tab sync
+                window.dispatchEvent(new Event('storage'));
+                // Also trigger custom event
+                window.dispatchEvent(new CustomEvent('productsUpdated'));
 
                 showAlert('Product added successfully!', 'success');
                 loadProducts();
@@ -1093,6 +1146,8 @@
             
             // Force reload products to get latest data
             allProducts = productManager.getAllProducts();
+            // Update recently added section
+            displayRecentlyAdded();
             // Clear and reapply filters to refresh display
             applyFilters();
         }
@@ -1105,6 +1160,7 @@
             const categoryFilter = document.getElementById('filterCategory')?.value || 'all';
             const typeFilter = (document.getElementById('filterType')?.value || '').toLowerCase();
             const stockFilter = document.getElementById('filterStock')?.value || 'all';
+            const recentlyAddedFilter = document.getElementById('filterRecentlyAdded')?.value || 'all';
             const showOnlyDefault = document.getElementById('showOnlyDefault')?.checked || false;
             const showOnlyAdmin = document.getElementById('showOnlyAdmin')?.checked || false;
 
@@ -1138,6 +1194,16 @@
                 if (stockFilter === 'low-stock' && (stockCount === 0 || stockCount > 10)) return false;
                 if (stockFilter === 'out-of-stock' && stockCount > 0) return false;
 
+                // Recently Added filter
+                if (recentlyAddedFilter === 'recently-added') {
+                    if (!product.dateAdded || product.isDefault) return false;
+                    // Only show products added in last 7 days
+                    const addedDate = new Date(product.dateAdded);
+                    const sevenDaysAgo = new Date();
+                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                    if (addedDate < sevenDaysAgo) return false;
+                }
+
                 // Default/Admin filter
                 const isDefault = product.isDefault === true;
                 if (showOnlyDefault && !isDefault) return false;
@@ -1147,6 +1213,7 @@
             });
 
             displayProducts(filteredProducts);
+            displayRecentlyAdded(); // Update recently added section
             updateProductCount();
         }
 
@@ -1154,6 +1221,7 @@
             document.getElementById('filterCategory').value = 'all';
             document.getElementById('filterType').value = '';
             document.getElementById('filterStock').value = 'all';
+            document.getElementById('filterRecentlyAdded').value = 'all';
             document.getElementById('showOnlyDefault').checked = false;
             document.getElementById('showOnlyAdmin').checked = false;
             applyFilters();
@@ -1166,6 +1234,102 @@
                 const showing = filteredProducts.length;
                 countElement.textContent = `Showing ${showing} of ${total} products`;
             }
+        }
+
+        function displayRecentlyAdded() {
+            const recentlyAddedPage = document.getElementById('recentlyAddedPage');
+            const recentlyAddedList = document.getElementById('recentlyAddedList');
+            
+            if (!recentlyAddedPage || !recentlyAddedList) return;
+
+            // Get all admin-added products (non-default) sorted by date
+            const adminProducts = allProducts
+                .filter(p => !p.isDefault && p.dateAdded)
+                .sort((a, b) => {
+                    const dateA = new Date(a.dateAdded);
+                    const dateB = new Date(b.dateAdded);
+                    return dateB - dateA; // Most recent first
+                }); // Show all recently added products
+
+            // Show message if no recently added products
+            if (adminProducts.length === 0) {
+                recentlyAddedList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem; font-size: 1.1rem;">No recently added products yet. Add products to see them here!</p>';
+                return;
+            }
+
+            // Display recently added products
+            recentlyAddedList.innerHTML = adminProducts.map(product => {
+                const productId = product.id;
+                const isDefault = false; // All are admin-added
+                
+                // Unified stock display
+                let stockInfo = '';
+                if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
+                    const totalStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                    stockInfo = `Stock: ${totalStock} (${product.shoeSizes.length} size(s))`;
+                } else {
+                    stockInfo = `Stock: ${product.stockQuantity || 0}`;
+                }
+
+                // Format date
+                const addedDate = new Date(product.dateAdded);
+                const dateStr = addedDate.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="product-item">
+                        <div class="product-item-header">
+                            <img src="${product.image}" alt="${product.type}" class="product-item-image">
+                            <div class="product-item-info">
+                                <h3>${product.type} <span style="color: #666; font-size: 0.8rem;">(Added: ${dateStr})</span></h3>
+                                <p><strong>Category:</strong> ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</p>
+                                <p><strong>Gender:</strong> ${product.gender}</p>
+                                ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
+                                ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
+                                <p><strong>Price:</strong> ${product.priceRange || (product.price ? 'R' + product.price.toFixed(2) : 'Price on request')}</p>
+                                <p><strong>${stockInfo}</strong></p>
+                                ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
+                            </div>
+                            <div class="product-item-actions">
+                                <button class="btn-edit" onclick="editProduct('${productId}', ${isDefault})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-delete" onclick="deleteProduct('${productId}', ${isDefault})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        ${product.isShoe && product.shoeSizes && product.shoeSizes.length > 0 ? `
+                            <div class="stock-management">
+                                ${product.shoeSizes.map((shoe, idx) => `
+                                    <div class="stock-entry">
+                                        <span><strong>${shoe.brand}</strong> - Size ${shoe.size}: ${shoe.qty} available</span>
+                                        <div class="stock-controls">
+                                            <button class="btn-increment" onclick="updateShoeStock('${productId}', ${idx}, 1, ${isDefault})">+</button>
+                                            <button class="btn-decrement" onclick="updateShoeStock('${productId}', ${idx}, -1, ${isDefault})">-</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="stock-management">
+                                <div class="stock-item">
+                                    <span>Available Stock: ${product.stockQuantity || 0}</span>
+                                    <div class="stock-controls">
+                                        <button class="btn-increment" onclick="updateStock('${productId}', 1, ${isDefault})">+</button>
+                                        <button class="btn-decrement" onclick="updateStock('${productId}', -1, ${isDefault})">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
         }
 
         function displayProducts(products) {
@@ -1259,6 +1423,9 @@
                 if (product) {
                     product.stockQuantity = Math.max(0, (product.stockQuantity || 0) + change);
                     localStorage.setItem('products', JSON.stringify(products));
+                    // Trigger events for cross-tab sync
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new CustomEvent('productsUpdated'));
                     await loadProducts();
                     showAlert('Stock updated!', 'success');
                 }
@@ -1282,6 +1449,9 @@
                 if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
                     product.shoeSizes[sizeIndex].qty = Math.max(0, product.shoeSizes[sizeIndex].qty + change);
                     localStorage.setItem('products', JSON.stringify(products));
+                    // Trigger events for cross-tab sync
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new CustomEvent('productsUpdated'));
                     await loadProducts();
                     showAlert('Shoe stock updated!', 'success');
                 }
@@ -1372,6 +1542,10 @@
                 }
             }
             
+            // Trigger events for cross-tab sync
+            window.dispatchEvent(new Event('storage'));
+            window.dispatchEvent(new CustomEvent('productsUpdated'));
+            
             loadProducts();
             closeEditModal();
             showAlert('Product updated successfully!', 'success');
@@ -1388,6 +1562,9 @@
                 } else {
                     productManager.deleteProduct(productId, false);
                 }
+                // Trigger events for cross-tab sync
+                window.dispatchEvent(new Event('storage'));
+                window.dispatchEvent(new CustomEvent('productsUpdated'));
                 loadProducts();
                 showAlert('Product deleted!', 'success');
             }
@@ -1436,12 +1613,37 @@
             if (filterStock) {
                 filterStock.addEventListener('change', applyFilters);
             }
+            const filterRecentlyAdded = document.getElementById('filterRecentlyAdded');
+            if (filterRecentlyAdded) {
+                filterRecentlyAdded.addEventListener('change', applyFilters);
+            }
             if (showOnlyDefault) {
                 showOnlyDefault.addEventListener('change', applyFilters);
             }
             if (showOnlyAdmin) {
                 showOnlyAdmin.addEventListener('change', applyFilters);
             }
+            
+            // Listen for storage changes (for same browser cross-tab sync)
+            window.addEventListener('storage', () => {
+                loadProducts();
+            });
+            
+            // Listen for custom events (for same tab updates)
+            window.addEventListener('productsUpdated', () => {
+                loadProducts();
+            });
+            
+            // Poll for changes every 5 seconds (for cross-device sync detection)
+            // Note: localStorage doesn't sync across devices, but this helps detect manual refreshes
+            setInterval(() => {
+                const currentProducts = JSON.parse(localStorage.getItem('products') || '[]');
+                const currentHash = JSON.stringify(currentProducts.map(p => ({ id: p.id, dateAdded: p.dateAdded })));
+                if (window.lastProductsHash !== currentHash) {
+                    window.lastProductsHash = currentHash;
+                    loadProducts();
+                }
+            }, 5000);
         }, 100);
 
         // Note: loadProducts is called in initializeAdmin()
