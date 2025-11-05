@@ -40,32 +40,105 @@ class ProductDisplay {
 
     updateFeaturedProducts(products) {
         const featuredGrid = document.querySelector('.featured-grid');
-        if (!featuredGrid || products.length === 0) return;
+        if (!featuredGrid) return;
 
-        // Filter out sneakers and kids packs from featured (they have their own pages)
-        const featuredProducts = products.filter(p => {
+        // Get sneakers for both men and women
+        const menSneakers = products.find(p => {
             const isSneaker = p.isShoe === true || (p.type && (p.type.toLowerCase().includes('sneaker') || p.type.toLowerCase().includes('takkies')));
-            const isKidsPack = p.type && (p.type.toLowerCase().includes('kids clothing pack') || p.type.toLowerCase().includes('kids pack') || p.type.toLowerCase().includes('clothing pack'));
-            return !isSneaker && !isKidsPack;
-        }).slice(0, 3);
+            return isSneaker && p.category === 'men';
+        });
 
-        // If we have less than 3, keep default featured products
-        if (featuredProducts.length === 0) {
-            return; // Keep default featured products
+        const womenSneakers = products.find(p => {
+            const isSneaker = p.isShoe === true || (p.type && (p.type.toLowerCase().includes('sneaker') || p.type.toLowerCase().includes('takkies')));
+            return isSneaker && p.category === 'women';
+        });
+
+        // Get kids packs
+        const kidsPacks = products.find(p => {
+            return p.type && (p.type.toLowerCase().includes('kids clothing pack') || 
+                             p.type.toLowerCase().includes('kids pack') || 
+                             p.type.toLowerCase().includes('clothing pack')) &&
+                   p.category === 'kids';
+        });
+
+        // Build featured products array
+        const featuredItems = [];
+        
+        // Add men's sneakers
+        if (menSneakers) {
+            featuredItems.push({
+                title: "Men's Sneakers",
+                image: menSneakers.image || "Assets/Mens sneakers.jpg",
+                description: menSneakers.description || "Stylish and comfortable sneakers for men in various sizes and styles.",
+                price: menSneakers.priceRange || "R100 - R790",
+                link: "sneakers.html"
+            });
+        } else {
+            // Default men's sneakers
+            featuredItems.push({
+                title: "Men's Sneakers",
+                image: "Assets/Mens sneakers.jpg",
+                description: "Stylish and comfortable sneakers for men in various sizes and styles.",
+                price: "R100 - R790",
+                link: "sneakers.html"
+            });
         }
 
-        featuredGrid.innerHTML = featuredProducts.map(product => {
-            const priceDisplay = product.priceRange || `R${product.price.toFixed(2)}`;
+        // Add women's sneakers
+        if (womenSneakers) {
+            featuredItems.push({
+                title: "Women's Sneakers",
+                image: womenSneakers.image || "Assets/Ladies takkies.jpg",
+                description: womenSneakers.description || "Trendy sneakers for women in all sizes and colors.",
+                price: womenSneakers.priceRange || "R100 - R590",
+                link: "sneakers.html"
+            });
+        } else {
+            // Default women's sneakers
+            featuredItems.push({
+                title: "Women's Sneakers",
+                image: "Assets/Ladies takkies.jpg",
+                description: "Trendy sneakers for women in all sizes and colors.",
+                price: "R100 - R590",
+                link: "sneakers.html"
+            });
+        }
 
+        // Add kids packs
+        if (kidsPacks) {
+            featuredItems.push({
+                title: "Kids Clothing Packs",
+                image: kidsPacks.image || "Assets/Kids packs 1.jpg",
+                description: kidsPacks.description || "Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.",
+                price: kidsPacks.priceRange || "R120",
+                link: "kids-packs.html"
+            });
+        } else {
+            // Default kids packs
+            featuredItems.push({
+                title: "Kids Clothing Packs",
+                image: "Assets/Kids packs 1.jpg",
+                description: "Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.",
+                price: "R120",
+                link: "kids-packs.html"
+            });
+        }
+
+        // Update featured grid
+        featuredGrid.innerHTML = featuredItems.map(item => {
             return `
                 <div class="featured-card">
-                    <img src="${product.image}" alt="${product.type}" class="featured-image">
-                    <div class="featured-info">
-                        <h3 class="featured-name">${product.type}</h3>
-                        <p class="featured-description">${product.description || `${product.category.charAt(0).toUpperCase() + product.category.slice(1)}'s ${product.type}`}</p>
-                        <div class="featured-price">${priceDisplay}</div>
-                        <button class="add-to-cart-btn" data-name="${product.type}" data-price-range="${priceDisplay}">Add to Cart</button>
-                    </div>
+                    <a href="${item.link}" style="text-decoration: none; color: inherit; display: block;">
+                        <img src="${item.image}" alt="${item.title}" class="featured-image">
+                        <div class="featured-info">
+                            <h3 class="featured-name">${item.title}</h3>
+                            <p class="featured-description">${item.description}</p>
+                            <div class="featured-price">${item.price}</div>
+                            <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='${item.link}'; return false;" style="cursor: pointer; width: 100%;">
+                                ${item.link === 'sneakers.html' ? 'View All Sneakers' : 'View All Packs'}
+                            </button>
+                        </div>
+                    </a>
                 </div>
             `;
         }).join('');
@@ -115,32 +188,18 @@ class ProductDisplay {
             categoryItems.appendChild(li);
         });
 
-        // Add sneakers link for men's and women's categories
-        if (hasSneakers) {
-            const sneakersExist = products.some(p => {
-                const isSneaker = p.isShoe === true || (p.type && (p.type.toLowerCase().includes('sneaker') || p.type.toLowerCase().includes('takkies')));
-                return isSneaker && p.category === category;
-            });
-            
-            if (sneakersExist || category === 'men' || category === 'women') {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="sneakers.html" class="product-link">Sneakers</a>`;
-                categoryItems.appendChild(li);
-            }
+        // Add sneakers link for men's and women's categories (always show)
+        if (hasSneakers && (category === 'men' || category === 'women')) {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="sneakers.html" class="product-link">Sneakers</a>`;
+            categoryItems.appendChild(li);
         }
 
-        // Add kids packs link for kids category
-        if (hasKidsPacks) {
-            const packsExist = products.some(p => {
-                const isPack = p.type && (p.type.toLowerCase().includes('kids clothing pack') || p.type.toLowerCase().includes('kids pack') || p.type.toLowerCase().includes('clothing pack'));
-                return isPack && p.category === 'kids';
-            });
-            
-            if (packsExist) {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="kids-packs.html" class="product-link">Kids Clothing Packs</a>`;
-                categoryItems.appendChild(li);
-            }
+        // Add kids packs link for kids category (always show)
+        if (hasKidsPacks && category === 'kids') {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="kids-packs.html" class="product-link">Kids Clothing Packs</a>`;
+            categoryItems.appendChild(li);
         }
     }
 

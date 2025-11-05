@@ -654,11 +654,14 @@
                 <h2 class="section-title">Manage Products</h2>
                 
                 <!-- Filter Section -->
-                <div class="filter-section" style="margin-bottom: 1.5rem;">
+                <div class="filter-section" style="margin-bottom: 1.5rem; background: var(--white); padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow);">
+                    <h3 style="color: var(--accent); margin-bottom: 1rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-filter"></i> Filter Products
+                    </h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label for="filterCategory">Filter by Category</label>
-                            <select id="filterCategory">
+                            <label for="filterCategory" style="font-size: 0.9rem; font-weight: 600;">Category</label>
+                            <select id="filterCategory" style="padding: 0.5rem;">
                                 <option value="all">All Categories</option>
                                 <option value="men">Men's Collection</option>
                                 <option value="women">Women's Collection</option>
@@ -666,34 +669,35 @@
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label for="filterType">Filter by Type</label>
-                            <input type="text" id="filterType" placeholder="Search by product type...">
+                            <label for="filterType" style="font-size: 0.9rem; font-weight: 600;">Search</label>
+                            <input type="text" id="filterType" placeholder="Search by name, brand, type..." style="padding: 0.5rem;">
+                            <small style="display: block; margin-top: 0.25rem; color: #666;">Search by product name, brand, description, or stock number</small>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <label for="filterStock">Filter by Stock</label>
-                            <select id="filterStock">
+                            <label for="filterStock" style="font-size: 0.9rem; font-weight: 600;">Stock Status</label>
+                            <select id="filterStock" style="padding: 0.5rem;">
                                 <option value="all">All Stock Levels</option>
-                                <option value="in-stock">In Stock</option>
+                                <option value="in-stock">In Stock (10+)</option>
                                 <option value="low-stock">Low Stock (1-10)</option>
                                 <option value="out-of-stock">Out of Stock</option>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom: 0; display: flex; align-items: end;">
                             <button type="button" class="btn btn-secondary" onclick="clearFilters()" style="width: 100%;">
-                                <i class="fas fa-times"></i> Clear Filters
+                                <i class="fas fa-times"></i> Clear All
                             </button>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--silver);">
-                        <span id="productCount" style="color: var(--dark-silver); font-weight: bold;"></span>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--silver); flex-wrap: wrap; gap: 1rem;">
+                        <span id="productCount" style="color: var(--accent); font-weight: bold; font-size: 1rem;"></span>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--cream); border-radius: 5px;">
                                 <input type="checkbox" id="showOnlyDefault" onchange="applyFilters()">
-                                <span>Show Default Products Only</span>
+                                <span style="font-size: 0.9rem;">Default Only</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--cream); border-radius: 5px;">
                                 <input type="checkbox" id="showOnlyAdmin" onchange="applyFilters()">
-                                <span>Show Admin Products Only</span>
+                                <span style="font-size: 0.9rem;">Admin Only</span>
                             </label>
                         </div>
                     </div>
@@ -1085,11 +1089,15 @@
         }
 
         function applyFilters() {
-            const categoryFilter = document.getElementById('filterCategory').value;
-            const typeFilter = document.getElementById('filterType').value.toLowerCase();
-            const stockFilter = document.getElementById('filterStock').value;
-            const showOnlyDefault = document.getElementById('showOnlyDefault').checked;
-            const showOnlyAdmin = document.getElementById('showOnlyAdmin').checked;
+            if (!allProducts || allProducts.length === 0) {
+                return;
+            }
+
+            const categoryFilter = document.getElementById('filterCategory')?.value || 'all';
+            const typeFilter = (document.getElementById('filterType')?.value || '').toLowerCase();
+            const stockFilter = document.getElementById('filterStock')?.value || 'all';
+            const showOnlyDefault = document.getElementById('showOnlyDefault')?.checked || false;
+            const showOnlyAdmin = document.getElementById('showOnlyAdmin')?.checked || false;
 
             filteredProducts = allProducts.filter(product => {
                 // Category filter
@@ -1097,9 +1105,16 @@
                     return false;
                 }
 
-                // Type filter
-                if (typeFilter && !product.type.toLowerCase().includes(typeFilter)) {
-                    return false;
+                // Type filter (search by product type, brand, description, or stock number)
+                if (typeFilter) {
+                    const matchesType = product.type.toLowerCase().includes(typeFilter);
+                    const matchesBrand = product.shoeBrand && product.shoeBrand.toLowerCase().includes(typeFilter);
+                    const matchesDescription = product.description && product.description.toLowerCase().includes(typeFilter);
+                    const matchesStockNumber = product.stockNumber && product.stockNumber.toLowerCase().includes(typeFilter);
+                    
+                    if (!matchesType && !matchesBrand && !matchesDescription && !matchesStockNumber) {
+                        return false;
+                    }
                 }
 
                 // Stock filter
@@ -1110,7 +1125,7 @@
                     stockCount = product.stockQuantity || 0;
                 }
 
-                if (stockFilter === 'in-stock' && stockCount === 0) return false;
+                if (stockFilter === 'in-stock' && stockCount <= 10) return false;
                 if (stockFilter === 'low-stock' && (stockCount === 0 || stockCount > 10)) return false;
                 if (stockFilter === 'out-of-stock' && stockCount > 0) return false;
 
@@ -1385,13 +1400,28 @@
 
         // Add filter event listeners (wait for DOM)
         setTimeout(() => {
+            // Set up filter event listeners
             const filterCategory = document.getElementById('filterCategory');
             const filterType = document.getElementById('filterType');
             const filterStock = document.getElementById('filterStock');
+            const showOnlyDefault = document.getElementById('showOnlyDefault');
+            const showOnlyAdmin = document.getElementById('showOnlyAdmin');
             
-            if (filterCategory) filterCategory.addEventListener('change', applyFilters);
-            if (filterType) filterType.addEventListener('input', applyFilters);
-            if (filterStock) filterStock.addEventListener('change', applyFilters);
+            if (filterCategory) {
+                filterCategory.addEventListener('change', applyFilters);
+            }
+            if (filterType) {
+                filterType.addEventListener('input', applyFilters);
+            }
+            if (filterStock) {
+                filterStock.addEventListener('change', applyFilters);
+            }
+            if (showOnlyDefault) {
+                showOnlyDefault.addEventListener('change', applyFilters);
+            }
+            if (showOnlyAdmin) {
+                showOnlyAdmin.addEventListener('change', applyFilters);
+            }
         }, 100);
 
         // Note: loadProducts is called in initializeAdmin()
