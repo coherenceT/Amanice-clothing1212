@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMA-NICE CLOTHING | Thrift Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/common.css">
     <style>
         /* Base Styles & Variables */
         :root {
@@ -56,6 +57,12 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
         }
 
         .logo-img {
@@ -64,6 +71,7 @@
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--accent);
+            transition: transform 0.3s;
         }
 
         .logo-text {
@@ -743,8 +751,8 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <div class="logo">
-                <img src="Assets/logo.png" alt="AMA-NICE CLOTHING Logo" class="logo-img">
+            <div class="logo" id="logoArea">
+                <img src="Assets/logo.png" alt="AMA-NICE CLOTHING Logo" class="logo-img" id="logoImage">
                 <div class="logo-text">AMA-NICE CLOTHING</div>
             </div>
             <div style="display: flex; align-items: center;">
@@ -798,31 +806,37 @@
         <h2 class="featured-title">Featured Products</h2>
         <div class="featured-grid">
             <div class="featured-card">
-                <img src="Assets/Kids packs 1.jpg" alt="Kids Clothing Packs" class="featured-image">
-                <div class="featured-info">
-                    <h3 class="featured-name">Kids Clothing Packs</h3>
-                    <p class="featured-description">Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.</p>
-                    <div class="featured-price">R120</div>
-                    <button class="add-to-cart-btn" data-name="Kids Clothing Pack" data-price-range="R120">Add to Cart</button>
-                </div>
+                <a href="kids-packs.html" style="text-decoration: none; color: inherit;">
+                    <img src="Assets/Kids packs 1.jpg" alt="Kids Clothing Packs" class="featured-image">
+                    <div class="featured-info">
+                        <h3 class="featured-name">Kids Clothing Packs</h3>
+                        <p class="featured-description">Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.</p>
+                        <div class="featured-price">R120</div>
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='kids-packs.html'; return false;" style="cursor: pointer;">View All Packs</button>
+                    </div>
+                </a>
             </div>
             <div class="featured-card">
-                <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="featured-image">
-                <div class="featured-info">
-                    <h3 class="featured-name">Men's Sneakers</h3>
-                    <p class="featured-description">Stylish and comfortable sneakers for men in various sizes and styles.</p>
-                    <div class="featured-price">R100 - R790</div>
-                    <button class="add-to-cart-btn" data-name="Men's Sneakers" data-price-range="R100 - R790">Add to Cart</button>
-                </div>
+                <a href="sneakers.html" style="text-decoration: none; color: inherit;">
+                    <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="featured-image">
+                    <div class="featured-info">
+                        <h3 class="featured-name">Men's Sneakers</h3>
+                        <p class="featured-description">Stylish and comfortable sneakers for men in various sizes and styles.</p>
+                        <div class="featured-price">R100 - R790</div>
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='sneakers.html'; return false;" style="cursor: pointer;">View All Sneakers</button>
+                    </div>
+                </a>
             </div>
             <div class="featured-card">
-                <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="featured-image">
-                <div class="featured-info">
-                    <h3 class="featured-name">Women's Sneakers</h3>
-                    <p class="featured-description">Trendy sneakers for women in all sizes and colors.</p>
-                    <div class="featured-price">R100 - R590</div>
-                    <button class="add-to-cart-btn" data-name="Women's Sneakers" data-price-range="R100 - R590">Add to Cart</button>
-                </div>
+                <a href="sneakers.html" style="text-decoration: none; color: inherit;">
+                    <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="featured-image">
+                    <div class="featured-info">
+                        <h3 class="featured-name">Women's Sneakers</h3>
+                        <p class="featured-description">Trendy sneakers for women in all sizes and colors.</p>
+                        <div class="featured-price">R100 - R590</div>
+                        <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='sneakers.html'; return false;" style="cursor: pointer;">View All Sneakers</button>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
@@ -840,7 +854,7 @@
                     <li><a href="#" class="product-link" data-product="men-hoodies">Hoodies</a></li>
                     <li><a href="#" class="product-link" data-product="men-trackpants">Trackpants</a></li>
                     <li><a href="#" class="product-link" data-product="men-formal-shoes">Formal Shoes</a></li>
-                    <li><a href="#" class="product-link" data-product="men-sneakers">Sneakers (6-14)</a></li>
+                    <li><a href="sneakers.html" class="product-link">Sneakers (6-14)</a></li>
                     <li><a href="#" class="product-link" data-product="men-tshirts">Men T-shirts</a></li>
                     <li><a href="#" class="product-link" data-product="men-sport-jerseys">Sport Jerseys</a></li>
                     <li><a href="#" class="product-link" data-product="men-swimming-shorts">Swimming Shorts</a></li>
@@ -862,7 +876,7 @@
                     <li><a href="#" class="product-link" data-product="women-jeans">Jeans</a></li>
                     <li><a href="#" class="product-link" data-product="women-gym-tights">Gym Tights</a></li>
                     <li><a href="#" class="product-link" data-product="women-shoes">Ladies Shoes</a></li>
-                    <li><a href="#" class="product-link" data-product="women-sneakers">Sneakers</a></li>
+                    <li><a href="sneakers.html" class="product-link">Sneakers</a></li>
                     <li><a href="#" class="product-link" data-product="women-dresses">Dresses</a></li>
                     <li><a href="#" class="product-link" data-product="women-normal-jackets">Normal Jackets</a></li>
                     <li><a href="#" class="product-link" data-product="women-sandals">Sandals</a></li>
@@ -1785,211 +1799,56 @@
         <p>Premium South African Fashion</p>
     </footer>
 
+    <script src="scripts/productManager.js"></script>
+    <script src="scripts/cart.js"></script>
+    <script src="scripts/common.js"></script>
+    <script src="scripts/productDisplay.js"></script>
     <script>
-        // Shopping Cart functionality
+        // Legacy cart variable for backward compatibility
         let cart = [];
-        const cartIcon = document.getElementById('cartIcon');
-        const cartModal = document.getElementById('cartModal');
-        const closeCart = document.getElementById('closeCart');
-        const cartItems = document.getElementById('cartItems');
-        const cartCount = document.getElementById('cartCount');
-        const sendOrderBtn = document.getElementById('sendOrderBtn');
 
-        // Use event delegation for add to cart buttons (works with dynamically created buttons)
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.add-to-cart-btn')) {
-                const button = e.target.closest('.add-to-cart-btn');
-                const name = button.getAttribute('data-name');
-                const priceRange = button.getAttribute('data-price-range');
-                
-                if (name && priceRange) {
-                    // Add item to cart
-                    cart.push({ name, priceRange });
-                    updateCart();
-                    
-                    // Pop animation on cart icon instead of alert
-                    if (cartIcon) {
-                        cartIcon.classList.remove('pop');
-                        // Force reflow to allow re-triggering the animation
-                        // eslint-disable-next-line no-unused-expressions
-                        cartIcon.offsetWidth;
-                        cartIcon.classList.add('pop');
-                    }
-                    
-                    // Close product detail modal if open
-                    const productDetail = button.closest('.product-detail');
-                    if (productDetail) {
-                        productDetail.classList.remove('active');
-                    }
-                }
-            }
-        });
-
-        // Remove item event listener (event delegation - only add once)
-        cartItems.addEventListener('click', function(e) {
-            if (e.target.closest('.remove-item')) {
-                const button = e.target.closest('.remove-item');
-                const index = parseInt(button.getAttribute('data-index'));
-                cart.splice(index, 1);
-                updateCart();
-            }
-        });
-
-        // Update cart display
+        // Legacy cart update function for backward compatibility
         function updateCart() {
-            // Update cart count
-            cartCount.textContent = cart.length;
-            
-            // Update cart items
-            cartItems.innerHTML = '';
-            
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="cart-empty">Your cart is empty</div>';
-                return;
+            if (window.cart) {
+                window.cart.updateCartDisplay();
             }
-            
-            cart.forEach((item, index) => {
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
-                cartItem.innerHTML = `
-                    <div class="item-details">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price-range">${item.priceRange}</div>
-                    </div>
-                    <button class="remove-item" data-index="${index}">&times;</button>
-                `;
-                cartItems.appendChild(cartItem);
-            });
         }
 
-        // Toggle cart modal
-        if (cartIcon) {
-            cartIcon.addEventListener('click', () => {
-                cartModal.classList.add('active');
-            });
-        }
+        // Secret login access - tap logo 5 times
+        let logoTapCount = 0;
+        let logoTapTimer = null;
+        const logoArea = document.getElementById('logoArea');
+        const logoImage = document.getElementById('logoImage');
 
-        if (closeCart) {
-            closeCart.addEventListener('click', () => {
-                cartModal.classList.remove('active');
-            });
-        }
-
-        // Close cart modal when clicking outside
-        cartModal.addEventListener('click', function(e) {
-            if (e.target === cartModal) {
-                cartModal.classList.remove('active');
-            }
-        });
-
-        // Send order via WhatsApp
-        if (sendOrderBtn) {
-            sendOrderBtn.addEventListener('click', () => {
-                if (cart.length === 0) {
-                    alert('Your cart is empty!');
-                    return;
+        if (logoArea && logoImage) {
+            logoArea.addEventListener('click', function(e) {
+                // Clear previous timer
+                if (logoTapTimer) {
+                    clearTimeout(logoTapTimer);
                 }
-                
-                // Format message for WhatsApp
-                let message = "Hi AMA-NICE! I'd like to order the following items:\n\n";
-                
-                cart.forEach(item => {
-                    message += `• ${item.name} - ${item.priceRange}\n`;
-                });
-                
-                message += "\nPlease let me know about availability and payment details.";
-                
-                // Encode message for URL
-                const encodedMessage = encodeURIComponent(message);
-                
-                // Open WhatsApp with the message
-                window.open(`https://wa.me/27731635803?text=${encodedMessage}`, '_blank');
-            });
-        }
 
-        // Mobile Navigation Toggle
-        const navToggle = document.getElementById('navToggle');
-        const navMenu = document.getElementById('navMenu');
-        
-        if (navToggle) {
-            navToggle.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
-        }
-        
-        // Close menu when clicking on a link
-        if (navMenu) {
-            navMenu.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    navMenu.classList.remove('active');
-                }
-            });
-        }
-        
-        // Smooth scrolling for anchor links
-        document.addEventListener('click', function(e) {
-            const anchor = e.target.closest('a[href^="#"]');
-            if (anchor) {
-                const targetId = anchor.getAttribute('href');
-                if (targetId && targetId !== '#') {
-                    e.preventDefault();
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            }
-        });
-
-        // Product detail functionality using event delegation
-        document.addEventListener('click', function(e) {
-            const productLink = e.target.closest('.product-link');
-            if (productLink) {
-                e.preventDefault();
-                const productId = productLink.getAttribute('data-product');
+                logoTapCount++;
                 
-                if (productId) {
-                    // Hide all product details
-                    document.querySelectorAll('.product-detail').forEach(detail => {
-                        detail.classList.remove('active');
-                    });
+                // Reset counter after 2 seconds of no taps
+                logoTapTimer = setTimeout(() => {
+                    logoTapCount = 0;
+                }, 2000);
+
+                // If 5 taps detected, redirect to login
+                if (logoTapCount >= 5) {
+                    logoTapCount = 0;
+                    clearTimeout(logoTapTimer);
                     
-                    // Show the selected product detail
-                    const productDetail = document.getElementById(productId);
-                    if (productDetail) {
-                        productDetail.classList.add('active');
-                    } else {
-                        alert('Product details coming soon!');
-                    }
-                }
-            }
-        });
-
-        // Close product detail using event delegation
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.close-detail')) {
-                const button = e.target.closest('.close-detail');
-                const productDetail = button.closest('.product-detail');
-                if (productDetail) {
-                    productDetail.classList.remove('active');
-                }
-            }
-        });
-
-        // Close product detail when clicking outside
-        document.querySelectorAll('.product-detail').forEach(detail => {
-            detail.addEventListener('click', function(e) {
-                if (e.target === detail) {
-                    detail.classList.remove('active');
+                    // Visual feedback
+                    logoImage.style.transform = 'scale(1.2)';
+                    logoImage.style.transition = 'transform 0.3s';
+                    setTimeout(() => {
+                        logoImage.style.transform = 'scale(1)';
+                        window.location.href = 'login.html';
+                    }, 300);
                 }
             });
-        });
-
-        // Initialize cart
-        updateCart();
+        }
     </script>
 </body>
 </html>

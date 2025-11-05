@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneakers - AMA-NICE CLOTHING</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        body {
+            background-color: var(--cream);
+        }
+
+        /* Header - Same as index.html */
+        header {
+            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            color: var(--dark);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--silver);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .back-btn {
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Sneakers Grid */
+        .sneakers-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .sneakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .sneaker-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .sneaker-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .sneaker-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
+        .sneaker-info {
+            padding: 1.5rem;
+        }
+
+        .sneaker-title {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .sneaker-brand {
+            color: var(--dark-silver);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sneaker-details {
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .sneaker-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 1rem 0;
+        }
+
+        .sneaker-stock {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--silver);
+        }
+
+        .stock-info {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .stock-available {
+            color: #25A525;
+            font-weight: bold;
+        }
+
+        .stock-low {
+            color: #ff8800;
+            font-weight: bold;
+        }
+
+        .stock-out {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .add-to-cart-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--accent-dark);
+        }
+
+        .add-to-cart-btn:disabled {
+            background: var(--silver);
+            cursor: not-allowed;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--dark-silver);
+            font-size: 1.2rem;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--cream);
+            border: 2px solid var(--silver);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .sneakers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .sneaker-image {
+                height: 200px;
+            }
+
+            .logo-img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo" id="logoArea">
+                <img src="Assets/logo.png" alt="AMA-NICE CLOTHING Logo" class="logo-img" id="logoImage">
+                <div class="logo-text">AMA-NICE CLOTHING</div>
+            </a>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Store
+            </a>
+        </div>
+    </header>
+
+    <div class="page-title">
+        <h1><i class="fas fa-shoe-prints"></i> Sneakers Collection</h1>
+        <p>Browse our complete selection of sneakers for men and women</p>
+    </div>
+
+    <div class="sneakers-container">
+        <div class="filter-section">
+            <h3 class="filter-title">Filter by Category</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Sneakers</button>
+                <button class="filter-btn" data-filter="men">Men's</button>
+                <button class="filter-btn" data-filter="women">Women's</button>
+            </div>
+        </div>
+
+        <div id="sneakersGrid" class="sneakers-grid">
+            <!-- Sneakers will be loaded here -->
+        </div>
+    </div>
+
+    <script src="scripts/productManager.js"></script>
+    <script src="scripts/cart.js"></script>
+    <script>
+        // Load and display sneakers
+        const productManager = new ProductManager();
+        let allSneakers = [];
+        let currentFilter = 'all';
+
+        async function loadSneakers() {
+            await productManager.loadDefaultProducts();
+            const allProducts = productManager.getFilteredProducts();
+            
+            // Filter only sneakers
+            allSneakers = allProducts.filter(p => 
+                p.isShoe === true || 
+                (p.type && (p.type.toLowerCase().includes('sneaker') || 
+                           p.type.toLowerCase().includes('sneakers') ||
+                           p.type.toLowerCase().includes('takkies')))
+            );
+
+            displaySneakers(allSneakers);
+        }
+
+        function displaySneakers(sneakers) {
+            const grid = document.getElementById('sneakersGrid');
+            
+            if (sneakers.length === 0) {
+                grid.innerHTML = '<div class="empty-message">No sneakers available yet. Check back soon!</div>';
+                return;
+            }
+
+            // Filter by category if needed
+            let filteredSneakers = sneakers;
+            if (currentFilter !== 'all') {
+                filteredSneakers = sneakers.filter(s => s.category === currentFilter);
+            }
+
+            if (filteredSneakers.length === 0) {
+                grid.innerHTML = '<div class="empty-message">No sneakers in this category.</div>';
+                return;
+            }
+
+            grid.innerHTML = filteredSneakers.map(sneaker => {
+                // Get stock info
+                let stockInfo = '';
+                let stockCount = 0;
+                let stockClass = 'stock-out';
+
+                if (sneaker.shoeSizes && sneaker.shoeSizes.length > 0) {
+                    stockCount = sneaker.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                    const sizes = sneaker.shoeSizes.map(s => `Size ${s.size}: ${s.qty}`).join(', ');
+                    stockInfo = sizes;
+                } else {
+                    stockCount = sneaker.stockQuantity || 0;
+                    stockInfo = `${stockCount} available`;
+                }
+
+                if (stockCount > 10) stockClass = 'stock-available';
+                else if (stockCount > 0) stockClass = 'stock-low';
+
+                const priceDisplay = sneaker.priceRange || `R${sneaker.price.toFixed(2)}`;
+                const brand = sneaker.shoeBrand || 'Various';
+                const category = sneaker.category === 'men' ? "Men's" : sneaker.category === 'women' ? "Women's" : '';
+
+                return `
+                    <div class="sneaker-card" data-category="${sneaker.category}">
+                        <img src="${sneaker.image}" alt="${sneaker.type}" class="sneaker-image">
+                        <div class="sneaker-info">
+                            <h3 class="sneaker-title">${sneaker.type}</h3>
+                            <div class="sneaker-brand">${brand} ${category ? `- ${category}` : ''}</div>
+                            ${sneaker.description ? `<div class="sneaker-details">${sneaker.description}</div>` : ''}
+                            <div class="sneaker-price">${priceDisplay}</div>
+                            <div class="sneaker-stock">
+                                <span class="stock-info ${stockClass}">${stockInfo}</span>
+                            </div>
+                            <button class="add-to-cart-btn" 
+                                    data-name="${sneaker.type}" 
+                                    data-price-range="${priceDisplay}"
+                                    ${stockCount === 0 ? 'disabled' : ''}>
+                                ${stockCount === 0 ? 'Out of Stock' : 'Add to Cart'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.getAttribute('data-filter');
+                displaySneakers(allSneakers);
+            });
+        });
+
+        // Load sneakers on page load
+        loadSneakers();
+
+        // Secret login access - tap logo 5 times
+        let logoTapCount = 0;
+        let logoTapTimer = null;
+        const logoArea = document.getElementById('logoArea');
+        const logoImage = document.getElementById('logoImage');
+
+        if (logoArea && logoImage) {
+            logoArea.addEventListener('click', function(e) {
+                if (logoTapTimer) clearTimeout(logoTapTimer);
+                logoTapCount++;
+                logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 2000);
+                
+                if (logoTapCount >= 5) {
+                    logoTapCount = 0;
+                    clearTimeout(logoTapTimer);
+                    logoImage.style.transform = 'scale(1.2)';
+                    logoImage.style.transition = 'transform 0.3s';
+                    setTimeout(() => {
+                        logoImage.style.transform = 'scale(1)';
+                        window.location.href = 'login.html';
+                    }, 300);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

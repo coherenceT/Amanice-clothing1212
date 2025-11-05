@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - AMA-NICE CLOTHING</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent: #8B4513;
+            --accent-dark: #a05a2c;
+            --white: #FFFFFF;
+            --cream: #FFF8F0;
+            --dark: #333333;
+            --silver: #C0C0C0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-header h1 {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--silver);
+            color: var(--dark);
+        }
+
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-section, .products-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--silver);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group small {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: var(--radius);
+            border: 2px dashed var(--silver);
+            display: none;
+        }
+
+        .image-preview.show {
+            display: block;
+        }
+
+        .stock-management {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--cream);
+            border-radius: var(--radius);
+            margin-bottom: 0.5rem;
+        }
+
+        .stock-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .stock-controls button {
+            padding: 0.25rem 0.75rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .stock-controls .btn-increment {
+            background: #25A525;
+            color: white;
+        }
+
+        .stock-controls .btn-decrement {
+            background: #ff4444;
+            color: white;
+        }
+
+        .products-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            background: var(--cream);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .product-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .product-item-info {
+            flex: 1;
+        }
+
+        .product-item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-right: 1rem;
+        }
+
+        .product-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .product-item-actions button {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: #4285F4;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #ff4444;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            color: var(--accent);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .stock-list {
+            margin-top: 1rem;
+        }
+
+        .stock-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .shoes-brand-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cream);
+            border-radius: var(--radius);
+            display: none;
+        }
+
+        .shoes-brand-section.show {
+            display: block;
+        }
+
+        .brand-stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-section {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .filter-section label {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .filter-section input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .filter-section input[type="text"] {
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .filter-section > div:first-child {
+                grid-template-columns: 1fr !important;
+            }
+
+            .filter-section > div:last-child {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Check if logged in -->
+    <script>
+        if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <div class="admin-header">
+        <h1><i class="fas fa-user-shield"></i> Admin Dashboard</h1>
+        <div class="header-actions">
+            <a href="index.html" class="btn btn-secondary">
+                <i class="fas fa-store"></i> Back to Store
+            </a>
+            <button class="btn btn-danger" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="alertContainer"></div>
+
+        <!-- Tabs for different product types -->
+        <div style="margin-bottom: 2rem; background: white; padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow);">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" id="tabRegular" onclick="switchTab('regular')" style="flex: 1; min-width: 150px;">
+                    <i class="fas fa-tshirt"></i> Regular Products
+                </button>
+                <button class="btn btn-secondary" id="tabSneakers" onclick="switchTab('sneakers')" style="flex: 1; min-width: 150px;">
+                    <i class="fas fa-shoe-prints"></i> Add Sneakers
+                </button>
+                <button class="btn btn-secondary" id="tabKidsPacks" onclick="switchTab('kidspacks')" style="flex: 1; min-width: 150px;">
+                    <i class="fas fa-gift"></i> Add Kids Packs
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <!-- Add Product Form - Regular Products -->
+            <div class="form-section" id="regularProductForm">
+                <h2 class="section-title">Add New Product</h2>
+                <form id="productForm">
+                    <div class="form-group">
+                        <label for="productImage">Product Image *</label>
+                        <input type="file" id="productImage" accept="image/*" required>
+                        <small>Upload a photo of your product</small>
+                        <img id="imagePreview" class="image-preview" alt="Preview">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productCategory">Category *</label>
+                        <select id="productCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="men">Men's Collection</option>
+                            <option value="women">Women's Collection</option>
+                            <option value="kids">Kids Collection</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productType">Product Type *</label>
+                        <input type="text" id="productType" placeholder="e.g., Jeans, Sneakers, T-shirts" required>
+                        <small>The type of clothing/item</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productGender">Gender</label>
+                        <select id="productGender">
+                            <option value="unisex">Unisex</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                        <small>For clothing items (auto-set for shoes)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productSize">Size</label>
+                        <input type="text" id="productSize" placeholder="e.g., M, L, XL or 8, 9, 10">
+                        <small>Leave empty if multiple sizes available</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productPrice">Price (R) *</label>
+                        <input type="number" id="productPrice" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productDescription">Description</label>
+                        <textarea id="productDescription" rows="3" placeholder="Optional product description"></textarea>
+                    </div>
+
+                    <!-- Shoes Brand Section (only for shoes) -->
+                    <div id="shoesBrandSection" class="shoes-brand-section">
+                        <label><strong>Shoe Brand *</strong></label>
+                        <input type="text" id="shoeBrand" placeholder="e.g., Nike, Adidas, Puma">
+                        <small>For shoes: specify the brand name</small>
+                        
+                        <div class="stock-management" style="margin-top: 1rem;">
+                            <div>
+                                <label>Size</label>
+                                <input type="text" id="shoeSize" placeholder="e.g., 8">
+                            </div>
+                            <div>
+                                <label>Stock Quantity</label>
+                                <input type="number" id="shoeStockQty" min="0" value="1">
+                            </div>
+                            <div style="display: flex; align-items: end;">
+                                <button type="button" class="btn btn-primary" onclick="addShoeSize()">
+                                    <i class="fas fa-plus"></i> Add Size
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="shoeSizesList" class="stock-list"></div>
+                    </div>
+
+                    <!-- Regular Stock Management -->
+                    <div id="regularStockSection">
+                        <div class="form-group">
+                            <label for="stockQuantity">Stock Quantity *</label>
+                            <input type="number" id="stockQuantity" min="0" value="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stockNumber">Stock/Item Number</label>
+                            <input type="text" id="stockNumber" placeholder="Optional: SKU or item number">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                        <i class="fas fa-plus-circle"></i> Add Product
+                    </button>
+                </form>
+            </div>
+
+            <!-- Add Sneakers Form -->
+            <div class="form-section" id="sneakersProductForm" style="display: none;">
+                <h2 class="section-title">Add Sneakers</h2>
+                <form id="sneakersForm">
+                    <div class="form-group">
+                        <label for="sneakerImage">Sneaker Image *</label>
+                        <input type="file" id="sneakerImage" accept="image/*" required>
+                        <small>Upload a photo of the sneakers</small>
+                        <img id="sneakerImagePreview" class="image-preview" alt="Preview">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sneakerCategory">Category *</label>
+                        <select id="sneakerCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="men">Men's Sneakers</option>
+                            <option value="women">Women's Sneakers</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sneakerBrand">Brand *</label>
+                        <input type="text" id="sneakerBrand" placeholder="e.g., Nike, Adidas, Puma" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sneakerType">Sneaker Type/Name *</label>
+                        <input type="text" id="sneakerType" placeholder="e.g., Air Max, Ultraboost" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sneakerPrice">Price (R) *</label>
+                        <input type="number" id="sneakerPrice" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sneakerDescription">Description</label>
+                        <textarea id="sneakerDescription" rows="3" placeholder="Optional description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Shoe Sizes with Stock *</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <input type="text" id="sneakerSizeInput" placeholder="Size (e.g., 8)">
+                            <input type="number" id="sneakerSizeStock" placeholder="Stock" min="0" value="1">
+                            <button type="button" class="btn btn-primary" onclick="addSneakerSize()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div id="sneakerSizesList" class="stock-list"></div>
+                        <small>Add each size with stock quantity (default: 1)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sneakerStockNumber">Stock/Item Number</label>
+                        <input type="text" id="sneakerStockNumber" placeholder="Optional: SKU or item number">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                        <i class="fas fa-plus-circle"></i> Add Sneakers
+                    </button>
+                </form>
+            </div>
+
+            <!-- Add Kids Packs Form -->
+            <div class="form-section" id="kidspacksProductForm" style="display: none;">
+                <h2 class="section-title">Add Kids Clothing Pack</h2>
+                <form id="kidspacksForm">
+                    <div class="form-group">
+                        <label for="packImage">Pack Image *</label>
+                        <input type="file" id="packImage" accept="image/*" required>
+                        <small>Upload a photo of the clothing pack</small>
+                        <img id="packImagePreview" class="image-preview" alt="Preview">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packType">Pack Type/Name *</label>
+                        <input type="text" id="packType" placeholder="e.g., Kids Clothing Pack, Summer Pack" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packPrice">Price (R) *</label>
+                        <input type="number" id="packPrice" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packDescription">Description *</label>
+                        <textarea id="packDescription" rows="3" placeholder="e.g., Complete outfits for children aged 0-14 years. Each pack contains 5-7 items." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packSize">Size Range</label>
+                        <input type="text" id="packSize" placeholder="e.g., 0-2 years, 3-5 years, etc.">
+                        <small>Optional: Size range for this pack</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packStockQuantity">Stock Quantity *</label>
+                        <input type="number" id="packStockQuantity" min="0" value="1" required>
+                        <small>Default: 1</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packStockNumber">Stock/Item Number</label>
+                        <input type="text" id="packStockNumber" placeholder="Optional: SKU or item number">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                        <i class="fas fa-plus-circle"></i> Add Kids Pack
+                    </button>
+                </form>
+            </div>
+
+            <!-- Products List -->
+            <div class="products-section">
+                <h2 class="section-title">Manage Products</h2>
+                
+                <!-- Filter Section -->
+                <div class="filter-section" style="margin-bottom: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="filterCategory">Filter by Category</label>
+                            <select id="filterCategory">
+                                <option value="all">All Categories</option>
+                                <option value="men">Men's Collection</option>
+                                <option value="women">Women's Collection</option>
+                                <option value="kids">Kids Collection</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="filterType">Filter by Type</label>
+                            <input type="text" id="filterType" placeholder="Search by product type...">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="filterStock">Filter by Stock</label>
+                            <select id="filterStock">
+                                <option value="all">All Stock Levels</option>
+                                <option value="in-stock">In Stock</option>
+                                <option value="low-stock">Low Stock (1-10)</option>
+                                <option value="out-of-stock">Out of Stock</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0; display: flex; align-items: end;">
+                            <button type="button" class="btn btn-secondary" onclick="clearFilters()" style="width: 100%;">
+                                <i class="fas fa-times"></i> Clear Filters
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--silver);">
+                        <span id="productCount" style="color: var(--dark-silver); font-weight: bold;"></span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="showOnlyDefault" onchange="applyFilters()">
+                                <span>Show Default Products Only</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="showOnlyAdmin" onchange="applyFilters()">
+                                <span>Show Admin Products Only</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="productsList" class="products-list">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Product</h3>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div id="editFormContainer">
+                <!-- Edit form will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/productManager.js"></script>
+    <script>
+        // Initialize ProductManager
+        const productManager = new ProductManager();
+        
+        // Wait for default products to load
+        let productsLoaded = false;
+        
+        async function initializeAdmin() {
+            await productManager.loadDefaultProducts();
+            productsLoaded = true;
+            loadProducts();
+        }
+        
+        initializeAdmin();
+
+        let currentShoeSizes = [];
+        let currentSneakerSizes = [];
+
+        // Tab switching
+        function switchTab(tab) {
+            // Hide all forms
+            document.getElementById('regularProductForm').style.display = 'none';
+            document.getElementById('sneakersProductForm').style.display = 'none';
+            document.getElementById('kidspacksProductForm').style.display = 'none';
+
+            // Reset all tab buttons
+            document.getElementById('tabRegular').className = 'btn btn-secondary';
+            document.getElementById('tabSneakers').className = 'btn btn-secondary';
+            document.getElementById('tabKidsPacks').className = 'btn btn-secondary';
+
+            // Show selected form and activate tab
+            if (tab === 'regular') {
+                document.getElementById('regularProductForm').style.display = 'block';
+                document.getElementById('tabRegular').className = 'btn btn-primary';
+            } else if (tab === 'sneakers') {
+                document.getElementById('sneakersProductForm').style.display = 'block';
+                document.getElementById('tabSneakers').className = 'btn btn-primary';
+            } else if (tab === 'kidspacks') {
+                document.getElementById('kidspacksProductForm').style.display = 'block';
+                document.getElementById('tabKidsPacks').className = 'btn btn-primary';
+            }
+        }
+
+        // Sneaker image preview
+        document.getElementById('sneakerImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('sneakerImagePreview');
+                    preview.src = e.target.result;
+                    preview.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Pack image preview
+        document.getElementById('packImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('packImagePreview');
+                    preview.src = e.target.result;
+                    preview.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Add sneaker size
+        function addSneakerSize() {
+            const size = document.getElementById('sneakerSizeInput').value;
+            const qty = parseInt(document.getElementById('sneakerSizeStock').value) || 1;
+
+            if (!size) {
+                showAlert('Please enter a size', 'error');
+                return;
+            }
+
+            const brand = document.getElementById('sneakerBrand').value;
+            if (!brand) {
+                showAlert('Please enter brand first', 'error');
+                return;
+            }
+
+            const sizeObj = { size, qty, brand };
+            currentSneakerSizes.push(sizeObj);
+            
+            document.getElementById('sneakerSizeInput').value = '';
+            document.getElementById('sneakerSizeStock').value = '1';
+            
+            updateSneakerSizesList();
+        }
+
+        function updateSneakerSizesList() {
+            const list = document.getElementById('sneakerSizesList');
+            list.innerHTML = '';
+            
+            currentSneakerSizes.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'brand-stock-item';
+                div.innerHTML = `
+                    <span><strong>${item.brand}</strong> - Size ${item.size} (Qty: ${item.qty})</span>
+                    <button type="button" class="btn btn-danger" onclick="removeSneakerSize(${index})" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function removeSneakerSize(index) {
+            currentSneakerSizes.splice(index, 1);
+            updateSneakerSizesList();
+        }
+
+        // Handle sneakers form submission
+        document.getElementById('sneakersForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const imageInput = document.getElementById('sneakerImage');
+            const file = imageInput.files[0];
+            
+            if (!file) {
+                showAlert('Please select an image', 'error');
+                return;
+            }
+
+            if (currentSneakerSizes.length === 0) {
+                showAlert('Please add at least one shoe size', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const productData = {
+                    id: Date.now().toString(),
+                    image: e.target.result,
+                    category: document.getElementById('sneakerCategory').value,
+                    type: document.getElementById('sneakerType').value,
+                    gender: document.getElementById('sneakerCategory').value === 'men' ? 'male' : 'female',
+                    size: '',
+                    price: parseFloat(document.getElementById('sneakerPrice').value),
+                    description: document.getElementById('sneakerDescription').value,
+                    stockNumber: document.getElementById('sneakerStockNumber').value,
+                    isShoe: true,
+                    shoeBrand: document.getElementById('sneakerBrand').value,
+                    shoeSizes: [...currentSneakerSizes],
+                    stockQuantity: 0,
+                    dateAdded: new Date().toISOString(),
+                    isDefault: false
+                };
+
+                productManager.saveProduct(productData);
+
+                showAlert('Sneakers added successfully!', 'success');
+                loadProducts();
+                resetSneakersForm();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function resetSneakersForm() {
+            document.getElementById('sneakersForm').reset();
+            document.getElementById('sneakerImagePreview').classList.remove('show');
+            currentSneakerSizes = [];
+            document.getElementById('sneakerSizesList').innerHTML = '';
+        }
+
+        // Handle kids packs form submission
+        document.getElementById('kidspacksForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const imageInput = document.getElementById('packImage');
+            const file = imageInput.files[0];
+            
+            if (!file) {
+                showAlert('Please select an image', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const productData = {
+                    id: Date.now().toString(),
+                    image: e.target.result,
+                    category: 'kids',
+                    type: document.getElementById('packType').value,
+                    gender: 'unisex',
+                    size: document.getElementById('packSize').value,
+                    price: parseFloat(document.getElementById('packPrice').value),
+                    description: document.getElementById('packDescription').value,
+                    stockNumber: document.getElementById('packStockNumber').value,
+                    isShoe: false,
+                    stockQuantity: parseInt(document.getElementById('packStockQuantity').value) || 1,
+                    dateAdded: new Date().toISOString(),
+                    isDefault: false
+                };
+
+                productManager.saveProduct(productData);
+
+                showAlert('Kids pack added successfully!', 'success');
+                loadProducts();
+                resetPacksForm();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function resetPacksForm() {
+            document.getElementById('kidspacksForm').reset();
+            document.getElementById('packImagePreview').classList.remove('show');
+            document.getElementById('packStockQuantity').value = '1';
+        }
+
+        // Check product type to show/hide shoe brand section
+        document.getElementById('productType').addEventListener('input', function() {
+            const productType = this.value.toLowerCase();
+            const shoesBrandSection = document.getElementById('shoesBrandSection');
+            const regularStockSection = document.getElementById('regularStockSection');
+            
+            if (productType.includes('shoe') || productType.includes('sneaker') || 
+                productType.includes('sandal') || productType.includes('takkies')) {
+                shoesBrandSection.classList.add('show');
+                regularStockSection.style.display = 'none';
+                currentShoeSizes = [];
+            } else {
+                shoesBrandSection.classList.remove('show');
+                regularStockSection.style.display = 'block';
+            }
+        });
+
+        // Image preview
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Add shoe size
+        function addShoeSize() {
+            const size = document.getElementById('shoeSize').value;
+            const qty = parseInt(document.getElementById('shoeStockQty').value) || 0;
+            const brand = document.getElementById('shoeBrand').value;
+
+            if (!size || !brand) {
+                showAlert('Please enter both brand and size', 'error');
+                return;
+            }
+
+            const sizeObj = { size, qty, brand };
+            currentShoeSizes.push(sizeObj);
+            
+            document.getElementById('shoeSize').value = '';
+            document.getElementById('shoeStockQty').value = '1';
+            
+            updateShoeSizesList();
+        }
+
+        function updateShoeSizesList() {
+            const list = document.getElementById('shoeSizesList');
+            list.innerHTML = '';
+            
+            currentShoeSizes.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'brand-stock-item';
+                div.innerHTML = `
+                    <span><strong>${item.brand}</strong> - Size ${item.size} (Qty: ${item.qty})</span>
+                    <button type="button" class="btn btn-danger" onclick="removeShoeSize(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function removeShoeSize(index) {
+            currentShoeSizes.splice(index, 1);
+            updateShoeSizesList();
+        }
+
+        // Handle form submission
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const imageInput = document.getElementById('productImage');
+            const file = imageInput.files[0];
+            
+            if (!file) {
+                showAlert('Please select an image', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const productData = {
+                    id: Date.now().toString(),
+                    image: e.target.result,
+                    category: document.getElementById('productCategory').value,
+                    type: document.getElementById('productType').value,
+                    gender: document.getElementById('productGender').value,
+                    size: document.getElementById('productSize').value,
+                    price: parseFloat(document.getElementById('productPrice').value),
+                    description: document.getElementById('productDescription').value,
+                    stockNumber: document.getElementById('stockNumber').value,
+                    isShoe: document.getElementById('shoesBrandSection').classList.contains('show'),
+                    shoeBrand: document.getElementById('shoeBrand').value,
+                    shoeSizes: currentShoeSizes.length > 0 ? [...currentShoeSizes] : [],
+                    stockQuantity: currentShoeSizes.length > 0 ? 0 : parseInt(document.getElementById('stockQuantity').value) || 0,
+                    dateAdded: new Date().toISOString(),
+                    isDefault: false
+                };
+
+                // Validate shoe products
+                if (productData.isShoe) {
+                    if (!productData.shoeBrand) {
+                        showAlert('Please enter shoe brand', 'error');
+                        return;
+                    }
+                    if (currentShoeSizes.length === 0) {
+                        showAlert('Please add at least one shoe size', 'error');
+                        return;
+                    }
+                }
+
+                productManager.saveProduct(productData);
+
+                showAlert('Product added successfully!', 'success');
+                loadProducts();
+                resetForm();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function resetForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('imagePreview').classList.remove('show');
+            document.getElementById('shoesBrandSection').classList.remove('show');
+            document.getElementById('regularStockSection').style.display = 'block';
+            currentShoeSizes = [];
+            document.getElementById('shoeSizesList').innerHTML = '';
+        }
+
+        let allProducts = [];
+        let filteredProducts = [];
+
+        async function loadProducts() {
+            if (!productsLoaded) {
+                await productManager.loadDefaultProducts();
+                productsLoaded = true;
+            }
+            
+            allProducts = productManager.getAllProducts();
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const categoryFilter = document.getElementById('filterCategory').value;
+            const typeFilter = document.getElementById('filterType').value.toLowerCase();
+            const stockFilter = document.getElementById('filterStock').value;
+            const showOnlyDefault = document.getElementById('showOnlyDefault').checked;
+            const showOnlyAdmin = document.getElementById('showOnlyAdmin').checked;
+
+            filteredProducts = allProducts.filter(product => {
+                // Category filter
+                if (categoryFilter !== 'all' && product.category !== categoryFilter) {
+                    return false;
+                }
+
+                // Type filter
+                if (typeFilter && !product.type.toLowerCase().includes(typeFilter)) {
+                    return false;
+                }
+
+                // Stock filter
+                let stockCount = 0;
+                if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
+                    stockCount = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                } else {
+                    stockCount = product.stockQuantity || 0;
+                }
+
+                if (stockFilter === 'in-stock' && stockCount === 0) return false;
+                if (stockFilter === 'low-stock' && (stockCount === 0 || stockCount > 10)) return false;
+                if (stockFilter === 'out-of-stock' && stockCount > 0) return false;
+
+                // Default/Admin filter
+                const isDefault = product.isDefault === true;
+                if (showOnlyDefault && !isDefault) return false;
+                if (showOnlyAdmin && isDefault) return false;
+
+                return true;
+            });
+
+            displayProducts(filteredProducts);
+            updateProductCount();
+        }
+
+        function clearFilters() {
+            document.getElementById('filterCategory').value = 'all';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterStock').value = 'all';
+            document.getElementById('showOnlyDefault').checked = false;
+            document.getElementById('showOnlyAdmin').checked = false;
+            applyFilters();
+        }
+
+        function updateProductCount() {
+            const countElement = document.getElementById('productCount');
+            if (countElement) {
+                const total = allProducts.length;
+                const showing = filteredProducts.length;
+                countElement.textContent = `Showing ${showing} of ${total} products`;
+            }
+        }
+
+        function displayProducts(products) {
+            const productsList = document.getElementById('productsList');
+            
+            if (products.length === 0) {
+                productsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No products match your filters.</p>';
+                return;
+            }
+
+            productsList.innerHTML = products.map(product => {
+                // Check if product is default - use the isDefault property from getAllProducts
+                const isDefault = product.isDefault === true;
+                const productId = product.id;
+                const stockInfo = product.isShoe && product.shoeSizes && product.shoeSizes.length > 0
+                    ? `${product.shoeSizes.length} size(s) available`
+                    : `Stock: ${product.stockQuantity || 0}`;
+
+                return `
+                    <div class="product-item">
+                        <div class="product-item-header">
+                            <img src="${product.image}" alt="${product.type}" class="product-item-image">
+                            <div class="product-item-info">
+                                <h3>${product.type} ${isDefault ? '<span style="color: #666; font-size: 0.8rem;">(Default)</span>' : ''}</h3>
+                                <p><strong>Category:</strong> ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</p>
+                                <p><strong>Gender:</strong> ${product.gender}</p>
+                                ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
+                                ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
+                                <p><strong>Price:</strong> ${product.priceRange || 'R' + product.price.toFixed(2)}</p>
+                                <p><strong>Stock:</strong> ${stockInfo}</p>
+                                ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
+                            </div>
+                            <div class="product-item-actions">
+                                <button class="btn-edit" onclick="editProduct('${productId}', ${isDefault})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-delete" onclick="deleteProduct('${productId}', ${isDefault})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        ${product.isShoe && product.shoeSizes && product.shoeSizes.length > 0 ? `
+                            <div class="stock-management">
+                                ${product.shoeSizes.map((shoe, idx) => `
+                                    <div class="stock-entry">
+                                        <span><strong>${shoe.brand}</strong> - Size ${shoe.size}: ${shoe.qty} available</span>
+                                        <div class="stock-controls">
+                                            <button class="btn-increment" onclick="updateShoeStock('${productId}', ${idx}, 1, ${isDefault})">+</button>
+                                            <button class="btn-decrement" onclick="updateShoeStock('${productId}', ${idx}, -1, ${isDefault})">-</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `
+                            <div class="stock-management">
+                                <div class="stock-item">
+                                    <span>Available Stock: ${product.stockQuantity || 0}</span>
+                                    <div class="stock-controls">
+                                        <button class="btn-increment" onclick="updateStock('${productId}', 1, ${isDefault})">+</button>
+                                        <button class="btn-decrement" onclick="updateStock('${productId}', -1, ${isDefault})">-</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStock(productId, change, isDefault) {
+            if (isDefault) {
+                // For default products, get the product and update it
+                const product = productManager.getProductById(productId);
+                if (product) {
+                    const updatedData = {
+                        stockQuantity: Math.max(0, (product.stockQuantity || 0) + change)
+                    };
+                    productManager.updateProduct(productId, updatedData);
+                    loadProducts();
+                    showAlert('Stock updated!', 'success');
+                }
+            } else {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const product = products.find(p => p.id === productId);
+                
+                if (product) {
+                    product.stockQuantity = Math.max(0, (product.stockQuantity || 0) + change);
+                    localStorage.setItem('products', JSON.stringify(products));
+                    loadProducts();
+                    showAlert('Stock updated!', 'success');
+                }
+            }
+        }
+
+        function updateShoeStock(productId, sizeIndex, change, isDefault) {
+            if (isDefault) {
+                const product = productManager.getProductById(productId);
+                if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
+                    const updatedSizes = [...product.shoeSizes];
+                    updatedSizes[sizeIndex].qty = Math.max(0, updatedSizes[sizeIndex].qty + change);
+                    productManager.updateProduct(productId, { shoeSizes: updatedSizes });
+                    loadProducts();
+                    showAlert('Shoe stock updated!', 'success');
+                }
+            } else {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const product = products.find(p => p.id === productId);
+                
+                if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
+                    product.shoeSizes[sizeIndex].qty = Math.max(0, product.shoeSizes[sizeIndex].qty + change);
+                    localStorage.setItem('products', JSON.stringify(products));
+                    loadProducts();
+                    showAlert('Shoe stock updated!', 'success');
+                }
+            }
+        }
+
+        function editProduct(productId, isDefault) {
+            const product = isDefault 
+                ? productManager.getProductById(productId)
+                : JSON.parse(localStorage.getItem('products') || '[]').find(p => p.id === productId);
+            
+            if (!product) return;
+
+            const editForm = `
+                <form id="editProductForm">
+                    <div class="form-group">
+                        <label>Product Image</label>
+                        <input type="file" id="editProductImage" accept="image/*">
+                        <small>Leave empty to keep current image</small>
+                        <img src="${product.image}" alt="Current" style="max-width: 200px; margin-top: 0.5rem; border-radius: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="editCategory">
+                            <option value="men" ${product.category === 'men' ? 'selected' : ''}>Men's Collection</option>
+                            <option value="women" ${product.category === 'women' ? 'selected' : ''}>Women's Collection</option>
+                            <option value="kids" ${product.category === 'kids' ? 'selected' : ''}>Kids Collection</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        <input type="text" id="editType" value="${product.type}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price (R)</label>
+                        <input type="number" id="editPrice" value="${product.price}" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="editDescription" rows="3">${product.description || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Number</label>
+                        <input type="text" id="editStockNumber" value="${product.stockNumber || ''}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            `;
+
+            document.getElementById('editFormContainer').innerHTML = editForm;
+            document.getElementById('editModal').classList.add('active');
+
+            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const imageInput = document.getElementById('editProductImage');
+                
+                const updatedData = {
+                    category: document.getElementById('editCategory').value,
+                    type: document.getElementById('editType').value,
+                    price: parseFloat(document.getElementById('editPrice').value),
+                    description: document.getElementById('editDescription').value,
+                    stockNumber: document.getElementById('editStockNumber').value
+                };
+                
+                if (imageInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        updatedData.image = e.target.result;
+                        saveProductChanges(productId, updatedData, isDefault);
+                    };
+                    reader.readAsDataURL(imageInput.files[0]);
+                } else {
+                    saveProductChanges(productId, updatedData, isDefault);
+                }
+            });
+        }
+
+        function saveProductChanges(productId, updatedData, isDefault) {
+            if (isDefault) {
+                productManager.updateProduct(productId, updatedData);
+            } else {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const index = products.findIndex(p => p.id === productId);
+                if (index !== -1) {
+                    products[index] = { ...products[index], ...updatedData };
+                    localStorage.setItem('products', JSON.stringify(products));
+                }
+            }
+            
+            loadProducts();
+            closeEditModal();
+            showAlert('Product updated successfully!', 'success');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function deleteProduct(productId, isDefault) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                if (isDefault) {
+                    productManager.deleteProduct(productId, true);
+                } else {
+                    productManager.deleteProduct(productId, false);
+                }
+                loadProducts();
+                showAlert('Product deleted!', 'success');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            window.location.href = 'login.html';
+        }
+
+        // Add filter event listeners (wait for DOM)
+        setTimeout(() => {
+            const filterCategory = document.getElementById('filterCategory');
+            const filterType = document.getElementById('filterType');
+            const filterStock = document.getElementById('filterStock');
+            
+            if (filterCategory) filterCategory.addEventListener('change', applyFilters);
+            if (filterType) filterType.addEventListener('input', applyFilters);
+            if (filterStock) filterStock.addEventListener('change', applyFilters);
+        }, 100);
+
+        // Note: loadProducts is called in initializeAdmin()
+    </script>
+</body>
+</html>
+
