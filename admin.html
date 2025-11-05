@@ -670,7 +670,12 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label for="filterType" style="font-size: 0.9rem; font-weight: 600;">Search</label>
-                            <input type="text" id="filterType" placeholder="Search by name, brand, type..." style="padding: 0.5rem;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="filterType" placeholder="Search products..." style="padding: 0.5rem; flex: 1;">
+                                <button type="button" class="btn btn-primary" onclick="applyFilters()" style="padding: 0.5rem 1rem;">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
                             <small style="display: block; margin-top: 0.25rem; color: #666;">Search by product name, brand, description, or stock number</small>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
@@ -1086,7 +1091,9 @@
                 productsLoaded = true;
             }
             
+            // Force reload products to get latest data
             allProducts = productManager.getAllProducts();
+            // Clear and reapply filters to refresh display
             applyFilters();
         }
 
@@ -1173,9 +1180,14 @@
                 // Check if product is default - use the isDefault property from getAllProducts
                 const isDefault = product.isDefault === true;
                 const productId = product.id;
-                const stockInfo = product.isShoe && product.shoeSizes && product.shoeSizes.length > 0
-                    ? `${product.shoeSizes.length} size(s) available`
-                    : `Stock: ${product.stockQuantity || 0}`;
+                // Unified stock display for all product types
+                let stockInfo = '';
+                if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
+                    const totalStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                    stockInfo = `Stock: ${totalStock} (${product.shoeSizes.length} size(s))`;
+                } else {
+                    stockInfo = `Stock: ${product.stockQuantity || 0}`;
+                }
 
                 return `
                     <div class="product-item">
@@ -1228,7 +1240,7 @@
             }).join('');
         }
 
-        function updateStock(productId, change, isDefault) {
+        async function updateStock(productId, change, isDefault) {
             if (isDefault) {
                 // For default products, get the product and update it
                 const product = productManager.getProductById(productId);
@@ -1237,40 +1249,40 @@
                         stockQuantity: Math.max(0, (product.stockQuantity || 0) + change)
                     };
                     productManager.updateProduct(productId, updatedData);
-                    loadProducts();
+                    await loadProducts();
                     showAlert('Stock updated!', 'success');
                 }
             } else {
                 const products = JSON.parse(localStorage.getItem('products') || '[]');
-                const product = products.find(p => p.id === productId);
+                const product = products.find(p => p.id === productId || p.originalId === productId);
                 
                 if (product) {
                     product.stockQuantity = Math.max(0, (product.stockQuantity || 0) + change);
                     localStorage.setItem('products', JSON.stringify(products));
-                    loadProducts();
+                    await loadProducts();
                     showAlert('Stock updated!', 'success');
                 }
             }
         }
 
-        function updateShoeStock(productId, sizeIndex, change, isDefault) {
+        async function updateShoeStock(productId, sizeIndex, change, isDefault) {
             if (isDefault) {
                 const product = productManager.getProductById(productId);
                 if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
                     const updatedSizes = [...product.shoeSizes];
                     updatedSizes[sizeIndex].qty = Math.max(0, updatedSizes[sizeIndex].qty + change);
                     productManager.updateProduct(productId, { shoeSizes: updatedSizes });
-                    loadProducts();
+                    await loadProducts();
                     showAlert('Shoe stock updated!', 'success');
                 }
             } else {
                 const products = JSON.parse(localStorage.getItem('products') || '[]');
-                const product = products.find(p => p.id === productId);
+                const product = products.find(p => p.id === productId || p.originalId === productId);
                 
                 if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
                     product.shoeSizes[sizeIndex].qty = Math.max(0, product.shoeSizes[sizeIndex].qty + change);
                     localStorage.setItem('products', JSON.stringify(products));
-                    loadProducts();
+                    await loadProducts();
                     showAlert('Shoe stock updated!', 'success');
                 }
             }
@@ -1414,6 +1426,12 @@
             }
             if (filterType) {
                 filterType.addEventListener('input', applyFilters);
+                filterType.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyFilters();
+                    }
+                });
             }
             if (filterStock) {
                 filterStock.addEventListener('change', applyFilters);
