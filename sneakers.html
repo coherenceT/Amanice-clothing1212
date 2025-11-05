@@ -358,25 +358,26 @@
                 const category = sneaker.category === 'men' ? "Men's" : sneaker.category === 'women' ? "Women's" : '';
 
                 return `
-                    <div class="sneaker-card" data-category="${sneaker.category}">
-                        <img src="${sneaker.image}" alt="${sneaker.type}" class="sneaker-image">
-                        <div class="sneaker-info">
-                            <h3 class="sneaker-title">${sneaker.type}</h3>
-                            <div class="sneaker-brand">${brand} ${category ? `- ${category}` : ''}</div>
-                            ${sneaker.description ? `<div class="sneaker-details">${sneaker.description}</div>` : ''}
-                            ${sneaker.stockNumber ? `<div class="sneaker-details" style="font-weight: 600; color: var(--accent);"><strong>Stock #:</strong> ${sneaker.stockNumber}</div>` : ''}
-                            <div class="sneaker-price">${priceDisplay}</div>
-                            <div class="sneaker-stock">
-                                <span class="stock-info ${stockClass}">${stockInfo}</span>
+                    <a href="product.html?id=${sneaker.id}" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="sneaker-card" data-category="${sneaker.category}">
+                            <img src="${sneaker.image}" alt="${sneaker.type}" class="sneaker-image">
+                            <div class="sneaker-info">
+                                <h3 class="sneaker-title">${sneaker.type}</h3>
+                                <div class="sneaker-brand">${brand} ${category ? `- ${category}` : ''}</div>
+                                ${sneaker.description ? `<div class="sneaker-details">${sneaker.description}</div>` : ''}
+                                ${sneaker.stockNumber ? `<div class="sneaker-details" style="font-weight: 600; color: var(--accent);"><strong>Stock #:</strong> ${sneaker.stockNumber}</div>` : ''}
+                                <div class="sneaker-price">${priceDisplay}</div>
+                                <div class="sneaker-stock">
+                                    <span class="stock-info ${stockClass}">${stockInfo}</span>
+                                </div>
+                                <button class="add-to-cart-btn" 
+                                        onclick="event.preventDefault(); window.location.href='product.html?id=${sneaker.id}'; return false;"
+                                        style="cursor: pointer; width: 100%;">
+                                    ${stockCount === 0 ? 'Out of Stock' : 'View Details & Order'}
+                                </button>
                             </div>
-                            <button class="add-to-cart-btn" 
-                                    data-name="${sneaker.type}" 
-                                    data-price-range="${priceDisplay}"
-                                    ${stockCount === 0 ? 'disabled' : ''}>
-                                ${stockCount === 0 ? 'Out of Stock' : 'Add to Cart'}
-                            </button>
                         </div>
-                    </div>
+                    </a>
                 `;
             }).join('');
         }

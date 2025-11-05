@@ -284,25 +284,26 @@
                 const priceDisplay = pack.priceRange || (pack.price ? `R${pack.price.toFixed(2)}` : 'Price on request');
 
                 return `
-                    <div class="pack-card">
-                        <img src="${pack.image}" alt="${pack.type}" class="pack-image">
-                        <div class="pack-info">
-                            <h3 class="pack-title">${pack.type}</h3>
-                            ${pack.description ? `<div class="pack-details">${pack.description}</div>` : ''}
-                            ${pack.size ? `<div class="pack-details"><strong>Size:</strong> ${pack.size}</div>` : ''}
-                            ${pack.stockNumber ? `<div class="pack-details" style="font-weight: 600; color: var(--accent);"><strong>Stock #:</strong> ${pack.stockNumber}</div>` : ''}
-                            <div class="pack-price">${priceDisplay}</div>
-                            <div class="pack-stock">
-                                <span class="stock-info ${stockClass}">${stockInfo}</span>
+                    <a href="product.html?id=${pack.id}" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="pack-card">
+                            <img src="${pack.image}" alt="${pack.type}" class="pack-image">
+                            <div class="pack-info">
+                                <h3 class="pack-title">${pack.type}</h3>
+                                ${pack.description ? `<div class="pack-details">${pack.description}</div>` : ''}
+                                ${pack.size ? `<div class="pack-details"><strong>Size:</strong> ${pack.size}</div>` : ''}
+                                ${pack.stockNumber ? `<div class="pack-details" style="font-weight: 600; color: var(--accent);"><strong>Stock #:</strong> ${pack.stockNumber}</div>` : ''}
+                                <div class="pack-price">${priceDisplay}</div>
+                                <div class="pack-stock">
+                                    <span class="stock-info ${stockClass}">${stockInfo}</span>
+                                </div>
+                                <button class="add-to-cart-btn" 
+                                        onclick="event.preventDefault(); window.location.href='product.html?id=${pack.id}'; return false;"
+                                        style="cursor: pointer; width: 100%;">
+                                    ${stockCount === 0 ? 'Out of Stock' : 'View Details & Order'}
+                                </button>
                             </div>
-                            <button class="add-to-cart-btn" 
-                                    data-name="${pack.type}" 
-                                    data-price-range="${priceDisplay}"
-                                    ${stockCount === 0 ? 'disabled' : ''}>
-                                ${stockCount === 0 ? 'Out of Stock' : 'Add to Cart'}
-                            </button>
                         </div>
-                    </div>
+                    </a>
                 `;
             }).join('');
         }

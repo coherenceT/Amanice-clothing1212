@@ -39,35 +39,9 @@ function initSmoothScrolling() {
     });
 }
 
-// Product detail modal handlers
+// Product detail modal handlers (for static modals on index.html)
 function initProductDetails() {
-    // Product detail functionality using event delegation
-    document.addEventListener('click', function(e) {
-        const productLink = e.target.closest('.product-link');
-        if (productLink) {
-            // Only prevent default if it's a data-product link (not a regular href link)
-            const productId = productLink.getAttribute('data-product');
-            
-            if (productId) {
-                e.preventDefault();
-                // Hide all product details
-                document.querySelectorAll('.product-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-                
-                // Show the selected product detail
-                const productDetail = document.getElementById(productId);
-                if (productDetail) {
-                    productDetail.classList.add('active');
-                } else {
-                    console.warn('Product detail not found:', productId);
-                }
-            }
-            // If no data-product, allow normal link navigation (e.g., sneakers.html, kids-packs.html)
-        }
-    });
-
-    // Close product detail using event delegation
+    // Close product detail using event delegation (for static modals)
     document.addEventListener('click', function(e) {
         if (e.target.closest('.close-detail')) {
             const button = e.target.closest('.close-detail');
@@ -85,6 +59,31 @@ function initProductDetails() {
                 detail.classList.remove('active');
             }
         });
+    });
+
+    // Handle static product links (data-product) - these still open modals for backwards compatibility
+    document.addEventListener('click', function(e) {
+        const productLink = e.target.closest('.product-link');
+        if (productLink) {
+            const productId = productLink.getAttribute('data-product');
+            
+            if (productId) {
+                e.preventDefault();
+                // Hide all product details
+                document.querySelectorAll('.product-detail').forEach(detail => {
+                    detail.classList.remove('active');
+                });
+                
+                // Show the selected product detail
+                const productDetail = document.getElementById(productId);
+                if (productDetail) {
+                    productDetail.classList.add('active');
+                } else {
+                    console.warn('Product detail not found:', productId);
+                }
+            }
+            // If no data-product, allow normal link navigation (e.g., product.html, sneakers.html, kids-packs.html)
+        }
     });
 }
 

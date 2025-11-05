@@ -8,34 +8,66 @@ class ProductDisplay {
     async init() {
         // Wait for default products to load
         await this.productManager.loadDefaultProducts();
-        this.loadProducts();
+        console.log('ProductDisplay initialized, loading products...');
+        await this.loadProducts();
+        console.log('Products loaded successfully');
     }
 
-    loadProducts() {
-        const products = this.productManager.getFilteredProducts();
+    async loadProducts() {
+        console.log('\n🚀 Starting loadProducts()...');
         
-        if (products.length === 0) {
-            return; // Keep default products if no products available
-        }
+        // Wait a tiny bit to ensure DOM is fully ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Make sure default products are loaded
+        await this.productManager.loadDefaultProducts();
+        console.log(`📚 Default products loaded: ${this.productManager.defaultProducts.length}`);
+        
+        // Get ALL products (default + admin-added)
+        const products = this.productManager.getAllProducts();
+        
+        console.log(`📦 Total products loaded: ${products.length}`);
+        console.log(`👤 Admin products in localStorage: ${JSON.parse(localStorage.getItem('products') || '[]').length}`);
+        console.log(`🗑️  Deleted products: ${JSON.parse(localStorage.getItem('deletedProducts') || '[]').length}`);
+        
+        // Group products by category - normalize to lowercase for matching
+        // Use the EXACT same logic for all categories
+        const menProducts = products.filter(p => {
+            const category = String(p.category || '').toLowerCase().trim();
+            return category === 'men';
+        });
+        
+        const womenProducts = products.filter(p => {
+            const category = String(p.category || '').toLowerCase().trim();
+            return category === 'women';
+        });
+        
+        const kidsProducts = products.filter(p => {
+            const category = String(p.category || '').toLowerCase().trim();
+            return category === 'kids';
+        });
 
-        // Group products by category
-        const menProducts = products.filter(p => p.category === 'men');
-        const womenProducts = products.filter(p => p.category === 'women');
-        const kidsProducts = products.filter(p => p.category === 'kids');
+        console.log(`\n📊 Categorized products:`);
+        console.log(`  👔 Men's: ${menProducts.length} products`);
+        console.log(`  👚 Women's: ${womenProducts.length} products`);
+        console.log(`  👶 Kids: ${kidsProducts.length} products`);
 
         // Update featured products - pass all products to find sneakers and kids packs
-        // Only update if there are products, otherwise keep default featured
         if (products.length > 0) {
             this.updateFeaturedProducts(products);
         }
 
-        // Update category sections - this ensures ALL products appear in their correct category
+        // Update category sections - this ensures ALL products (default + admin-added) appear in their correct category
+        // Use EXACT same approach for all categories
+        console.log(`\n🔄 Updating category sections...`);
         this.updateCategorySection('men', menProducts);
         this.updateCategorySection('women', womenProducts);
         this.updateCategorySection('kids', kidsProducts);
 
         // Create dynamic product detail modals
         this.createProductDetailModals(products);
+        
+        console.log(`\n✅ loadProducts() completed!\n`);
     }
 
     updateFeaturedProducts(products) {
@@ -198,57 +230,198 @@ class ProductDisplay {
     }
 
     updateCategorySection(category, products) {
-        const categoryCards = document.querySelectorAll('.category-card');
-        let categoryCard = null;
+        console.log(`\n🔍 Starting updateCategorySection for: ${category}`);
+        console.log(`📦 Received ${products.length} products to process`);
         
-        categoryCards.forEach(card => {
-            const title = card.querySelector('.category-title').textContent.toLowerCase();
-            if (title.includes(category === 'men' ? "men's" : category === 'women' ? "women's" : "kids")) {
-                categoryCard = card;
+        const categoryCards = document.querySelectorAll('.category-card');
+        console.log(`🎴 Found ${categoryCards.length} category cards`);
+        
+        let categoryCard = null;
+        // More flexible matching for men's section
+        let searchTexts = [];
+        if (category === 'men') {
+            searchTexts = ["men's", "men", "male"];
+        } else if (category === 'women') {
+            searchTexts = ["women's", "women", "female"];
+        } else {
+            searchTexts = ["kids", "kid"];
+        }
+        
+        categoryCards.forEach((card, index) => {
+            const titleElement = card.querySelector('.category-title');
+            if (titleElement) {
+                const title = titleElement.textContent.toLowerCase();
+                console.log(`  Card ${index}: "${title}"`);
+                
+                // Check against all possible search texts
+                const matches = searchTexts.some(text => title.includes(text));
+                if (matches) {
+                    categoryCard = card;
+                    console.log(`✅ Found matching category card for "${category}"`);
+                }
             }
         });
 
-        if (!categoryCard) return;
+        if (!categoryCard) {
+            console.error(`❌ Category card not found for: ${category} (searched for: ${searchTexts.join(', ')})`);
+            const availableCards = Array.from(categoryCards).map(c => c.querySelector('.category-title')?.textContent);
+            console.log('Available category cards:', availableCards);
+            
+            // Try direct index access as fallback - MEN'S IS FIRST (index 0)
+            if (category === 'men' && categoryCards.length >= 1) {
+                categoryCard = categoryCards[0];
+                console.log(`⚠️  Using fallback: First category card (index 0) for men's`);
+            } else if (category === 'women' && categoryCards.length >= 2) {
+                categoryCard = categoryCards[1];
+                console.log(`⚠️  Using fallback: Second category card (index 1) for women's`);
+            } else if (category === 'kids' && categoryCards.length >= 3) {
+                categoryCard = categoryCards[2];
+                console.log(`⚠️  Using fallback: Third category card (index 2) for kids`);
+            }
+            
+            if (!categoryCard) {
+                console.error(`❌❌ Could not find category card even with fallback`);
+                return;
+            }
+        }
 
         const categoryItems = categoryCard.querySelector('.category-items');
-        if (!categoryItems) return;
-
-        // Clear existing items and add ALL products for this category
-        categoryItems.innerHTML = '';
-
-        // If no products for this category, show a message
-        if (products.length === 0) {
-            categoryItems.innerHTML = '<li style="color: #666; font-style: italic;">No products in this category yet.</li>';
+        if (!categoryItems) {
+            console.error(`❌ Category items list not found for: ${category}`);
             return;
         }
 
+        console.log(`✅ Category items list found, starting with ${categoryItems.children.length} items`);
+        this.processCategoryProducts(category, products, categoryItems);
+    }
+    
+    processCategoryProducts(category, products, categoryItems) {
+
+        // Debug: Log products being processed
+        console.log(`📋 Processing ${products.length} products for ${category}:`, products.map(p => ({ 
+            id: p.id, 
+            type: p.type, 
+            category: p.category, 
+            isDefault: p.isDefault 
+        })));
+
         // Separate sneakers, kids packs, and regular products
+        // Use more robust category matching
         const regularProducts = products.filter(p => {
+            // Make sure category matches (case-insensitive, flexible)
+            const productCategory = String(p.category || '').toLowerCase().trim();
+            const targetCategory = String(category).toLowerCase().trim();
+            
+            // More flexible matching
+            const categoryMatch = productCategory === targetCategory || 
+                                 productCategory.startsWith(targetCategory) ||
+                                 targetCategory.startsWith(productCategory);
+            
+            if (!categoryMatch) {
+                console.log(`  ⏭️  Skipping ${p.type} - category mismatch: "${productCategory}" !== "${targetCategory}"`);
+                return false;
+            }
+            
             const isSneaker = p.isShoe === true || (p.type && (p.type.toLowerCase().includes('sneaker') || p.type.toLowerCase().includes('takkies')));
             const isKidsPack = p.type && (p.type.toLowerCase().includes('kids clothing pack') || p.type.toLowerCase().includes('kids pack') || p.type.toLowerCase().includes('clothing pack'));
-            return !isSneaker && !isKidsPack;
+            
+            if (isSneaker || isKidsPack) {
+                console.log(`  ⏭️  Skipping ${p.type} - isSneaker: ${isSneaker}, isKidsPack: ${isKidsPack}`);
+                return false;
+            }
+            
+            return true;
         });
+        
+        console.log(`✅ Filtered to ${regularProducts.length} regular products for ${category}:`, regularProducts.map(p => `${p.type} (${p.isDefault ? 'default' : 'admin'})`));
 
         // Check if we need to add sneakers link
         const hasSneakers = category === 'men' || category === 'women';
         const hasKidsPacks = category === 'kids';
 
-        // Add regular products - ALL products in this category
+        // Clear ALL existing items (including static HTML ones) and rebuild with ALL products (default + admin-added)
+        // IMPORTANT: Only clear once, at the beginning
+        categoryItems.innerHTML = '';
+        console.log(`🧹 Cleared category items for ${category}, now processing ${regularProducts.length} products`);
+
+        // If no products for this category, show a message
+        if (regularProducts.length === 0) {
+            const emptyLi = document.createElement('li');
+            emptyLi.innerHTML = '<span style="color: #666; font-style: italic;">No products in this category yet.</span>';
+            categoryItems.appendChild(emptyLi);
+            
+            // Still add sneakers/kids packs links even if no regular products
+            if (hasSneakers && (category === 'men' || category === 'women')) {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="sneakers.html" class="product-link">Sneakers</a>`;
+                categoryItems.appendChild(li);
+            }
+            if (hasKidsPacks && category === 'kids') {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="kids-packs.html" class="product-link">Kids Clothing Packs</a>`;
+                categoryItems.appendChild(li);
+            }
+            console.log(`⚠️  No regular products found for ${category}, showing empty message`);
+            return;
+        }
+
+        // Group products by type (normalize type names for grouping)
+        const productsByType = new Map();
+        
         regularProducts.forEach(product => {
-            const li = document.createElement('li');
-            const productId = `product-${product.id}`;
-            li.innerHTML = `<a href="#" class="product-link" data-product="${productId}">${product.type}${product.size ? ` - ${product.size}` : ''}</a>`;
-            categoryItems.appendChild(li);
+            // Normalize type name (trim, but keep original for display)
+            const normalizedType = (product.type || '').trim();
+            
+            if (!normalizedType) {
+                console.warn(`⚠️  Product ${product.id} has no type, skipping`);
+                return;
+            }
+            
+            if (!productsByType.has(normalizedType)) {
+                productsByType.set(normalizedType, []);
+                console.log(`  📦 Created new type group: "${normalizedType}"`);
+            }
+            productsByType.get(normalizedType).push(product);
+            console.log(`  📝 Added "${product.type}" (${product.isDefault ? 'default' : 'admin'}) to type group "${normalizedType}"`);
         });
 
-        // Add sneakers link for men's and women's categories (always show)
+        console.log(`📊 Grouped into ${productsByType.size} unique types:`, Array.from(productsByType.keys()));
+
+        // Sort types alphabetically
+        const sortedTypes = Array.from(productsByType.keys()).sort((a, b) => a.localeCompare(b));
+
+        console.log(`🔤 Sorted ${sortedTypes.length} types alphabetically:`, sortedTypes);
+
+        // Add product type links - each type shows all products of that type
+        sortedTypes.forEach((typeName, index) => {
+            const productsOfType = productsByType.get(typeName);
+            const defaultProducts = productsOfType.filter(p => p.isDefault);
+            const adminProducts = productsOfType.filter(p => !p.isDefault);
+            const totalCount = productsOfType.length;
+            
+            // Create link to product type page showing all products of this type
+            const li = document.createElement('li');
+            
+            // URL encode the type name for the link
+            const encodedType = encodeURIComponent(typeName);
+            li.innerHTML = `<a href="product-type.html?type=${encodedType}&category=${category}" class="product-link">${typeName}</a>`;
+            categoryItems.appendChild(li);
+            
+            console.log(`  ✅ [${index + 1}/${sortedTypes.length}] Added "${typeName}" to ${category} section: ${defaultProducts.length} default + ${adminProducts.length} admin-added = ${totalCount} total`);
+            console.log(`     DOM element created and appended. Current list length: ${categoryItems.children.length}`);
+        });
+        
+        console.log(`✅ Finished adding ${sortedTypes.length} product types to ${category} section`);
+        console.log(`📋 Final category items count: ${categoryItems.children.length}`);
+
+        // Add sneakers link for men's and women's categories (always show at the end)
         if (hasSneakers && (category === 'men' || category === 'women')) {
             const li = document.createElement('li');
             li.innerHTML = `<a href="sneakers.html" class="product-link">Sneakers</a>`;
             categoryItems.appendChild(li);
         }
 
-        // Add kids packs link for kids category (always show)
+        // Add kids packs link for kids category (always show at the end)
         if (hasKidsPacks && category === 'kids') {
             const li = document.createElement('li');
             li.innerHTML = `<a href="kids-packs.html" class="product-link">Kids Clothing Packs</a>`;
@@ -257,73 +430,13 @@ class ProductDisplay {
     }
 
     createProductDetailModals(products) {
-        // Remove existing dynamic product modals
-        document.querySelectorAll('.dynamic-product-detail').forEach(el => el.remove());
-
-        products.forEach(product => {
-            const modalId = `product-${product.id}`;
-            const modal = document.createElement('div');
-            modal.id = modalId;
-            modal.className = 'product-detail dynamic-product-detail';
-
-            let stockInfo = '';
-            if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
-                stockInfo = product.shoeSizes.map(shoe => 
-                    `<p><strong>${shoe.brand}</strong> - Size ${shoe.size}: ${shoe.qty} available</p>`
-                ).join('');
-            } else {
-                stockInfo = `<p><strong>Stock Available:</strong> ${product.stockQuantity || 0}</p>`;
-            }
-
-            const priceDisplay = product.priceRange || (product.price ? `R${product.price.toFixed(2)}` : 'Price on request');
-
-            modal.innerHTML = `
-                <div class="product-detail-content">
-                    <div class="product-detail-header">
-                        <h3 class="product-detail-title">${product.type}</h3>
-                        <button class="close-detail">&times;</button>
-                    </div>
-                    <div class="product-detail-body">
-                        <img src="${product.image}" alt="${product.type}" class="product-detail-image">
-                        <div class="product-detail-info">
-                            <div class="product-detail-features">
-                                <p><strong>Category:</strong> ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</p>
-                                <p><strong>Gender:</strong> ${product.gender.charAt(0).toUpperCase() + product.gender.slice(1)}</p>
-                                ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
-                                ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
-                                ${product.description ? `<p>${product.description}</p>` : ''}
-                                ${stockInfo ? `<div style="margin-top: 1rem;">${stockInfo}</div>` : ''}
-                                ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
-                            </div>
-                            <div class="price-range">Price: ${priceDisplay}</div>
-                            <button class="add-to-cart-btn" data-name="${product.type}" data-price-range="${priceDisplay}">Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            
-            // Add click handlers for this modal
-            const closeBtn = modal.querySelector('.close-detail');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    modal.classList.remove('active');
-                });
-            }
-            
-            // Close when clicking outside
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
-        });
+        // This function is kept for backwards compatibility but product links now go to product.html pages
+        // Modals are no longer created dynamically - all products link to dedicated pages
     }
 
     // Public method to refresh products (can be called after adding new products)
-    refresh() {
-        this.loadProducts();
+    async refresh() {
+        await this.loadProducts();
     }
 }
 
@@ -342,6 +455,7 @@ function setupAutoRefresh() {
     // Listen for storage changes to auto-refresh when products are added (cross-tab sync)
     window.addEventListener('storage', () => {
         if (window.productDisplay) {
+            console.log('Storage event detected, refreshing products...');
             window.productDisplay.refresh();
         }
     });
@@ -349,6 +463,7 @@ function setupAutoRefresh() {
     // Listen for custom events (same-tab updates)
     window.addEventListener('productsUpdated', () => {
         if (window.productDisplay) {
+            console.log('Products updated event detected, refreshing...');
             window.productDisplay.refresh();
         }
     });
@@ -356,12 +471,12 @@ function setupAutoRefresh() {
     // Refresh when page becomes visible (in case products were added in another tab)
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden && window.productDisplay) {
+            console.log('Page visible, refreshing products...');
             window.productDisplay.refresh();
         }
     });
     
-    // Poll for localStorage changes every 3 seconds (detects manual refreshes/reloads)
-    // This helps catch changes even if storage events don't fire
+    // Poll for localStorage changes every 2 seconds (more frequent for better responsiveness)
     let lastProductsHash = '';
     setInterval(() => {
         try {
@@ -370,17 +485,19 @@ function setupAutoRefresh() {
             const currentHash = JSON.stringify({ products: products.length, deleted: deleted.length });
             
             if (lastProductsHash && lastProductsHash !== currentHash && window.productDisplay) {
+                console.log('Product change detected via polling, refreshing...');
                 window.productDisplay.refresh();
             }
             lastProductsHash = currentHash;
         } catch (e) {
             console.error('Error checking for product updates:', e);
         }
-    }, 3000);
+    }, 2000);
     
     // Also refresh on page focus (when user switches back to tab)
     window.addEventListener('focus', () => {
         if (window.productDisplay) {
+            console.log('Page focused, refreshing products...');
             window.productDisplay.refresh();
         }
     });

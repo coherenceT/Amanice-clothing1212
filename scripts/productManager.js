@@ -57,8 +57,21 @@ class ProductManager {
             product.id = `admin-${Date.now()}`;
         }
         
+        // Ensure category is lowercase for consistency
+        if (product.category) {
+            product.category = product.category.toLowerCase();
+        }
+        
         products.push(product);
         localStorage.setItem('products', JSON.stringify(products));
+        
+        console.log('Product saved:', {
+            id: product.id,
+            type: product.type,
+            category: product.category,
+            isDefault: product.isDefault,
+            totalProducts: products.length
+        });
     }
 
     updateProduct(productId, updatedData) {

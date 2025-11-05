@@ -453,20 +453,65 @@
                         <img id="imagePreview" class="image-preview" alt="Preview">
                     </div>
 
-                    <div class="form-group">
-                        <label for="productCategory">Category *</label>
-                        <select id="productCategory" required>
-                            <option value="">Select Category</option>
-                            <option value="men">Men's Collection</option>
-                            <option value="women">Women's Collection</option>
-                            <option value="kids">Kids Collection</option>
+                    <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
+                        <label for="productCategory" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
+                            <i class="fas fa-tags"></i> Select Product Category *
+                        </label>
+                        <select id="productCategory" required style="font-size: 1.1rem; padding: 1rem; font-weight: 600; border: 2px solid var(--accent); background: var(--white);">
+                            <option value="">⚠️ Please Select a Category</option>
+                            <option value="men">👕 Men's Collection</option>
+                            <option value="women">👚 Women's Collection</option>
+                            <option value="kids">👶 Kids Collection</option>
                         </select>
+                        <small style="display: block; margin-top: 0.5rem; color: var(--dark-silver); font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> This determines which section the product appears in on the store page
+                        </small>
                     </div>
 
                     <div class="form-group">
-                        <label for="productType">Product Type *</label>
-                        <input type="text" id="productType" placeholder="e.g., Jeans, Sneakers, T-shirts" required>
-                        <small>The type of clothing/item</small>
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" placeholder="e.g., Classic Blue Jeans, Red Hoodie" required>
+                        <small>The specific name of this product (e.g., 'Classic Blue Jeans' instead of just 'Jeans')</small>
+                    </div>
+
+                    <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
+                        <label for="productType" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
+                            <i class="fas fa-tag"></i> Product Type *
+                        </label>
+                        <select id="productType" required style="font-size: 1.1rem; padding: 1rem; font-weight: 600; border: 2px solid var(--accent); background: var(--white); width: 100%;">
+                            <option value="">Select Product Type</option>
+                            <option value="Blouses">Blouses</option>
+                            <option value="Bras">Bras</option>
+                            <option value="Cargo Shorts">Cargo Shorts</option>
+                            <option value="Chinos">Chinos</option>
+                            <option value="Dresses">Dresses</option>
+                            <option value="Formal Shirts">Formal Shirts</option>
+                            <option value="Formal Shoes">Formal Shoes</option>
+                            <option value="Formal Trousers">Formal Trousers</option>
+                            <option value="Gym Tights">Gym Tights</option>
+                            <option value="Hoodies">Hoodies</option>
+                            <option value="Jackets">Jackets</option>
+                            <option value="Jean Jackets">Jean Jackets</option>
+                            <option value="Jeans">Jeans</option>
+                            <option value="Jerseys">Jerseys</option>
+                            <option value="Normal Jackets">Normal Jackets</option>
+                            <option value="Sandals">Sandals</option>
+                            <option value="Shorts">Shorts</option>
+                            <option value="Skirts">Skirts</option>
+                            <option value="Socks">Socks</option>
+                            <option value="Sport Jerseys">Sport Jerseys</option>
+                            <option value="Swimming Shorts">Swimming Shorts</option>
+                            <option value="T-shirts">T-shirts</option>
+                            <option value="Trackpants">Trackpants</option>
+                            <option value="Tracksuits">Tracksuits</option>
+                            <option value="All Tight Types">All Tight Types</option>
+                            <option value="Nightwear (Gowns & Bonnets)">Nightwear (Gowns & Bonnets)</option>
+                            <option value="Other">Other (Custom Type)</option>
+                        </select>
+                        <small style="display: block; margin-top: 0.5rem; color: var(--dark-silver); font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> Select an existing type to group with similar products, or type a new one below.
+                        </small>
+                        <input type="text" id="productTypeCustom" placeholder="Or enter a custom product type..." style="font-size: 1rem; padding: 0.75rem; margin-top: 0.5rem; border: 1px solid var(--silver); width: 100%; display: none;">
                     </div>
 
                     <div class="form-group">
@@ -550,13 +595,18 @@
                         <img id="sneakerImagePreview" class="image-preview" alt="Preview">
                     </div>
 
-                    <div class="form-group">
-                        <label for="sneakerCategory">Category *</label>
-                        <select id="sneakerCategory" required>
-                            <option value="">Select Category</option>
-                            <option value="men">Men's Sneakers</option>
-                            <option value="women">Women's Sneakers</option>
+                    <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
+                        <label for="sneakerCategory" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
+                            <i class="fas fa-tags"></i> Select Category *
+                        </label>
+                        <select id="sneakerCategory" required style="font-size: 1.1rem; padding: 1rem; font-weight: 600; border: 2px solid var(--accent); background: var(--white);">
+                            <option value="">⚠️ Please Select a Category</option>
+                            <option value="men">👕 Men's Sneakers</option>
+                            <option value="women">👚 Women's Sneakers</option>
                         </select>
+                        <small style="display: block; margin-top: 0.5rem; color: var(--dark-silver); font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> This determines which section the sneakers appear in on the store page
+                        </small>
                     </div>
 
                     <div class="form-group">
@@ -904,12 +954,30 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
+                // Get and validate category FIRST
+                const selectedCategory = document.getElementById('sneakerCategory').value.trim().toLowerCase();
+                
+                if (!selectedCategory || selectedCategory === '') {
+                    showAlert('Please select a category (Men\'s or Women\'s) before adding the sneakers', 'error');
+                    document.getElementById('sneakerCategory').focus();
+                    document.getElementById('sneakerCategory').style.borderColor = '#ff4444';
+                    setTimeout(() => {
+                        document.getElementById('sneakerCategory').style.borderColor = '';
+                    }, 3000);
+                    return;
+                }
+                
+                if (!['men', 'women'].includes(selectedCategory)) {
+                    showAlert('Invalid category selected. Please choose Men\'s or Women\'s', 'error');
+                    return;
+                }
+
                 const productData = {
                     id: Date.now().toString(),
                     image: e.target.result,
-                    category: document.getElementById('sneakerCategory').value,
+                    category: selectedCategory, // Use normalized lowercase category
                     type: document.getElementById('sneakerType').value,
-                    gender: document.getElementById('sneakerCategory').value === 'men' ? 'male' : 'female',
+                    gender: selectedCategory === 'men' ? 'male' : 'female',
                     size: '',
                     price: parseFloat(document.getElementById('sneakerPrice').value),
                     description: document.getElementById('sneakerDescription').value,
@@ -922,6 +990,14 @@
                     isDefault: false
                 };
 
+                // Log the category and type being saved
+                console.log('Saving sneakers:', {
+                    category: selectedCategory,
+                    type: productData.type,
+                    brand: productData.shoeBrand,
+                    id: productData.id
+                });
+
                 productManager.saveProduct(productData);
                 
                 // Trigger storage event for cross-tab sync
@@ -929,7 +1005,8 @@
                 // Also trigger custom event
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
 
-                showAlert('Sneakers added successfully!', 'success');
+                const categoryName = selectedCategory === 'men' ? "Men's" : "Women's";
+                showAlert(`Sneakers added successfully to ${categoryName} Collection!`, 'success');
                 loadProducts();
                 resetSneakersForm();
             };
@@ -975,6 +1052,13 @@
                     isDefault: false
                 };
 
+                // Log the category and type being saved
+                console.log('Saving kids pack:', {
+                    category: 'kids',
+                    type: productData.type,
+                    id: productData.id
+                });
+
                 productManager.saveProduct(productData);
                 
                 // Trigger storage event for cross-tab sync
@@ -982,7 +1066,7 @@
                 // Also trigger custom event
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
 
-                showAlert('Kids pack added successfully!', 'success');
+                showAlert('Kids pack added successfully to Kids Collection!', 'success');
                 loadProducts();
                 resetPacksForm();
             };
@@ -995,8 +1079,21 @@
             document.getElementById('packStockQuantity').value = '1';
         }
 
-        // Check product type to show/hide shoe brand section
-        document.getElementById('productType').addEventListener('input', function() {
+        // Handle product type dropdown and custom input
+        const productTypeSelect = document.getElementById('productType');
+        const productTypeCustom = document.getElementById('productTypeCustom');
+        
+        // Show custom input when "Other" or empty is selected, or allow custom entry
+        productTypeSelect.addEventListener('change', function() {
+            if (this.value === '' || this.value === 'Other') {
+                productTypeCustom.style.display = 'block';
+                productTypeCustom.required = true;
+            } else {
+                productTypeCustom.style.display = 'none';
+                productTypeCustom.required = false;
+            }
+            
+            // Check product type to show/hide shoe brand section
             const productType = this.value.toLowerCase();
             const shoesBrandSection = document.getElementById('shoesBrandSection');
             const regularStockSection = document.getElementById('regularStockSection');
@@ -1011,6 +1108,25 @@
                 regularStockSection.style.display = 'block';
             }
         });
+        
+        // Also check custom input
+        if (productTypeCustom) {
+            productTypeCustom.addEventListener('input', function() {
+                const productType = this.value.toLowerCase();
+                const shoesBrandSection = document.getElementById('shoesBrandSection');
+                const regularStockSection = document.getElementById('regularStockSection');
+                
+                if (productType.includes('shoe') || productType.includes('sneaker') || 
+                    productType.includes('sandal') || productType.includes('takkies')) {
+                    shoesBrandSection.classList.add('show');
+                    regularStockSection.style.display = 'none';
+                    currentShoeSizes = [];
+                } else {
+                    shoesBrandSection.classList.remove('show');
+                    regularStockSection.style.display = 'block';
+                }
+            });
+        }
 
         // Image preview
         document.getElementById('productImage').addEventListener('change', function(e) {
@@ -1080,13 +1196,76 @@
                 return;
             }
 
+            // Show loading spinner
+            const submitBtn = document.querySelector('#productForm button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            
+            // Show upload progress
+            const progressBar = document.createElement('div');
+            progressBar.id = 'uploadProgress';
+            progressBar.style.cssText = 'width: 100%; height: 4px; background: var(--silver); border-radius: 2px; margin-top: 1rem; overflow: hidden;';
+            progressBar.innerHTML = '<div style="width: 0%; height: 100%; background: var(--accent); transition: width 0.3s;"></div>';
+            submitBtn.parentElement.appendChild(progressBar);
+            const progressFill = progressBar.querySelector('div');
+            
+            // Simulate progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                if (progress <= 90) {
+                    progressFill.style.width = progress + '%';
+                }
+            }, 100);
+
             const reader = new FileReader();
             reader.onload = function(e) {
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+                // Get and validate category FIRST
+                const selectedCategory = document.getElementById('productCategory').value.trim().toLowerCase();
+                
+                if (!selectedCategory || selectedCategory === '') {
+                    showAlert('Please select a category (Men\'s, Women\'s, or Kids) before adding the product', 'error');
+                    document.getElementById('productCategory').focus();
+                    document.getElementById('productCategory').style.borderColor = '#ff4444';
+                    setTimeout(() => {
+                        document.getElementById('productCategory').style.borderColor = '';
+                    }, 3000);
+                    return;
+                }
+                
+                if (!['men', 'women', 'kids'].includes(selectedCategory)) {
+                    showAlert('Invalid category selected. Please choose Men\'s, Women\'s, or Kids Collection', 'error');
+                    return;
+                }
+
+                // Get and validate product type (from dropdown or custom input)
+                const productTypeSelect = document.getElementById('productType');
+                const productTypeCustom = document.getElementById('productTypeCustom');
+                let productType = productTypeSelect.value.trim();
+                
+                // If custom input is visible and filled, use that instead
+                if (productTypeCustom.style.display !== 'none' && productTypeCustom.value.trim()) {
+                    productType = productTypeCustom.value.trim();
+                }
+                
+                if (!productType || productType === '') {
+                    showAlert('Please select or enter a product type before adding the product', 'error');
+                    (productTypeCustom.style.display !== 'none' ? productTypeCustom : productTypeSelect).focus();
+                    (productTypeCustom.style.display !== 'none' ? productTypeCustom : productTypeSelect).style.borderColor = '#ff4444';
+                    setTimeout(() => {
+                        (productTypeCustom.style.display !== 'none' ? productTypeCustom : productTypeSelect).style.borderColor = '';
+                    }, 3000);
+                    return;
+                }
+
                 const productData = {
                     id: Date.now().toString(),
                     image: e.target.result,
-                    category: document.getElementById('productCategory').value,
-                    type: document.getElementById('productType').value,
+                    category: selectedCategory, // Use normalized lowercase category
+                    type: productType, // Use trimmed product type
                     gender: document.getElementById('productGender').value,
                     size: document.getElementById('productSize').value,
                     price: parseFloat(document.getElementById('productPrice').value),
@@ -1112,17 +1291,78 @@
                     }
                 }
 
-                productManager.saveProduct(productData);
+                // Log the category and type being saved
+                console.log('Saving product:', {
+                    category: selectedCategory,
+                    type: productData.type,
+                    id: productData.id,
+                    willAppearOn: `product-type.html?type=${encodeURIComponent(productData.type)}&category=${selectedCategory}`
+                });
+                
+                // Get product name (use name field if provided, otherwise fall back to type)
+                const productName = document.getElementById('productName').value.trim() || productData.type;
+                
+                // Save product with proper structure
+                const adminProduct = {
+                    id: productData.id,
+                    name: productName,
+                    price: productData.price,
+                    description: productData.description,
+                    imageURL: productData.image,
+                    category: productData.category,
+                    // Keep all original fields for compatibility
+                    ...productData,
+                    // Ensure name is set correctly
+                    name: productName
+                };
+                
+                productManager.saveProduct(adminProduct);
+                
+                // Also save to adminProducts for separate tracking
+                const adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+                adminProducts.push({
+                    id: adminProduct.id,
+                    name: adminProduct.name,
+                    price: adminProduct.price,
+                    description: adminProduct.description,
+                    imageURL: adminProduct.imageURL,
+                    category: adminProduct.category
+                });
+                localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
                 
                 // Trigger storage event for cross-tab sync
                 window.dispatchEvent(new Event('storage'));
                 // Also trigger custom event
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
 
-                showAlert('Product added successfully!', 'success');
-                loadProducts();
-                resetForm();
+                // Remove progress bar
+                setTimeout(() => {
+                    if (progressBar.parentElement) {
+                        progressBar.remove();
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    
+                    // Show success message
+                    const categoryName = selectedCategory === 'men' ? "Men's" : selectedCategory === 'women' ? "Women's" : "Kids";
+                    showAlert(`✅ Product added successfully to ${categoryName} Collection!`, 'success');
+                    
+                    // Auto-refresh products list
+                    loadProducts();
+                    resetForm();
+                }, 500);
             };
+            
+            reader.onerror = function() {
+                clearInterval(progressInterval);
+                if (progressBar.parentElement) {
+                    progressBar.remove();
+                }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                showAlert('Error uploading image. Please try again.', 'error');
+            };
+            
             reader.readAsDataURL(file);
         });
 
@@ -1133,6 +1373,18 @@
             document.getElementById('regularStockSection').style.display = 'block';
             currentShoeSizes = [];
             document.getElementById('shoeSizesList').innerHTML = '';
+            // Reset product type dropdown and hide custom input
+            document.getElementById('productType').value = '';
+            const customInput = document.getElementById('productTypeCustom');
+            if (customInput) {
+                customInput.style.display = 'none';
+                customInput.value = '';
+            }
+            // Reset product name field
+            const productNameField = document.getElementById('productName');
+            if (productNameField) {
+                productNameField.value = '';
+            }
         }
 
         let allProducts = [];
@@ -1473,17 +1725,58 @@
                         <small>Leave empty to keep current image</small>
                         <img src="${product.image}" alt="Current" style="max-width: 200px; margin-top: 0.5rem; border-radius: 8px;">
                     </div>
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select id="editCategory">
-                            <option value="men" ${product.category === 'men' ? 'selected' : ''}>Men's Collection</option>
-                            <option value="women" ${product.category === 'women' ? 'selected' : ''}>Women's Collection</option>
-                            <option value="kids" ${product.category === 'kids' ? 'selected' : ''}>Kids Collection</option>
+                    <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
+                        <label for="editCategory" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
+                            <i class="fas fa-tags"></i> Select Product Category *
+                        </label>
+                        <select id="editCategory" required style="font-size: 1.1rem; padding: 1rem; font-weight: 600; border: 2px solid var(--accent); background: var(--white);">
+                            <option value="">⚠️ Please Select a Category</option>
+                            <option value="men" ${product.category === 'men' ? 'selected' : ''}>👕 Men's Collection</option>
+                            <option value="women" ${product.category === 'women' ? 'selected' : ''}>👚 Women's Collection</option>
+                            <option value="kids" ${product.category === 'kids' ? 'selected' : ''}>👶 Kids Collection</option>
                         </select>
+                        <small style="display: block; margin-top: 0.5rem; color: var(--dark-silver); font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> This determines which section the product appears in on the store page
+                        </small>
                     </div>
-                    <div class="form-group">
-                        <label>Product Type</label>
-                        <input type="text" id="editType" value="${product.type}" required>
+                    <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
+                        <label for="editType" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
+                            <i class="fas fa-tag"></i> Product Type *
+                        </label>
+                        <select id="editType" required style="font-size: 1.1rem; padding: 1rem; font-weight: 600; border: 2px solid var(--accent); background: var(--white); width: 100%;">
+                            <option value="">Select Product Type</option>
+                            <option value="Blouses" ${product.type === 'Blouses' ? 'selected' : ''}>Blouses</option>
+                            <option value="Bras" ${product.type === 'Bras' ? 'selected' : ''}>Bras</option>
+                            <option value="Cargo Shorts" ${product.type === 'Cargo Shorts' ? 'selected' : ''}>Cargo Shorts</option>
+                            <option value="Chinos" ${product.type === 'Chinos' ? 'selected' : ''}>Chinos</option>
+                            <option value="Dresses" ${product.type === 'Dresses' ? 'selected' : ''}>Dresses</option>
+                            <option value="Formal Shirts" ${product.type === 'Formal Shirts' ? 'selected' : ''}>Formal Shirts</option>
+                            <option value="Formal Shoes" ${product.type === 'Formal Shoes' ? 'selected' : ''}>Formal Shoes</option>
+                            <option value="Formal Trousers" ${product.type === 'Formal Trousers' ? 'selected' : ''}>Formal Trousers</option>
+                            <option value="Gym Tights" ${product.type === 'Gym Tights' ? 'selected' : ''}>Gym Tights</option>
+                            <option value="Hoodies" ${product.type === 'Hoodies' ? 'selected' : ''}>Hoodies</option>
+                            <option value="Jackets" ${product.type === 'Jackets' ? 'selected' : ''}>Jackets</option>
+                            <option value="Jean Jackets" ${product.type === 'Jean Jackets' ? 'selected' : ''}>Jean Jackets</option>
+                            <option value="Jeans" ${product.type === 'Jeans' ? 'selected' : ''}>Jeans</option>
+                            <option value="Jerseys" ${product.type === 'Jerseys' ? 'selected' : ''}>Jerseys</option>
+                            <option value="Normal Jackets" ${product.type === 'Normal Jackets' ? 'selected' : ''}>Normal Jackets</option>
+                            <option value="Sandals" ${product.type === 'Sandals' ? 'selected' : ''}>Sandals</option>
+                            <option value="Shorts" ${product.type === 'Shorts' ? 'selected' : ''}>Shorts</option>
+                            <option value="Skirts" ${product.type === 'Skirts' ? 'selected' : ''}>Skirts</option>
+                            <option value="Socks" ${product.type === 'Socks' ? 'selected' : ''}>Socks</option>
+                            <option value="Sport Jerseys" ${product.type === 'Sport Jerseys' ? 'selected' : ''}>Sport Jerseys</option>
+                            <option value="Swimming Shorts" ${product.type === 'Swimming Shorts' ? 'selected' : ''}>Swimming Shorts</option>
+                            <option value="T-shirts" ${product.type === 'T-shirts' ? 'selected' : ''}>T-shirts</option>
+                            <option value="Trackpants" ${product.type === 'Trackpants' ? 'selected' : ''}>Trackpants</option>
+                            <option value="Tracksuits" ${product.type === 'Tracksuits' ? 'selected' : ''}>Tracksuits</option>
+                            <option value="All Tight Types" ${product.type === 'All Tight Types' ? 'selected' : ''}>All Tight Types</option>
+                            <option value="Nightwear (Gowns & Bonnets)" ${product.type === 'Nightwear (Gowns & Bonnets)' ? 'selected' : ''}>Nightwear (Gowns & Bonnets)</option>
+                            <option value="Other" ${!['Blouses', 'Bras', 'Cargo Shorts', 'Chinos', 'Dresses', 'Formal Shirts', 'Formal Shoes', 'Formal Trousers', 'Gym Tights', 'Hoodies', 'Jackets', 'Jean Jackets', 'Jeans', 'Jerseys', 'Normal Jackets', 'Sandals', 'Shorts', 'Skirts', 'Socks', 'Sport Jerseys', 'Swimming Shorts', 'T-shirts', 'Trackpants', 'Tracksuits', 'All Tight Types', 'Nightwear (Gowns & Bonnets)'].includes(product.type) ? 'selected' : ''}>Other (Custom Type)</option>
+                        </select>
+                        <input type="text" id="editTypeCustom" value="${!['Blouses', 'Bras', 'Cargo Shorts', 'Chinos', 'Dresses', 'Formal Shirts', 'Formal Shoes', 'Formal Trousers', 'Gym Tights', 'Hoodies', 'Jackets', 'Jean Jackets', 'Jeans', 'Jerseys', 'Normal Jackets', 'Sandals', 'Shorts', 'Skirts', 'Socks', 'Sport Jerseys', 'Swimming Shorts', 'T-shirts', 'Trackpants', 'Tracksuits', 'All Tight Types', 'Nightwear (Gowns & Bonnets)'].includes(product.type) ? product.type : ''}" placeholder="Enter custom product type..." style="font-size: 1rem; padding: 0.75rem; margin-top: 0.5rem; border: 1px solid var(--silver); width: 100%; ${!['Blouses', 'Bras', 'Cargo Shorts', 'Chinos', 'Dresses', 'Formal Shirts', 'Formal Shoes', 'Formal Trousers', 'Gym Tights', 'Hoodies', 'Jackets', 'Jean Jackets', 'Jeans', 'Jerseys', 'Normal Jackets', 'Sandals', 'Shorts', 'Skirts', 'Socks', 'Sport Jerseys', 'Swimming Shorts', 'T-shirts', 'Trackpants', 'Tracksuits', 'All Tight Types', 'Nightwear (Gowns & Bonnets)'].includes(product.type) ? 'display: block;' : 'display: none;'}">
+                        <small style="display: block; margin-top: 0.5rem; color: var(--dark-silver); font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> Select an existing type to group with similar products.
+                        </small>
                     </div>
                     <div class="form-group">
                         <label>Price (R)</label>
@@ -1504,18 +1797,79 @@
             document.getElementById('editFormContainer').innerHTML = editForm;
             document.getElementById('editModal').classList.add('active');
 
+            // Handle edit type dropdown change
+            const editTypeSelect = document.getElementById('editType');
+            const editTypeCustom = document.getElementById('editTypeCustom');
+            if (editTypeSelect && editTypeCustom) {
+                editTypeSelect.addEventListener('change', function() {
+                    if (this.value === '' || this.value === 'Other') {
+                        editTypeCustom.style.display = 'block';
+                        editTypeCustom.required = true;
+                    } else {
+                        editTypeCustom.style.display = 'none';
+                        editTypeCustom.required = false;
+                    }
+                });
+            }
+
             document.getElementById('editProductForm').addEventListener('submit', function(e) {
                 e.preventDefault();
+                
+                // Get and validate category FIRST
+                const selectedCategory = document.getElementById('editCategory').value.trim().toLowerCase();
+                
+                if (!selectedCategory || selectedCategory === '') {
+                    showAlert('Please select a category (Men\'s, Women\'s, or Kids) before saving', 'error');
+                    document.getElementById('editCategory').focus();
+                    document.getElementById('editCategory').style.borderColor = '#ff4444';
+                    setTimeout(() => {
+                        document.getElementById('editCategory').style.borderColor = '';
+                    }, 3000);
+                    return;
+                }
+                
+                if (!['men', 'women', 'kids'].includes(selectedCategory)) {
+                    showAlert('Invalid category selected. Please choose Men\'s, Women\'s, or Kids Collection', 'error');
+                    return;
+                }
+
+                // Get and validate product type (from dropdown or custom input)
+                const editTypeSelect = document.getElementById('editType');
+                const editTypeCustom = document.getElementById('editTypeCustom');
+                let productType = editTypeSelect.value.trim();
+                
+                // If custom input is visible and filled, use that instead
+                if (editTypeCustom && editTypeCustom.style.display !== 'none' && editTypeCustom.value.trim()) {
+                    productType = editTypeCustom.value.trim();
+                }
+                
+                if (!productType || productType === '') {
+                    showAlert('Please select or enter a product type before saving', 'error');
+                    (editTypeCustom && editTypeCustom.style.display !== 'none' ? editTypeCustom : editTypeSelect).focus();
+                    (editTypeCustom && editTypeCustom.style.display !== 'none' ? editTypeCustom : editTypeSelect).style.borderColor = '#ff4444';
+                    setTimeout(() => {
+                        (editTypeCustom && editTypeCustom.style.display !== 'none' ? editTypeCustom : editTypeSelect).style.borderColor = '';
+                    }, 3000);
+                    return;
+                }
                 
                 const imageInput = document.getElementById('editProductImage');
                 
                 const updatedData = {
-                    category: document.getElementById('editCategory').value,
-                    type: document.getElementById('editType').value,
+                    category: selectedCategory, // Use normalized lowercase category
+                    type: productType, // Use trimmed product type
                     price: parseFloat(document.getElementById('editPrice').value),
                     description: document.getElementById('editDescription').value,
                     stockNumber: document.getElementById('editStockNumber').value.trim() || ''
                 };
+                
+                // Log the category and type being saved
+                console.log('Updating product:', {
+                    category: selectedCategory,
+                    type: updatedData.type,
+                    productId: productId,
+                    willAppearOn: `product-type.html?type=${encodeURIComponent(updatedData.type)}&category=${selectedCategory}`
+                });
                 
                 if (imageInput.files[0]) {
                     const reader = new FileReader();
@@ -1588,6 +1942,7 @@
             sessionStorage.removeItem('adminLoggedIn');
             window.location.href = 'login.html';
         }
+
 
         // Add filter event listeners (wait for DOM)
         setTimeout(() => {

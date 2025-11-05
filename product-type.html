@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Type | AMA-NICE CLOTHING</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/common.css">
+    <style>
+        :root {
+            --cream: #FFF8F0;
+            --white: #FFFFFF;
+            --silver: #C0C0C0;
+            --dark-silver: #A0A0A0;
+            --dark: #333333;
+            --accent: #8B4513;
+            --accent-dark: #a05a2c;
+            --blue: #4285F4;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: 0 4px 16px rgba(139, 69, 19, 0.2);
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .back-btn:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Page Header */
+        .page-header {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            color: var(--dark-silver);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Products Container */
+        .products-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 2px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .product-card-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card-title {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .product-card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--dark-silver);
+        }
+
+        .product-card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 1rem 0;
+        }
+
+        .product-card-stock {
+            padding: 0.75rem;
+            background: var(--cream);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stock-available {
+            color: #25A525;
+            font-weight: 600;
+        }
+
+        .stock-low {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        .stock-out {
+            color: #ff4444;
+            font-weight: 600;
+        }
+
+        .product-card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: auto;
+        }
+
+        .btn-view {
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-view:active {
+            transform: translateY(0);
+        }
+
+        .admin-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(37, 165, 37, 0.1);
+            color: #25A525;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .section-divider {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .divider {
+            text-align: center;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--dark-silver);
+        }
+
+        .error {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #ff4444;
+        }
+
+        .error a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state h2 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: var(--dark-silver);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="Assets/logo.png" alt="AMA-NICE CLOTHING Logo" class="logo-img">
+                <div class="logo-text">AMA-NICE CLOTHING</div>
+            </a>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Store
+            </a>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1 class="page-title" id="pageTitle">Loading...</h1>
+        <p class="page-subtitle" id="pageSubtitle"></p>
+    </div>
+
+    <div class="products-container">
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Loading products...</p>
+        </div>
+
+        <div id="error" class="error" style="display: none;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <h2>Products Not Found</h2>
+            <p>The products you're looking for don't exist or have been removed.</p>
+            <a href="index.html">Return to Store</a>
+        </div>
+
+        <div id="productsContent" style="display: none;">
+            <!-- Products will be inserted here -->
+        </div>
+    </div>
+
+    <script src="scripts/productManager.js"></script>
+    <script>
+        const productManager = new ProductManager();
+        let currentType = null;
+        let currentCategory = null;
+        let allProductsOfType = [];
+
+        async function loadProducts() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const contentEl = document.getElementById('productsContent');
+            const titleEl = document.getElementById('pageTitle');
+            const subtitleEl = document.getElementById('pageSubtitle');
+
+            try {
+                // Get type and category from URL
+                const urlParams = new URLSearchParams(window.location.search);
+                currentType = decodeURIComponent(urlParams.get('type') || '');
+                currentCategory = urlParams.get('category') || '';
+
+                if (!currentType) {
+                    throw new Error('No product type provided');
+                }
+
+                // Load default products
+                await productManager.loadDefaultProducts();
+                
+                // Get all products
+                const allProducts = productManager.getAllProducts();
+                
+                // Filter products by type and category - use String() for robust matching
+                allProductsOfType = allProducts.filter(p => {
+                    const productType = String(p.type || '').trim();
+                    const productCategory = String(p.category || '').toLowerCase().trim();
+                    const targetCategory = String(currentCategory || '').toLowerCase().trim();
+                    
+                    // Exclude sneakers and kids packs (they have their own pages)
+                    const isSneaker = p.isShoe === true || (p.type && (p.type.toLowerCase().includes('sneaker') || p.type.toLowerCase().includes('takkies')));
+                    const isKidsPack = p.type && (p.type.toLowerCase().includes('kids clothing pack') || p.type.toLowerCase().includes('kids pack') || p.type.toLowerCase().includes('clothing pack'));
+                    
+                    const typeMatches = productType === currentType;
+                    const categoryMatches = productCategory === targetCategory;
+                    
+                    return typeMatches && 
+                           categoryMatches &&
+                           !isSneaker && 
+                           !isKidsPack;
+                });
+                
+                console.log(`Found ${allProductsOfType.length} products of type "${currentType}" in category "${currentCategory}"`);
+
+                if (allProductsOfType.length === 0) {
+                    throw new Error('No products found');
+                }
+
+                // Hide loading, show content
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+                // Update page title - handle "men" category properly
+                let categoryName = '';
+                if (currentCategory === 'men') {
+                    categoryName = "Men's";
+                } else if (currentCategory === 'women') {
+                    categoryName = "Women's";
+                } else if (currentCategory === 'kids') {
+                    categoryName = "Kids";
+                } else {
+                    categoryName = currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
+                }
+                
+                titleEl.textContent = `All ${currentType} Types`;
+                subtitleEl.textContent = `${categoryName} Collection`;
+                document.title = `All ${currentType} Types - ${categoryName} Collection | AMA-NICE CLOTHING`;
+
+                // Render products
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                contentEl.style.display = 'none';
+            }
+        }
+
+        function renderProducts() {
+            const contentEl = document.getElementById('productsContent');
+            
+            // Separate default and admin products
+            const defaultProducts = allProductsOfType.filter(p => p.isDefault);
+            const adminProducts = allProductsOfType.filter(p => !p.isDefault);
+
+            let html = '<div class="products-grid">';
+
+            // Render default products first
+            defaultProducts.forEach(product => {
+                html += renderProductCard(product);
+            });
+
+            // Add divider if both types exist
+            if (defaultProducts.length > 0 && adminProducts.length > 0) {
+                html += '</div>';
+                html += '<div class="section-divider"><div class="divider"><i class="fas fa-arrow-down"></i> More Items Available <i class="fas fa-arrow-down"></i></div></div>';
+                html += '<div class="products-grid">';
+            }
+
+            // Render admin products
+            adminProducts.forEach(product => {
+                html += renderProductCard(product, true);
+            });
+
+            html += '</div>';
+
+            // If no products, show empty state
+            if (allProductsOfType.length === 0) {
+                html = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open" style="font-size: 3rem; color: var(--dark-silver); margin-bottom: 1rem;"></i>
+                        <h2>No Products Available</h2>
+                        <p>There are no products of this type available at the moment.</p>
+                        <a href="index.html" class="btn-view">Back to Store</a>
+                    </div>
+                `;
+            }
+
+            contentEl.innerHTML = html;
+        }
+
+        function renderProductCard(product, isAdmin = false) {
+            // Determine stock information
+            let stockHTML = '';
+            let totalStock = 0;
+            let stockClass = 'stock-out';
+            let stockText = 'Out of Stock';
+
+            if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
+                totalStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                if (totalStock > 10) {
+                    stockClass = 'stock-available';
+                    stockText = `${totalStock} available (${product.shoeSizes.length} sizes)`;
+                } else if (totalStock > 0) {
+                    stockClass = 'stock-low';
+                    stockText = `${totalStock} available (Low Stock)`;
+                }
+            } else {
+                totalStock = product.stockQuantity || 0;
+                if (totalStock > 10) {
+                    stockClass = 'stock-available';
+                    stockText = `${totalStock} available`;
+                } else if (totalStock > 0) {
+                    stockClass = 'stock-low';
+                    stockText = `${totalStock} available (Low Stock)`;
+                }
+            }
+
+            const priceDisplay = product.priceRange || (product.price ? `R${product.price.toFixed(2)}` : 'Price on request');
+            const adminBadge = isAdmin ? '<span class="admin-badge">Admin Added</span>' : '';
+
+            return `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.type}" class="product-card-image">
+                    <div class="product-card-info">
+                        <h3 class="product-card-title">
+                            ${product.type}${adminBadge}
+                        </h3>
+                        <div class="product-card-meta">
+                            ${product.size ? `<span><i class="fas fa-ruler"></i> ${product.size}</span>` : ''}
+                            ${product.isShoe && product.shoeBrand ? `<span><i class="fas fa-tag"></i> ${product.shoeBrand}</span>` : ''}
+                            ${product.stockNumber ? `<span><i class="fas fa-hashtag"></i> ${product.stockNumber}</span>` : ''}
+                        </div>
+                        <div class="product-card-price">${priceDisplay}</div>
+                        <div class="product-card-stock">
+                            <span class="${stockClass}">
+                                <i class="fas fa-box"></i> ${stockText}
+                            </span>
+                        </div>
+                        ${product.description ? `<p style="font-size: 0.9rem; color: var(--dark-silver); margin-bottom: 1rem;">${product.description}</p>` : ''}
+                        <div class="product-card-actions">
+                            <a href="product.html?id=${product.id}" class="btn-view">
+                                <i class="fas fa-eye"></i> View Details & Order
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Listen for product updates from admin
+        window.addEventListener('storage', () => {
+            loadProducts();
+        });
+        
+        window.addEventListener('productsUpdated', () => {
+            loadProducts();
+        });
+
+        // Load products on page load
+        loadProducts();
+    </script>
+</body>
+</html>
+

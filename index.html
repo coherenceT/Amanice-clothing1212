@@ -35,14 +35,20 @@
 
         /* Header & Navigation */
         header {
-            background: linear-gradient(135deg, var(--white) 0%, var(--silver) 100%);
+            background: linear-gradient(135deg, var(--white) 0%, rgba(192, 192, 192, 0.8) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: var(--dark);
             padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid var(--silver);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+        }
+        
+        header.scrolled {
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
         }
 
         .header-container {
@@ -66,18 +72,35 @@
         }
 
         .logo-img {
-            width: 150px; /* doubled on mobile */
-            height: 150px; /* doubled on mobile */
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--accent);
-            transition: transform 0.3s;
+            border: 3px solid var(--accent);
+            box-shadow: 0 4px 16px rgba(139, 69, 19, 0.2);
+            transition: var(--transition);
+        }
+        
+        @media (max-width: 768px) {
+            .logo-img {
+                width: 80px;
+                height: 80px;
+                border-width: 2px;
+            }
         }
 
         .logo-text {
             font-size: 1.5rem;
-            font-weight: bold;
+            font-weight: 700;
             color: var(--accent);
+            text-shadow: 0 2px 4px rgba(139, 69, 19, 0.1);
+            letter-spacing: -0.5px;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 1.1rem;
+            }
         }
 
         .nav-toggle {
@@ -263,11 +286,34 @@
 
         /* Hero Section */
         .hero {
-            padding: 2rem 1rem;
+            padding: 3rem 1rem;
             text-align: center;
             background: linear-gradient(135deg, var(--accent), #a05a2c);
             color: var(--white);
             margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        }
+        
+        .hero > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 2.5rem 1rem;
+            }
         }
 
         .hero h1 {
@@ -297,12 +343,21 @@
         }
 
         .whatsapp-btn:hover, .accent-btn:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             background-color: #a05a2c;
+            box-shadow: var(--shadow-lg);
         }
 
         .whatsapp-btn:active, .accent-btn:active {
             transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .whatsapp-btn, .accent-btn {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+                min-height: 48px;
+            }
         }
 
         /* Featured Products Section */
@@ -329,28 +384,60 @@
         @media (min-width: 768px) {
             .featured-grid {
                 grid-template-columns: 1fr 1fr;
+                max-width: 800px;
             }
         }
 
         .featured-card {
             background-color: var(--white);
-            border-radius: var(--radius);
+            border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow);
-            transition: transform 0.3s;
+            transition: var(--transition);
             position: relative;
+            border: 1px solid rgba(139, 69, 19, 0.08);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+            transform: scaleX(0);
+            transition: transform 0.4s;
         }
 
         .featured-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .featured-card:hover::before {
+            transform: scaleX(1);
         }
 
         .featured-card:active {
             transform: translateY(-2px);
         }
+        
+        @media (max-width: 768px) {
+            .featured-card {
+                border-radius: var(--radius);
+            }
+            
+            .featured-card:hover {
+                transform: translateY(-2px);
+            }
+        }
 
         .featured-image {
-            height: 200px;
+            height: 180px;
             width: 100%;
             object-fit: cover;
         }
@@ -384,9 +471,9 @@
         }
 
         .section-alt {
-            background-color: rgba(192, 192, 192, 0.1);
-            border-top: 1px solid var(--silver);
-            border-bottom: 1px solid var(--silver);
+            background: linear-gradient(180deg, rgba(255, 248, 240, 0.5) 0%, rgba(192, 192, 192, 0.1) 100%);
+            border-top: 1px solid rgba(139, 69, 19, 0.1);
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
         }
 
         .section-title {
@@ -406,20 +493,49 @@
 
         .category-card {
             background-color: var(--white);
-            border-radius: var(--radius);
-            padding: 1.5rem 1rem;
+            border-radius: var(--radius-lg);
+            padding: 1.75rem 1.25rem;
             box-shadow: var(--shadow);
-            transition: transform 0.3s;
+            transition: var(--transition);
             border-top: 4px solid var(--accent);
             position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 69, 19, 0.05), transparent);
+            transition: left 0.3s;
         }
 
         .category-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-top-color: var(--accent-dark);
+        }
+        
+        .category-card:hover::after {
+            left: 100%;
         }
 
         .category-card:active {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 768px) {
+            .category-card {
+                padding: 1.5rem 1rem;
+                border-radius: var(--radius);
+            }
+            
+            .category-card:hover {
+                transform: translateY(-2px);
+            }
         }
 
         .category-icon {
@@ -464,27 +580,57 @@
         /* Pill buttons for category item names */
         .product-link {
             display: inline-block;
-            padding: 0.4rem 0.9rem;
-            background-color: var(--accent);
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             color: #ffffff !important;
             border-radius: 9999px;
             font-weight: 600;
+            font-size: 0.9rem;
             text-decoration: none !important;
-            border: 1px solid var(--accent);
-            box-shadow: var(--shadow);
-            transition: transform 0.2s, background-color 0.2s;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.25);
+            transition: var(--transition);
             position: relative;
+            overflow: hidden;
+            letter-spacing: 0.3px;
+        }
+        
+        .product-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
         }
 
         .product-link:hover {
-            background-color: #a05a2c;
+            background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent) 100%);
             color: #ffffff !important;
             text-decoration: none !important;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.35);
+        }
+        
+        .product-link:hover::before {
+            width: 200px;
+            height: 200px;
         }
 
         .product-link:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 768px) {
+            .product-link {
+                padding: 0.6rem 1.1rem;
+                font-size: 0.85rem;
+                min-height: 40px;
+            }
         }
 
         /* Product Detail Sections */
@@ -511,11 +657,21 @@
             width: 90%;
             max-width: 800px;
             max-height: 90vh;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            border: 1px solid rgba(139, 69, 19, 0.1);
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @media (max-width: 768px) {
+            .product-detail-content {
+                width: 95%;
+                max-height: 95vh;
+                border-radius: var(--radius);
+            }
         }
 
         .product-detail-header {
@@ -584,26 +740,59 @@
         }
 
         .add-to-cart-btn {
-            background-color: var(--accent);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px; /* pill shape */
+            padding: 0.875rem 1.5rem;
+            border-radius: 9999px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1rem;
             margin-top: 1rem;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: var(--transition);
             width: 100%;
             position: relative;
             user-select: none;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+        
+        .add-to-cart-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
 
         .add-to-cart-btn:hover {
-            background-color: #a05a2c;
+            background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+        }
+        
+        .add-to-cart-btn:hover::before {
+            width: 400px;
+            height: 400px;
         }
 
         .add-to-cart-btn:active {
-            transform: scale(0.98);
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .add-to-cart-btn {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+                min-height: 48px;
+            }
         }
 
         /* Shipping Section */
@@ -715,6 +904,81 @@
             font-style: italic;
         }
 
+        /* Enhanced Mobile Styles */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .featured-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .featured-card {
+                margin-bottom: 0;
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            
+            .category-card {
+                padding: 1.25rem 1rem;
+            }
+            
+            .product-detail-content {
+                width: 95%;
+                max-height: 95vh;
+                padding: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .whatsapp-btn {
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+                min-height: 48px;
+            }
+            
+            section {
+                padding: 2rem 1rem;
+            }
+            
+            .section-title,
+            .featured-title {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn,
+            .add-to-cart-btn,
+            .product-link {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .featured-card:hover,
+            .category-card:hover {
+                transform: none;
+            }
+            
+            .btn:hover,
+            .add-to-cart-btn:hover {
+                transform: none;
+            }
+        }
+
         /* Responsive Design */
         @media (min-width: 768px) {
             .nav-toggle {
@@ -793,6 +1057,7 @@
                 <a href="#home">Home</a>
                 <a href="#featured">Featured</a>
                 <a href="#categories">Collections</a>
+                <a href="products.html">All Products</a>
                 <a href="#shipping">Shipping</a>
                 <a href="#contact">Contact</a>
             </nav>
@@ -831,9 +1096,11 @@
         <h2 class="featured-title">Featured Products</h2>
         <div class="featured-grid">
             <div class="featured-card">
-                <a href="kids-packs.html" style="text-decoration: none; color: inherit;">
-                <img src="Assets/Kids packs 1.jpg" alt="Kids Clothing Packs" class="featured-image">
-                <div class="featured-info">
+                <a href="kids-packs.html" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
+                    <div style="background: linear-gradient(135deg, #8B4513 0%, #a05a2c 100%); height: 180px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        👶
+                    </div>
+                    <div class="featured-info" style="flex: 1;">
                     <h3 class="featured-name">Kids Clothing Packs</h3>
                     <p class="featured-description">Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.</p>
                     <div class="featured-price">R120</div>
@@ -842,23 +1109,14 @@
                 </a>
             </div>
             <div class="featured-card">
-                <a href="sneakers.html" style="text-decoration: none; color: inherit;">
-                <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="featured-image">
-                <div class="featured-info">
-                    <h3 class="featured-name">Men's Sneakers</h3>
-                    <p class="featured-description">Stylish and comfortable sneakers for men in various sizes and styles.</p>
+                <a href="sneakers.html" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
+                    <div style="background: linear-gradient(135deg, #8B4513 0%, #a05a2c 100%); height: 180px; display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                        👟
+                    </div>
+                    <div class="featured-info" style="flex: 1;">
+                        <h3 class="featured-name">Sneakers Collection</h3>
+                        <p class="featured-description">Stylish and comfortable sneakers for men and women in various sizes and styles.</p>
                     <div class="featured-price">R100 - R790</div>
-                        <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='sneakers.html'; return false;" style="cursor: pointer;">View All Sneakers</button>
-                </div>
-                </a>
-            </div>
-            <div class="featured-card">
-                <a href="sneakers.html" style="text-decoration: none; color: inherit;">
-                <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="featured-image">
-                <div class="featured-info">
-                    <h3 class="featured-name">Women's Sneakers</h3>
-                    <p class="featured-description">Trendy sneakers for women in all sizes and colors.</p>
-                    <div class="featured-price">R100 - R590</div>
                         <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='sneakers.html'; return false;" style="cursor: pointer;">View All Sneakers</button>
                 </div>
                 </a>
@@ -874,45 +1132,45 @@
                 <div class="category-icon">👕</div>
                 <h3 class="category-title">Men's Collection</h3>
                 <ul class="category-items">
-                    <li><a href="#" class="product-link" data-product="men-jerseys">Jerseys</a></li>
-                    <li><a href="#" class="product-link" data-product="men-jackets">Jackets</a></li>
-                    <li><a href="#" class="product-link" data-product="men-hoodies">Hoodies</a></li>
-                    <li><a href="#" class="product-link" data-product="men-trackpants">Trackpants</a></li>
-                    <li><a href="#" class="product-link" data-product="men-formal-shoes">Formal Shoes</a></li>
+                    <li><a href="product-type.html?type=Jerseys&category=men" class="product-link">Jerseys</a></li>
+                    <li><a href="product-type.html?type=Jackets&category=men" class="product-link">Jackets</a></li>
+                    <li><a href="product-type.html?type=Hoodies&category=men" class="product-link">Hoodies</a></li>
+                    <li><a href="product-type.html?type=Trackpants&category=men" class="product-link">Trackpants</a></li>
+                    <li><a href="product-type.html?type=Formal Shoes&category=men" class="product-link">Formal Shoes</a></li>
                     <li><a href="sneakers.html" class="product-link">Sneakers (6-14)</a></li>
-                    <li><a href="#" class="product-link" data-product="men-tshirts">Men T-shirts</a></li>
-                    <li><a href="#" class="product-link" data-product="men-sport-jerseys">Sport Jerseys</a></li>
-                    <li><a href="#" class="product-link" data-product="men-swimming-shorts">Swimming Shorts</a></li>
-                    <li><a href="#" class="product-link" data-product="men-cargo-shorts">Cargo Shorts</a></li>
-                    <li><a href="#" class="product-link" data-product="men-jean-jackets">Jean Jackets</a></li>
-                    <li><a href="#" class="product-link" data-product="men-jeans">Jeans</a></li>
-                    <li><a href="#" class="product-link" data-product="men-chinos">Chinos</a></li>
-                    <li><a href="#" class="product-link" data-product="men-formal-shirts">Formal Shirts</a></li>
-                    <li><a href="#" class="product-link" data-product="men-sandals">Sandals</a></li>
-                    <li><a href="#" class="product-link" data-product="men-socks">Socks</a></li>
+                    <li><a href="product-type.html?type=T-shirts&category=men" class="product-link">T-shirts</a></li>
+                    <li><a href="product-type.html?type=Sport Jerseys&category=men" class="product-link">Sport Jerseys</a></li>
+                    <li><a href="product-type.html?type=Swimming Shorts&category=men" class="product-link">Swimming Shorts</a></li>
+                    <li><a href="product-type.html?type=Cargo Shorts&category=men" class="product-link">Cargo Shorts</a></li>
+                    <li><a href="product-type.html?type=Jean Jackets&category=men" class="product-link">Jean Jackets</a></li>
+                    <li><a href="product-type.html?type=Jeans&category=men" class="product-link">Jeans</a></li>
+                    <li><a href="product-type.html?type=Chinos&category=men" class="product-link">Chinos</a></li>
+                    <li><a href="product-type.html?type=Formal Shirts&category=men" class="product-link">Formal Shirts</a></li>
+                    <li><a href="product-type.html?type=Sandals&category=men" class="product-link">Sandals</a></li>
+                    <li><a href="product-type.html?type=Socks&category=men" class="product-link">Socks</a></li>
                 </ul>
             </div>
             <div class="category-card">
                 <div class="category-icon">👚</div>
                 <h3 class="category-title">Women's Collection</h3>
                 <ul class="category-items">
-                    <li><a href="#" class="product-link" data-product="women-jean-jackets">Jean Jackets</a></li>
-                    <li><a href="#" class="product-link" data-product="women-tracksuits">Tracksuits</a></li>
-                    <li><a href="#" class="product-link" data-product="women-jeans">Jeans</a></li>
-                    <li><a href="#" class="product-link" data-product="women-gym-tights">Gym Tights</a></li>
-                    <li><a href="#" class="product-link" data-product="women-shoes">Ladies Shoes</a></li>
+                    <li><a href="product.html?id=women-jean-jackets" class="product-link">Jean Jackets</a></li>
+                    <li><a href="product.html?id=women-tracksuits" class="product-link">Tracksuits</a></li>
+                    <li><a href="product.html?id=women-jeans" class="product-link">Jeans</a></li>
+                    <li><a href="product.html?id=women-gym-tights" class="product-link">Gym Tights</a></li>
+                    <li><a href="product.html?id=women-shoes" class="product-link">Ladies Shoes</a></li>
                     <li><a href="sneakers.html" class="product-link">Sneakers</a></li>
-                    <li><a href="#" class="product-link" data-product="women-dresses">Dresses</a></li>
-                    <li><a href="#" class="product-link" data-product="women-normal-jackets">Normal Jackets</a></li>
-                    <li><a href="#" class="product-link" data-product="women-sandals">Sandals</a></li>
-                    <li><a href="#" class="product-link" data-product="women-formal-trousers">Ladies Formal Trousers</a></li>
-                    <li><a href="#" class="product-link" data-product="women-tight-types">All Tight Types</a></li>
-                    <li><a href="#" class="product-link" data-product="women-blouses">Blouses</a></li>
-                    <li><a href="#" class="product-link" data-product="women-skirts">Skirts</a></li>
-                    <li><a href="#" class="product-link" data-product="women-tshirts">T-shirts</a></li>
-                    <li><a href="#" class="product-link" data-product="women-nightwear">Nightwear (Gowns & Bonnets)</a></li>
-                    <li><a href="#" class="product-link" data-product="women-bras">Bra's</a></li>
-                    <li><a href="#" class="product-link" data-product="women-socks">Socks</a></li>
+                    <li><a href="product.html?id=women-dresses" class="product-link">Dresses</a></li>
+                    <li><a href="product.html?id=women-normal-jackets" class="product-link">Normal Jackets</a></li>
+                    <li><a href="product.html?id=women-sandals" class="product-link">Sandals</a></li>
+                    <li><a href="product.html?id=women-formal-trousers" class="product-link">Ladies Formal Trousers</a></li>
+                    <li><a href="product.html?id=women-all-tight-types" class="product-link">All Tight Types</a></li>
+                    <li><a href="product.html?id=women-blouses" class="product-link">Blouses</a></li>
+                    <li><a href="product.html?id=women-skirts" class="product-link">Skirts</a></li>
+                    <li><a href="product.html?id=women-tshirts" class="product-link">T-shirts</a></li>
+                    <li><a href="product.html?id=women-nightwear" class="product-link">Nightwear (Gowns & Bonnets)</a></li>
+                    <li><a href="product.html?id=women-bras" class="product-link">Bra's</a></li>
+                    <li><a href="product.html?id=women-socks" class="product-link">Socks</a></li>
                 </ul>
             </div>
             <div class="category-card">
@@ -920,12 +1178,12 @@
                 <h3 class="category-title">Kids Collection</h3>
                 <ul class="category-items">
                     <li><a href="kids-packs.html" class="product-link">Kids Clothing Packs</a></li>
-                    <li><a href="#" class="product-link" data-product="kids-jackets">Jackets</a></li>
-                    <li><a href="#" class="product-link" data-product="kids-hoodies">Hoodies</a></li>
-                    <li><a href="#" class="product-link" data-product="kids-trackpants">Trackpants</a></li>
-                    <li><a href="#" class="product-link" data-product="kids-jeans">Jeans</a></li>
-                    <li><a href="#" class="product-link" data-product="kids-tshirts">T-shirts</a></li>
-                    <li><a href="#" class="product-link" data-product="kids-shorts">Shorts</a></li>
+                    <li><a href="product.html?id=kids-jackets" class="product-link">Jackets</a></li>
+                    <li><a href="product.html?id=kids-hoodies" class="product-link">Hoodies</a></li>
+                    <li><a href="product.html?id=kids-trackpants" class="product-link">Trackpants</a></li>
+                    <li><a href="product.html?id=kids-jeans" class="product-link">Jeans</a></li>
+                    <li><a href="product.html?id=kids-tshirts" class="product-link">T-shirts</a></li>
+                    <li><a href="product.html?id=kids-shorts" class="product-link">Shorts</a></li>
                 </ul>
             </div>
         </div>
