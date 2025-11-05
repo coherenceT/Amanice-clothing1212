@@ -913,7 +913,7 @@
                     size: '',
                     price: parseFloat(document.getElementById('sneakerPrice').value),
                     description: document.getElementById('sneakerDescription').value,
-                    stockNumber: document.getElementById('sneakerStockNumber').value,
+                    stockNumber: document.getElementById('sneakerStockNumber').value.trim() || '',
                     isShoe: true,
                     shoeBrand: document.getElementById('sneakerBrand').value,
                     shoeSizes: [...currentSneakerSizes],
@@ -968,7 +968,7 @@
                     size: document.getElementById('packSize').value,
                     price: parseFloat(document.getElementById('packPrice').value),
                     description: document.getElementById('packDescription').value,
-                    stockNumber: document.getElementById('packStockNumber').value,
+                    stockNumber: document.getElementById('packStockNumber').value.trim() || '',
                     isShoe: false,
                     stockQuantity: parseInt(document.getElementById('packStockQuantity').value) || 1,
                     dateAdded: new Date().toISOString(),
@@ -1091,7 +1091,7 @@
                     size: document.getElementById('productSize').value,
                     price: parseFloat(document.getElementById('productPrice').value),
                     description: document.getElementById('productDescription').value,
-                    stockNumber: document.getElementById('stockNumber').value,
+                    stockNumber: document.getElementById('stockNumber').value.trim() || '',
                     isShoe: document.getElementById('shoesBrandSection').classList.contains('show'),
                     shoeBrand: document.getElementById('shoeBrand').value,
                     shoeSizes: currentShoeSizes.length > 0 ? [...currentShoeSizes] : [],
@@ -1514,7 +1514,7 @@
                     type: document.getElementById('editType').value,
                     price: parseFloat(document.getElementById('editPrice').value),
                     description: document.getElementById('editDescription').value,
-                    stockNumber: document.getElementById('editStockNumber').value
+                    stockNumber: document.getElementById('editStockNumber').value.trim() || ''
                 };
                 
                 if (imageInput.files[0]) {

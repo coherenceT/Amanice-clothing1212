@@ -290,6 +290,7 @@
                             <h3 class="pack-title">${pack.type}</h3>
                             ${pack.description ? `<div class="pack-details">${pack.description}</div>` : ''}
                             ${pack.size ? `<div class="pack-details"><strong>Size:</strong> ${pack.size}</div>` : ''}
+                            ${pack.stockNumber ? `<div class="pack-details" style="font-weight: 600; color: var(--accent);"><strong>Stock #:</strong> ${pack.stockNumber}</div>` : ''}
                             <div class="pack-price">${priceDisplay}</div>
                             <div class="pack-stock">
                                 <span class="stock-info ${stockClass}">${stockInfo}</span>

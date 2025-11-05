@@ -364,6 +364,7 @@
                             <h3 class="sneaker-title">${sneaker.type}</h3>
                             <div class="sneaker-brand">${brand} ${category ? `- ${category}` : ''}</div>
                             ${sneaker.description ? `<div class="sneaker-details">${sneaker.description}</div>` : ''}
+                            ${sneaker.stockNumber ? `<div class="sneaker-details" style="font-weight: 600; color: var(--accent);"><strong>Stock #:</strong> ${sneaker.stockNumber}</div>` : ''}
                             <div class="sneaker-price">${priceDisplay}</div>
                             <div class="sneaker-stock">
                                 <span class="stock-info ${stockClass}">${stockInfo}</span>

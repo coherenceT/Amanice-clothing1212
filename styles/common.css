@@ -36,11 +36,17 @@ body {
     text-decoration: none;
     display: inline-block;
     font-size: 1rem;
+    position: relative;
+    user-select: none;
 }
 
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow);
+}
+
+.btn:active {
+    transform: translateY(0);
 }
 
 .btn-primary {

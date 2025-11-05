@@ -301,6 +301,10 @@
             background-color: #a05a2c;
         }
 
+        .whatsapp-btn:active, .accent-btn:active {
+            transform: translateY(0);
+        }
+
         /* Featured Products Section */
         .featured-products {
             padding: 2rem 1rem;
@@ -334,10 +338,15 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: transform 0.3s;
+            position: relative;
         }
 
         .featured-card:hover {
             transform: translateY(-5px);
+        }
+
+        .featured-card:active {
+            transform: translateY(-2px);
         }
 
         .featured-image {
@@ -402,10 +411,15 @@
             box-shadow: var(--shadow);
             transition: transform 0.3s;
             border-top: 4px solid var(--accent);
+            position: relative;
         }
 
         .category-card:hover {
             transform: translateY(-5px);
+        }
+
+        .category-card:active {
+            transform: translateY(-2px);
         }
 
         .category-icon {
@@ -459,6 +473,7 @@
             border: 1px solid var(--accent);
             box-shadow: var(--shadow);
             transition: transform 0.2s, background-color 0.2s;
+            position: relative;
         }
 
         .product-link:hover {
@@ -466,6 +481,10 @@
             color: #ffffff !important;
             text-decoration: none !important;
             transform: translateY(-2px);
+        }
+
+        .product-link:active {
+            transform: translateY(0);
         }
 
         /* Product Detail Sections */
@@ -573,12 +592,18 @@
             cursor: pointer;
             font-weight: bold;
             margin-top: 1rem;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
             width: 100%;
+            position: relative;
+            user-select: none;
         }
 
         .add-to-cart-btn:hover {
             background-color: #a05a2c;
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.98);
         }
 
         /* Shipping Section */
@@ -807,35 +832,35 @@
         <div class="featured-grid">
             <div class="featured-card">
                 <a href="kids-packs.html" style="text-decoration: none; color: inherit;">
-                    <img src="Assets/Kids packs 1.jpg" alt="Kids Clothing Packs" class="featured-image">
-                    <div class="featured-info">
-                        <h3 class="featured-name">Kids Clothing Packs</h3>
-                        <p class="featured-description">Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.</p>
-                        <div class="featured-price">R120</div>
+                <img src="Assets/Kids packs 1.jpg" alt="Kids Clothing Packs" class="featured-image">
+                <div class="featured-info">
+                    <h3 class="featured-name">Kids Clothing Packs</h3>
+                    <p class="featured-description">Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.</p>
+                    <div class="featured-price">R120</div>
                         <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='kids-packs.html'; return false;" style="cursor: pointer;">View All Packs</button>
-                    </div>
+                </div>
                 </a>
             </div>
             <div class="featured-card">
                 <a href="sneakers.html" style="text-decoration: none; color: inherit;">
-                    <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="featured-image">
-                    <div class="featured-info">
-                        <h3 class="featured-name">Men's Sneakers</h3>
-                        <p class="featured-description">Stylish and comfortable sneakers for men in various sizes and styles.</p>
-                        <div class="featured-price">R100 - R790</div>
+                <img src="Assets/Mens sneakers.jpg" alt="Men's Sneakers" class="featured-image">
+                <div class="featured-info">
+                    <h3 class="featured-name">Men's Sneakers</h3>
+                    <p class="featured-description">Stylish and comfortable sneakers for men in various sizes and styles.</p>
+                    <div class="featured-price">R100 - R790</div>
                         <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='sneakers.html'; return false;" style="cursor: pointer;">View All Sneakers</button>
-                    </div>
+                </div>
                 </a>
             </div>
             <div class="featured-card">
                 <a href="sneakers.html" style="text-decoration: none; color: inherit;">
-                    <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="featured-image">
-                    <div class="featured-info">
-                        <h3 class="featured-name">Women's Sneakers</h3>
-                        <p class="featured-description">Trendy sneakers for women in all sizes and colors.</p>
-                        <div class="featured-price">R100 - R590</div>
+                <img src="Assets/Ladies takkies.jpg" alt="Women's Sneakers" class="featured-image">
+                <div class="featured-info">
+                    <h3 class="featured-name">Women's Sneakers</h3>
+                    <p class="featured-description">Trendy sneakers for women in all sizes and colors.</p>
+                    <div class="featured-price">R100 - R590</div>
                         <button class="add-to-cart-btn" onclick="event.preventDefault(); window.location.href='sneakers.html'; return false;" style="cursor: pointer;">View All Sneakers</button>
-                    </div>
+                </div>
                 </a>
             </div>
         </div>
