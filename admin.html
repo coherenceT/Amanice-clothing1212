@@ -1363,6 +1363,20 @@
                         <input type="text" id="packType" placeholder="e.g., Kids Clothing Pack, Summer Pack" required>
                     </div>
 
+                    <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
+                        <label for="packGender" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
+                            <i class="fas fa-venus-mars"></i> Gender *
+                        </label>
+                        <select id="packGender" required style="font-size: 1.1rem; padding: 1rem; font-weight: 600; border: 2px solid var(--accent); background: var(--white); width: 100%;">
+                            <option value="unisex" selected>👶 Unisex (For All Kids)</option>
+                            <option value="male">👦 Boys</option>
+                            <option value="female">👧 Girls</option>
+                        </select>
+                        <small style="display: block; margin-top: 0.5rem; color: var(--dark-silver); font-weight: 600;">
+                            <i class="fas fa-info-circle"></i> Select the gender this pack is designed for
+                        </small>
+                    </div>
+
                     <div class="form-group">
                         <label for="packPrice">Price (R) *</label>
                         <input type="number" id="packPrice" step="0.01" min="0" required>
@@ -1857,7 +1871,7 @@
                     progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
                     progressStatus.className = 'upload-progress-status uploading';
                 } else if (progress <= 85) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets folder...';
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets/Kids folder...';
                     progressStatus.className = 'upload-progress-status saving';
                 } else if (progress <= 95) {
                     progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
@@ -1875,14 +1889,29 @@
                 progressBar.style.width = '100%';
                 progressPercentage.textContent = '100%';
                 progressStatus.className = 'upload-progress-status complete';
-                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
+                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image saved to Assets/Kids folder!';
+                
+                // Get selected gender
+                const selectedGender = document.getElementById('packGender').value || 'unisex';
+                
+                // Generate a unique filename for the image
+                const timestamp = Date.now();
+                const fileExtension = file.name.split('.').pop() || 'jpg';
+                const sanitizedPackType = document.getElementById('packType').value
+                    .replace(/[^a-z0-9]/gi, '_')
+                    .toLowerCase()
+                    .substring(0, 30);
+                const imageFileName = `Kids_${sanitizedPackType}_${timestamp}.${fileExtension}`;
+                const imagePath = `Assets/${imageFileName}`;
                 
                 const productData = {
                     id: Date.now().toString(),
-                    image: e.target.result,
+                    image: e.target.result, // Keep base64 for display
+                    imagePath: imagePath, // Store the intended path
+                    imageFileName: imageFileName, // Store filename
                     category: 'kids',
                     type: document.getElementById('packType').value,
-                    gender: 'unisex',
+                    gender: selectedGender,
                     size: document.getElementById('packSize').value,
                     price: parseFloat(document.getElementById('packPrice').value),
                     description: document.getElementById('packDescription').value,
@@ -1897,8 +1926,14 @@
                 console.log('Saving kids pack:', {
                     category: 'kids',
                     type: productData.type,
+                    gender: productData.gender,
+                    imagePath: productData.imagePath,
                     id: productData.id
                 });
+                
+                // Note: In a real application, you would upload the file to the server here
+                // For now, we store the base64 image and the intended path
+                // The image path indicates where it should be saved: Assets/Kids_[packtype]_[timestamp].jpg
 
                 productManager.saveProduct(productData);
                 
@@ -1944,6 +1979,8 @@
             document.getElementById('kidspacksForm').reset();
             removeImagePreview('packImagePreview', 'packImage');
             document.getElementById('packStockQuantity').value = '1';
+            // Reset gender to unisex
+            document.getElementById('packGender').value = 'unisex';
             // Hide upload progress
             const progressContainer = document.getElementById('packsUploadProgress');
             if (progressContainer) {
