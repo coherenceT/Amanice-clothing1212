@@ -41,17 +41,26 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .admin-header h1 {
             color: var(--accent);
             font-size: 1.5rem;
+            margin: 0;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .header-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -88,6 +97,12 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
         }
 
         .admin-grid {
@@ -151,17 +166,60 @@
             font-size: 0.9rem;
         }
 
-        .image-preview {
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
             margin-top: 1rem;
+            width: 100%;
+        }
+
+        .image-preview {
             max-width: 100%;
             max-height: 300px;
             border-radius: var(--radius);
             border: 2px dashed var(--silver);
             display: none;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         .image-preview.show {
             display: block;
+        }
+
+        .image-preview-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .image-preview-remove:hover {
+            background: rgba(255, 68, 68, 1);
+            transform: scale(1.1);
+        }
+
+        .image-preview-remove:active {
+            transform: scale(0.95);
+        }
+
+        .image-preview.show ~ .image-preview-remove,
+        .image-preview-container:has(.image-preview.show) .image-preview-remove {
+            display: flex;
         }
 
         .stock-management {
@@ -175,34 +233,95 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem;
-            background: var(--cream);
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, var(--cream) 0%, #ffffff 100%);
             border-radius: var(--radius);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid var(--silver);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stock-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border-color: var(--accent);
+        }
+
+        .stock-item span {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stock-item span::before {
+            content: '📦';
+            font-size: 1.2rem;
         }
 
         .stock-controls {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
             align-items: center;
+            flex-shrink: 0;
+            min-width: fit-content;
         }
 
         .stock-controls button {
-            padding: 0.25rem 0.75rem;
+            padding: 0.75rem 1.25rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 1.5rem;
+            min-width: 50px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            touch-action: manipulation;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .stock-controls button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        .stock-controls button:active {
+            transform: scale(0.98);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+
+        .stock-controls button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .stock-controls .btn-increment {
-            background: #25A525;
+            background: linear-gradient(135deg, #25A525 0%, #1d7a1d 100%);
             color: white;
         }
 
+        .stock-controls .btn-increment:hover {
+            background: linear-gradient(135deg, #1d7a1d 0%, #25A525 100%);
+        }
+
         .stock-controls .btn-decrement {
-            background: #ff4444;
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
             color: white;
+        }
+
+        .stock-controls .btn-decrement:hover {
+            background: linear-gradient(135deg, #cc0000 0%, #ff4444 100%);
         }
 
         .products-list {
@@ -216,6 +335,36 @@
             border-radius: var(--radius);
             margin-bottom: 1rem;
             border-left: 4px solid var(--accent);
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .product-item-number {
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            background: var(--accent);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            z-index: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .stock-quantity-display {
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .shoe-stock-quantity {
+            font-weight: 600;
+            transition: color 0.3s ease;
         }
 
         .product-item-header {
@@ -314,10 +463,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem;
-            background: white;
-            border-radius: 5px;
-            margin-bottom: 0.5rem;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--cream) 100%);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            border: 2px solid var(--silver);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stock-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border-color: var(--accent);
+        }
+
+        .stock-entry span {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
         }
 
         .alert {
@@ -359,10 +523,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem;
-            background: white;
-            border-radius: 5px;
-            margin-bottom: 0.5rem;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--cream) 100%);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            border: 2px solid var(--silver);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .brand-stock-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            border-color: var(--accent);
+        }
+
+        .brand-stock-item span {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
         }
 
         .filter-section {
@@ -385,9 +564,272 @@
 
         .filter-section input[type="text"] {
             width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid var(--silver);
+            border-radius: var(--radius);
+        }
+
+        .filter-section input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .product-count-display {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, var(--cream) 0%, #ffffff 100%);
+            border-radius: var(--radius);
+            border: 2px solid var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(139, 69, 19, 0.15);
+        }
+
+        .product-count-display::before {
+            content: '📊';
+            font-size: 1.2rem;
+        }
+
+        .stock-count-display {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, var(--cream) 0%, #ffffff 100%);
+            border-radius: var(--radius);
+            border: 2px solid var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 6px rgba(139, 69, 19, 0.15);
+        }
+
+        .stock-count-display::before {
+            content: '📦';
+            font-size: 1.2rem;
+        }
+
+        /* Upload Progress Styles */
+        .upload-progress-container {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--cream) 0%, #ffffff 100%);
+            border-radius: var(--radius);
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+        }
+
+        .upload-progress-container.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .upload-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .upload-progress-header h4 {
+            color: var(--accent);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-progress-header h4 i {
+            animation: spin 1s linear infinite;
+        }
+
+        .upload-progress-bar-wrapper {
+            width: 100%;
+            height: 24px;
+            background: var(--silver);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 0.75rem;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 50%, var(--accent) 100%);
+            background-size: 200% 100%;
+            border-radius: 12px;
+            transition: width 0.3s ease;
+            position: relative;
+            animation: progressShine 2s linear infinite;
+            box-shadow: 0 2px 8px rgba(139, 69, 19, 0.4);
+        }
+
+        @keyframes progressShine {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .upload-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .upload-progress-percentage {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .upload-progress-status {
+            text-align: center;
+            color: var(--dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .upload-progress-status i {
+            margin-right: 0.5rem;
+        }
+
+        .upload-progress-status.uploading {
+            color: var(--accent);
+        }
+
+        .upload-progress-status.saving {
+            color: #4285F4;
+        }
+
+        .upload-progress-status.complete {
+            color: #25A525;
+        }
+
+        /* Loading Overlay */
+        .upload-loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .upload-loading-overlay.active {
+            display: flex;
+        }
+
+        .upload-loading-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .upload-loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--silver);
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        .upload-loading-content h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .upload-loading-content p {
+            color: var(--dark);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-loading-percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 1rem 0;
         }
 
         @media (max-width: 768px) {
+            .admin-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.2rem;
+                flex-basis: 100%;
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .header-actions .btn {
+                padding: 0.625rem 1rem;
+                font-size: 0.9rem;
+                flex: 1;
+                min-width: 120px;
+                max-width: 200px;
+            }
+
+            .tab-buttons-container button {
+                min-width: 100% !important;
+                width: 100% !important;
+            }
+
             .filter-section > div:first-child {
                 grid-template-columns: 1fr !important;
             }
@@ -396,6 +838,215 @@
                 flex-direction: column;
                 gap: 1rem;
                 align-items: flex-start !important;
+            }
+
+            .stock-management {
+                grid-template-columns: 1fr;
+            }
+
+            .stock-controls button {
+                min-width: 56px;
+                width: 56px;
+                height: 56px;
+                font-size: 1.75rem;
+                padding: 0.875rem 1.5rem;
+            }
+
+            .search-input {
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+
+            .search-btn-text {
+                display: inline;
+            }
+
+            .stock-item {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .stock-item span {
+                text-align: center;
+            }
+
+            .stock-controls {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .stock-entry {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .stock-entry .stock-controls {
+                justify-content: center;
+            }
+
+            .brand-stock-item {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .brand-stock-item button {
+                width: 100%;
+            }
+
+            .upload-progress-container {
+                padding: 1rem;
+            }
+
+            .upload-progress-percentage {
+                font-size: 1.25rem;
+            }
+
+            .form-section, .products-section {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .btn {
+                padding: 0.875rem 1.25rem;
+                font-size: 1rem;
+                min-height: 48px;
+            }
+
+            .product-item {
+                padding: 1rem;
+            }
+
+            .product-item-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .product-item-image {
+                width: 100%;
+                height: auto;
+                max-height: 200px;
+                margin-right: 0;
+            }
+
+            .product-item-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .product-item-actions button {
+                flex: 1;
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .image-preview-remove {
+                width: 40px;
+                height: 40px;
+                font-size: 1.3rem;
+                top: 5px;
+                right: 5px;
+            }
+
+            .search-input {
+                width: 100% !important;
+                min-width: 0 !important;
+                padding: 0.75rem !important;
+                font-size: 1rem !important;
+            }
+
+            .search-btn {
+                min-width: auto !important;
+                padding: 0.75rem 1rem !important;
+            }
+
+            .search-btn-text {
+                display: none;
+            }
+
+            .product-count-display {
+                font-size: 0.95rem;
+                padding: 0.625rem 0.875rem;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .stock-count-display {
+                font-size: 0.95rem;
+                padding: 0.625rem 0.875rem;
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header h1 {
+                font-size: 1rem;
+            }
+
+            .header-actions .btn {
+                font-size: 0.85rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .container {
+                padding: 0.75rem;
+            }
+
+            .form-section, .products-section {
+                padding: 1rem;
+            }
+
+            .stock-controls button {
+                min-width: 60px;
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+
+            .search-btn-text {
+                display: none;
+            }
+
+            .product-count-display {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .stock-count-display {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .btn {
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+                min-height: 52px;
+            }
+
+            /* Tab buttons mobile optimization */
+            .tab-buttons-container {
+                flex-direction: column !important;
+            }
+
+            .tab-buttons-container button {
+                width: 100% !important;
+                min-width: 100% !important;
+                margin-bottom: 0.5rem;
             }
         }
     </style>
@@ -425,7 +1076,7 @@
 
         <!-- Tabs for different product types -->
         <div style="margin-bottom: 2rem; background: white; padding: 1rem; border-radius: var(--radius); box-shadow: var(--shadow);">
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div class="tab-buttons-container" style="display: flex; gap: 1rem; flex-wrap: wrap;">
                 <button class="btn btn-primary" id="tabRegular" onclick="switchTab('regular')" style="flex: 1; min-width: 150px;">
                     <i class="fas fa-tshirt"></i> Regular Products
                 </button>
@@ -450,7 +1101,12 @@
                         <label for="productImage">Product Image *</label>
                         <input type="file" id="productImage" accept="image/*" required>
                         <small>Upload a photo of your product</small>
-                        <img id="imagePreview" class="image-preview" alt="Preview">
+                        <div class="image-preview-container">
+                            <img id="imagePreview" class="image-preview" alt="Preview">
+                            <button type="button" class="image-preview-remove" onclick="removeImagePreview('imagePreview', 'productImage')" title="Remove image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
@@ -581,6 +1237,20 @@
                     <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
                         <i class="fas fa-plus-circle"></i> Add Product
                     </button>
+                    
+                    <!-- Upload Progress Container -->
+                    <div id="regularUploadProgress" class="upload-progress-container">
+                        <div class="upload-progress-header">
+                            <h4><i class="fas fa-cloud-upload-alt"></i> Uploading Image</h4>
+                        </div>
+                        <div class="upload-progress-percentage" id="regularUploadPercentage">0%</div>
+                        <div class="upload-progress-bar-wrapper">
+                            <div class="upload-progress-bar" id="regularUploadBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="upload-progress-status uploading" id="regularUploadStatus">
+                            <i class="fas fa-spinner fa-spin"></i> Preparing image for upload...
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -592,7 +1262,12 @@
                         <label for="sneakerImage">Sneaker Image *</label>
                         <input type="file" id="sneakerImage" accept="image/*" required>
                         <small>Upload a photo of the sneakers</small>
-                        <img id="sneakerImagePreview" class="image-preview" alt="Preview">
+                        <div class="image-preview-container">
+                            <img id="sneakerImagePreview" class="image-preview" alt="Preview">
+                            <button type="button" class="image-preview-remove" onclick="removeImagePreview('sneakerImagePreview', 'sneakerImage')" title="Remove image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
@@ -650,6 +1325,20 @@
                     <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
                         <i class="fas fa-plus-circle"></i> Add Sneakers
                     </button>
+                    
+                    <!-- Upload Progress Container -->
+                    <div id="sneakersUploadProgress" class="upload-progress-container">
+                        <div class="upload-progress-header">
+                            <h4><i class="fas fa-cloud-upload-alt"></i> Uploading Image</h4>
+                        </div>
+                        <div class="upload-progress-percentage" id="sneakersUploadPercentage">0%</div>
+                        <div class="upload-progress-bar-wrapper">
+                            <div class="upload-progress-bar" id="sneakersUploadBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="upload-progress-status uploading" id="sneakersUploadStatus">
+                            <i class="fas fa-spinner fa-spin"></i> Preparing image for upload...
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -661,7 +1350,12 @@
                         <label for="packImage">Pack Image *</label>
                         <input type="file" id="packImage" accept="image/*" required>
                         <small>Upload a photo of the clothing pack</small>
-                        <img id="packImagePreview" class="image-preview" alt="Preview">
+                        <div class="image-preview-container">
+                            <img id="packImagePreview" class="image-preview" alt="Preview">
+                            <button type="button" class="image-preview-remove" onclick="removeImagePreview('packImagePreview', 'packImage')" title="Remove image">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -699,6 +1393,20 @@
                     <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
                         <i class="fas fa-plus-circle"></i> Add Kids Pack
                     </button>
+                    
+                    <!-- Upload Progress Container -->
+                    <div id="packsUploadProgress" class="upload-progress-container">
+                        <div class="upload-progress-header">
+                            <h4><i class="fas fa-cloud-upload-alt"></i> Uploading Image</h4>
+                        </div>
+                        <div class="upload-progress-percentage" id="packsUploadPercentage">0%</div>
+                        <div class="upload-progress-bar-wrapper">
+                            <div class="upload-progress-bar" id="packsUploadBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="upload-progress-status uploading" id="packsUploadStatus">
+                            <i class="fas fa-spinner fa-spin"></i> Preparing image for upload...
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -733,10 +1441,10 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label for="filterType" style="font-size: 0.9rem; font-weight: 600;">Search</label>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <input type="text" id="filterType" placeholder="Search products..." style="padding: 0.5rem; flex: 1;">
-                                <button type="button" class="btn btn-primary" onclick="applyFilters()" style="padding: 0.5rem 1rem;">
-                                    <i class="fas fa-search"></i> Search
+                            <div style="display: flex; gap: 0.5rem; width: 100%;">
+                                <input type="text" id="filterType" placeholder="Search products..." class="search-input" style="flex: 1; min-width: 0;">
+                                <button type="button" class="btn btn-primary search-btn" onclick="applyFilters()" style="padding: 0.5rem 1rem; flex-shrink: 0;">
+                                    <i class="fas fa-search"></i> <span class="search-btn-text">Search</span>
                                 </button>
                             </div>
                             <small style="display: block; margin-top: 0.25rem; color: #666;">Search by product name, brand, description, or stock number</small>
@@ -764,7 +1472,10 @@
                         </div>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--silver); flex-wrap: wrap; gap: 1rem;">
-                        <span id="productCount" style="color: var(--accent); font-weight: bold; font-size: 1rem;"></span>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                            <div id="productCount" class="product-count-display"></div>
+                            <div id="stockCount" class="stock-count-display"></div>
+                        </div>
                         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; background: var(--cream); border-radius: 5px;">
                                 <input type="checkbox" id="showOnlyDefault" onchange="applyFilters()">
@@ -795,6 +1506,16 @@
             <div id="editFormContainer">
                 <!-- Edit form will be inserted here -->
             </div>
+        </div>
+    </div>
+
+    <!-- Upload Loading Overlay -->
+    <div id="uploadLoadingOverlay" class="upload-loading-overlay">
+        <div class="upload-loading-content">
+            <div class="upload-loading-spinner"></div>
+            <h3>Uploading Image</h3>
+            <p id="uploadLoadingText">Saving to Assets folder...</p>
+            <div class="upload-loading-percentage" id="uploadLoadingPercentage">0%</div>
         </div>
     </div>
 
@@ -952,8 +1673,52 @@
                 return;
             }
 
+            // Show loading spinner and disable button
+            const submitBtn = document.querySelector('#sneakersForm button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            
+            // Show upload progress container
+            const progressContainer = document.getElementById('sneakersUploadProgress');
+            const progressBar = document.getElementById('sneakersUploadBar');
+            const progressPercentage = document.getElementById('sneakersUploadPercentage');
+            const progressStatus = document.getElementById('sneakersUploadStatus');
+            
+            progressContainer.classList.add('active');
+            progressStatus.className = 'upload-progress-status uploading';
+            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
+            
+            // Simulate progress with realistic stages
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                if (progress <= 30) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
+                } else if (progress <= 60) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
+                    progressStatus.className = 'upload-progress-status uploading';
+                } else if (progress <= 85) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets folder...';
+                    progressStatus.className = 'upload-progress-status saving';
+                } else if (progress <= 95) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
+                }
+                
+                if (progress <= 95) {
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = Math.round(progress) + '%';
+                }
+            }, 80);
+
             const reader = new FileReader();
             reader.onload = function(e) {
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressPercentage.textContent = '100%';
+                progressStatus.className = 'upload-progress-status complete';
+                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
+                
                 // Get and validate category FIRST
                 const selectedCategory = document.getElementById('sneakerCategory').value.trim().toLowerCase();
                 
@@ -1006,18 +1771,50 @@
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
 
                 const categoryName = selectedCategory === 'men' ? "Men's" : "Women's";
-                showAlert(`Sneakers added successfully to ${categoryName} Collection!`, 'success');
-                loadProducts();
-                resetSneakersForm();
+                
+                // Hide progress and reset form
+                setTimeout(() => {
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    
+                    // Reset progress bar
+                    setTimeout(() => {
+                        progressBar.style.width = '0%';
+                        progressPercentage.textContent = '0%';
+                    }, 300);
+                    
+                    showAlert(`Sneakers added successfully to ${categoryName} Collection!`, 'success');
+                    loadProducts();
+                    resetSneakersForm();
+                }, 1500);
             };
+            
+            reader.onerror = function() {
+                clearInterval(progressInterval);
+                progressContainer.classList.remove('active');
+                progressBar.style.width = '0%';
+                progressPercentage.textContent = '0%';
+                progressStatus.className = 'upload-progress-status';
+                progressStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Upload failed';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                showAlert('Error uploading image. Please try again.', 'error');
+            };
+            
             reader.readAsDataURL(file);
         });
 
         function resetSneakersForm() {
             document.getElementById('sneakersForm').reset();
-            document.getElementById('sneakerImagePreview').classList.remove('show');
+            removeImagePreview('sneakerImagePreview', 'sneakerImage');
             currentSneakerSizes = [];
             document.getElementById('sneakerSizesList').innerHTML = '';
+            // Hide upload progress
+            const progressContainer = document.getElementById('sneakersUploadProgress');
+            if (progressContainer) {
+                progressContainer.classList.remove('active');
+            }
             // Ensure default stock is 1
             document.getElementById('sneakerSizeStock').value = '1';
         }
@@ -1034,8 +1831,52 @@
                 return;
             }
 
+            // Show loading spinner and disable button
+            const submitBtn = document.querySelector('#kidspacksForm button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            
+            // Show upload progress container
+            const progressContainer = document.getElementById('packsUploadProgress');
+            const progressBar = document.getElementById('packsUploadBar');
+            const progressPercentage = document.getElementById('packsUploadPercentage');
+            const progressStatus = document.getElementById('packsUploadStatus');
+            
+            progressContainer.classList.add('active');
+            progressStatus.className = 'upload-progress-status uploading';
+            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
+            
+            // Simulate progress with realistic stages
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                if (progress <= 30) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
+                } else if (progress <= 60) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
+                    progressStatus.className = 'upload-progress-status uploading';
+                } else if (progress <= 85) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets folder...';
+                    progressStatus.className = 'upload-progress-status saving';
+                } else if (progress <= 95) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
+                }
+                
+                if (progress <= 95) {
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = Math.round(progress) + '%';
+                }
+            }, 80);
+
             const reader = new FileReader();
             reader.onload = function(e) {
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                progressPercentage.textContent = '100%';
+                progressStatus.className = 'upload-progress-status complete';
+                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
+                
                 const productData = {
                     id: Date.now().toString(),
                     image: e.target.result,
@@ -1066,17 +1907,48 @@
                 // Also trigger custom event
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
 
-                showAlert('Kids pack added successfully to Kids Collection!', 'success');
-                loadProducts();
-                resetPacksForm();
+                // Hide progress and reset form
+                setTimeout(() => {
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    
+                    // Reset progress bar
+                    setTimeout(() => {
+                        progressBar.style.width = '0%';
+                        progressPercentage.textContent = '0%';
+                    }, 300);
+                    
+                    showAlert('Kids pack added successfully to Kids Collection!', 'success');
+                    loadProducts();
+                    resetPacksForm();
+                }, 1500);
             };
+            
+            reader.onerror = function() {
+                clearInterval(progressInterval);
+                progressContainer.classList.remove('active');
+                progressBar.style.width = '0%';
+                progressPercentage.textContent = '0%';
+                progressStatus.className = 'upload-progress-status';
+                progressStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Upload failed';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                showAlert('Error uploading image. Please try again.', 'error');
+            };
+            
             reader.readAsDataURL(file);
         });
 
         function resetPacksForm() {
             document.getElementById('kidspacksForm').reset();
-            document.getElementById('packImagePreview').classList.remove('show');
+            removeImagePreview('packImagePreview', 'packImage');
             document.getElementById('packStockQuantity').value = '1';
+            // Hide upload progress
+            const progressContainer = document.getElementById('packsUploadProgress');
+            if (progressContainer) {
+                progressContainer.classList.remove('active');
+            }
         }
 
         // Handle product type dropdown and custom input
@@ -1126,6 +1998,19 @@
                     regularStockSection.style.display = 'block';
                 }
             });
+        }
+
+        // Function to remove image preview
+        function removeImagePreview(previewId, inputId) {
+            const preview = document.getElementById(previewId);
+            const input = document.getElementById(inputId);
+            if (preview) {
+                preview.src = '';
+                preview.classList.remove('show');
+            }
+            if (input) {
+                input.value = '';
+            }
         }
 
         // Image preview
@@ -1196,33 +2081,52 @@
                 return;
             }
 
-            // Show loading spinner
+            // Show loading spinner and disable button
             const submitBtn = document.querySelector('#productForm button[type="submit"]');
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
             
-            // Show upload progress
-            const progressBar = document.createElement('div');
-            progressBar.id = 'uploadProgress';
-            progressBar.style.cssText = 'width: 100%; height: 4px; background: var(--silver); border-radius: 2px; margin-top: 1rem; overflow: hidden;';
-            progressBar.innerHTML = '<div style="width: 0%; height: 100%; background: var(--accent); transition: width 0.3s;"></div>';
-            submitBtn.parentElement.appendChild(progressBar);
-            const progressFill = progressBar.querySelector('div');
+            // Show upload progress container
+            const progressContainer = document.getElementById('regularUploadProgress');
+            const progressBar = document.getElementById('regularUploadBar');
+            const progressPercentage = document.getElementById('regularUploadPercentage');
+            const progressStatus = document.getElementById('regularUploadStatus');
             
-            // Simulate progress
+            progressContainer.classList.add('active');
+            progressStatus.className = 'upload-progress-status uploading';
+            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
+            
+            // Simulate progress with realistic stages
             let progress = 0;
             const progressInterval = setInterval(() => {
-                progress += 10;
-                if (progress <= 90) {
-                    progressFill.style.width = progress + '%';
+                progress += 5;
+                if (progress <= 30) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
+                } else if (progress <= 60) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
+                    progressStatus.className = 'upload-progress-status uploading';
+                } else if (progress <= 85) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets folder...';
+                    progressStatus.className = 'upload-progress-status saving';
+                } else if (progress <= 95) {
+                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
                 }
-            }, 100);
+                
+                if (progress <= 95) {
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = Math.round(progress) + '%';
+                }
+            }, 80);
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 clearInterval(progressInterval);
-                progressFill.style.width = '100%';
+                progressBar.style.width = '100%';
+                progressPercentage.textContent = '100%';
+                progressStatus.className = 'upload-progress-status complete';
+                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
+                
                 // Get and validate category FIRST
                 const selectedCategory = document.getElementById('productCategory').value.trim().toLowerCase();
                 
@@ -1335,13 +2239,17 @@
                 // Also trigger custom event
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
 
-                // Remove progress bar
+                // Hide progress and reset form
                 setTimeout(() => {
-                    if (progressBar.parentElement) {
-                        progressBar.remove();
-                    }
+                    progressContainer.classList.remove('active');
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnText;
+                    
+                    // Reset progress bar
+                    setTimeout(() => {
+                        progressBar.style.width = '0%';
+                        progressPercentage.textContent = '0%';
+                    }, 300);
                     
                     // Show success message
                     const categoryName = selectedCategory === 'men' ? "Men's" : selectedCategory === 'women' ? "Women's" : "Kids";
@@ -1350,14 +2258,16 @@
                     // Auto-refresh products list
                     loadProducts();
                     resetForm();
-                }, 500);
+                }, 1500);
             };
             
             reader.onerror = function() {
                 clearInterval(progressInterval);
-                if (progressBar.parentElement) {
-                    progressBar.remove();
-                }
+                progressContainer.classList.remove('active');
+                progressBar.style.width = '0%';
+                progressPercentage.textContent = '0%';
+                progressStatus.className = 'upload-progress-status';
+                progressStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Upload failed';
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
                 showAlert('Error uploading image. Please try again.', 'error');
@@ -1368,11 +2278,16 @@
 
         function resetForm() {
             document.getElementById('productForm').reset();
-            document.getElementById('imagePreview').classList.remove('show');
+            removeImagePreview('imagePreview', 'productImage');
             document.getElementById('shoesBrandSection').classList.remove('show');
             document.getElementById('regularStockSection').style.display = 'block';
             currentShoeSizes = [];
             document.getElementById('shoeSizesList').innerHTML = '';
+            // Hide upload progress
+            const progressContainer = document.getElementById('regularUploadProgress');
+            if (progressContainer) {
+                progressContainer.classList.remove('active');
+            }
             // Reset product type dropdown and hide custom input
             document.getElementById('productType').value = '';
             const customInput = document.getElementById('productTypeCustom');
@@ -1481,10 +2396,35 @@
 
         function updateProductCount() {
             const countElement = document.getElementById('productCount');
+            const stockCountElement = document.getElementById('stockCount');
+            
             if (countElement) {
                 const total = allProducts.length;
                 const showing = filteredProducts.length;
-                countElement.textContent = `Showing ${showing} of ${total} products`;
+                if (showing === total) {
+                    countElement.innerHTML = `<span>Showing <strong>${showing}</strong> of <strong>${total}</strong> products</span>`;
+                } else {
+                    countElement.innerHTML = `<span>Showing <strong>${showing}</strong> of <strong>${total}</strong> products <span style="color: #666; font-size: 0.9em;">(filtered)</span></span>`;
+                }
+            }
+            
+            // Calculate total stock count
+            if (stockCountElement) {
+                let totalStock = 0;
+                
+                filteredProducts.forEach(product => {
+                    if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
+                        // Sum all shoe sizes
+                        product.shoeSizes.forEach(size => {
+                            totalStock += size.qty || 0;
+                        });
+                    } else {
+                        // Regular product stock
+                        totalStock += product.stockQuantity || 0;
+                    }
+                });
+                
+                stockCountElement.innerHTML = `<span>Total Stock: <strong>${totalStock}</strong> items</span>`;
             }
         }
 
@@ -1510,7 +2450,7 @@
             }
 
             // Display recently added products
-            recentlyAddedList.innerHTML = adminProducts.map(product => {
+            recentlyAddedList.innerHTML = adminProducts.map((product, index) => {
                 const productId = product.id;
                 const isDefault = false; // All are admin-added
                 
@@ -1534,7 +2474,8 @@
                 });
 
                 return `
-                    <div class="product-item">
+                    <div class="product-item" data-product-id="${productId}">
+                        <div class="product-item-number">${index + 1}</div>
                         <div class="product-item-header">
                             <img src="${product.image}" alt="${product.type}" class="product-item-image">
                             <div class="product-item-info">
@@ -1544,7 +2485,7 @@
                                 ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
                                 ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
                                 <p><strong>Price:</strong> ${product.priceRange || (product.price ? 'R' + product.price.toFixed(2) : 'Price on request')}</p>
-                                <p><strong>${stockInfo}</strong></p>
+                                <p><strong>Stock:</strong> <span class="stock-quantity-display">${product.stockQuantity || 0}</span></p>
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>
                             <div class="product-item-actions">
@@ -1559,22 +2500,21 @@
                         ${product.isShoe && product.shoeSizes && product.shoeSizes.length > 0 ? `
                             <div class="stock-management">
                                 ${product.shoeSizes.map((shoe, idx) => `
-                                    <div class="stock-entry">
-                                        <span><strong>${shoe.brand}</strong> - Size ${shoe.size}: ${shoe.qty} available</span>
+                                    <div class="stock-entry shoe-size-item">
+                                        <span><strong>${shoe.brand}</strong> - Size ${shoe.size}: <span class="shoe-stock-quantity">${shoe.qty}</span> available</span>
                                         <div class="stock-controls">
-                                            <button class="btn-increment" onclick="updateShoeStock('${productId}', ${idx}, 1, ${isDefault})">+</button>
-                                            <button class="btn-decrement" onclick="updateShoeStock('${productId}', ${idx}, -1, ${isDefault})">-</button>
+                                            <button type="button" class="btn-increment" onclick="updateShoeStock('${productId}', ${idx}, 1, ${isDefault}, event)">+</button>
+                                            <button type="button" class="btn-decrement" onclick="updateShoeStock('${productId}', ${idx}, -1, ${isDefault}, event)">-</button>
                                         </div>
                                     </div>
                                 `).join('')}
                             </div>
                         ` : `
                             <div class="stock-management">
-                                <div class="stock-item">
-                                    <span>Available Stock: ${product.stockQuantity || 0}</span>
+                                <div class="stock-item" style="justify-content: flex-end;">
                                     <div class="stock-controls">
-                                        <button class="btn-increment" onclick="updateStock('${productId}', 1, ${isDefault})">+</button>
-                                        <button class="btn-decrement" onclick="updateStock('${productId}', -1, ${isDefault})">-</button>
+                                        <button type="button" class="btn-increment" onclick="updateStock('${productId}', 1, ${isDefault}, event)">+</button>
+                                        <button type="button" class="btn-decrement" onclick="updateStock('${productId}', -1, ${isDefault}, event)">-</button>
                                     </div>
                                 </div>
                             </div>
@@ -1592,7 +2532,7 @@
                 return;
             }
 
-            productsList.innerHTML = products.map(product => {
+            productsList.innerHTML = products.map((product, index) => {
                 // Check if product is default - use the isDefault property from getAllProducts
                 const isDefault = product.isDefault === true;
                 const productId = product.id;
@@ -1606,7 +2546,8 @@
                 }
 
                 return `
-                    <div class="product-item">
+                    <div class="product-item" data-product-id="${productId}">
+                        <div class="product-item-number">${index + 1}</div>
                         <div class="product-item-header">
                             <img src="${product.image}" alt="${product.type}" class="product-item-image">
                             <div class="product-item-info">
@@ -1616,7 +2557,7 @@
                                 ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
                                 ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
                                 <p><strong>Price:</strong> ${product.priceRange || (product.price ? 'R' + product.price.toFixed(2) : 'Price on request')}</p>
-                                <p><strong>Stock:</strong> ${stockInfo}</p>
+                                <p><strong>Stock:</strong> <span class="stock-quantity-display">${product.stockQuantity || 0}</span></p>
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>
                             <div class="product-item-actions">
@@ -1631,22 +2572,21 @@
                         ${product.isShoe && product.shoeSizes && product.shoeSizes.length > 0 ? `
                             <div class="stock-management">
                                 ${product.shoeSizes.map((shoe, idx) => `
-                                    <div class="stock-entry">
-                                        <span><strong>${shoe.brand}</strong> - Size ${shoe.size}: ${shoe.qty} available</span>
+                                    <div class="stock-entry shoe-size-item">
+                                        <span><strong>${shoe.brand}</strong> - Size ${shoe.size}: <span class="shoe-stock-quantity">${shoe.qty}</span> available</span>
                                         <div class="stock-controls">
-                                            <button class="btn-increment" onclick="updateShoeStock('${productId}', ${idx}, 1, ${isDefault})">+</button>
-                                            <button class="btn-decrement" onclick="updateShoeStock('${productId}', ${idx}, -1, ${isDefault})">-</button>
+                                            <button type="button" class="btn-increment" onclick="updateShoeStock('${productId}', ${idx}, 1, ${isDefault}, event)">+</button>
+                                            <button type="button" class="btn-decrement" onclick="updateShoeStock('${productId}', ${idx}, -1, ${isDefault}, event)">-</button>
                                         </div>
                                     </div>
                                 `).join('')}
                             </div>
                         ` : `
                             <div class="stock-management">
-                                <div class="stock-item">
-                                    <span>Available Stock: ${product.stockQuantity || 0}</span>
+                                <div class="stock-item" style="justify-content: flex-end;">
                                     <div class="stock-controls">
-                                        <button class="btn-increment" onclick="updateStock('${productId}', 1, ${isDefault})">+</button>
-                                        <button class="btn-decrement" onclick="updateStock('${productId}', -1, ${isDefault})">-</button>
+                                        <button type="button" class="btn-increment" onclick="updateStock('${productId}', 1, ${isDefault}, event)">+</button>
+                                        <button type="button" class="btn-decrement" onclick="updateStock('${productId}', -1, ${isDefault}, event)">-</button>
                                     </div>
                                 </div>
                             </div>
@@ -1656,56 +2596,167 @@
             }).join('');
         }
 
-        async function updateStock(productId, change, isDefault) {
-            if (isDefault) {
-                // For default products, get the product and update it
-                const product = productManager.getProductById(productId);
-                if (product) {
-                    const updatedData = {
-                        stockQuantity: Math.max(0, (product.stockQuantity || 0) + change)
-                    };
-                    productManager.updateProduct(productId, updatedData);
-                    await loadProducts();
-                    showAlert('Stock updated!', 'success');
+        async function updateStock(productId, change, isDefault, eventObj) {
+            // Prevent multiple clicks and default behavior
+            const evt = eventObj || window.event;
+            if (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            }
+            
+            // Find the product item and stock span
+            const productItem = document.querySelector(`[data-product-id="${productId}"]`);
+            if (!productItem) return;
+            
+            const stockSpan = productItem.querySelector('.stock-quantity-display');
+            if (!stockSpan) return;
+            
+            // Find and disable the clicked button temporarily
+            const button = evt ? evt.target.closest('button') : null;
+            if (button) {
+                button.disabled = true;
+            }
+            
+            // Get current stock value from display
+            let currentStock = parseInt(stockSpan.textContent) || 0;
+            const newStock = Math.max(0, currentStock + change);
+            
+            // Update display immediately (optimistic update)
+            stockSpan.textContent = newStock;
+            stockSpan.style.transition = 'none';
+            stockSpan.style.color = '#25A525';
+            setTimeout(() => {
+                stockSpan.style.color = '';
+                stockSpan.style.transition = '';
+            }, 500);
+            
+            try {
+                if (isDefault) {
+                    // For default products, get the product and update it
+                    const product = productManager.getProductById(productId);
+                    if (product) {
+                        const updatedData = {
+                            stockQuantity: newStock
+                        };
+                        productManager.updateProduct(productId, updatedData);
+                        // Update the product in allProducts array
+                        const index = allProducts.findIndex(p => p.id === productId);
+                        if (index !== -1) {
+                            allProducts[index].stockQuantity = newStock;
+                        }
+                    }
+                } else {
+                    const products = JSON.parse(localStorage.getItem('products') || '[]');
+                    const product = products.find(p => p.id === productId || p.originalId === productId);
+                    
+                    if (product) {
+                        product.stockQuantity = newStock;
+                        localStorage.setItem('products', JSON.stringify(products));
+                        // Update the product in allProducts array
+                        const index = allProducts.findIndex(p => p.id === productId || p.originalId === productId);
+                        if (index !== -1) {
+                            allProducts[index].stockQuantity = newStock;
+                        }
+                        // Trigger events for cross-tab sync
+                        window.dispatchEvent(new Event('storage'));
+                        window.dispatchEvent(new CustomEvent('productsUpdated'));
+                    }
                 }
-            } else {
-                const products = JSON.parse(localStorage.getItem('products') || '[]');
-                const product = products.find(p => p.id === productId || p.originalId === productId);
-                
-                if (product) {
-                    product.stockQuantity = Math.max(0, (product.stockQuantity || 0) + change);
-                    localStorage.setItem('products', JSON.stringify(products));
-                    // Trigger events for cross-tab sync
-                    window.dispatchEvent(new Event('storage'));
-                    window.dispatchEvent(new CustomEvent('productsUpdated'));
-                    await loadProducts();
-                    showAlert('Stock updated!', 'success');
+            } catch (error) {
+                console.error('Error updating stock:', error);
+                // Revert on error
+                stockSpan.textContent = currentStock;
+            } finally {
+                // Re-enable button after a short delay
+                if (button) {
+                    setTimeout(() => {
+                        button.disabled = false;
+                    }, 200);
                 }
             }
         }
 
-        async function updateShoeStock(productId, sizeIndex, change, isDefault) {
-            if (isDefault) {
-                const product = productManager.getProductById(productId);
-                if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
-                    const updatedSizes = [...product.shoeSizes];
-                    updatedSizes[sizeIndex].qty = Math.max(0, updatedSizes[sizeIndex].qty + change);
-                    productManager.updateProduct(productId, { shoeSizes: updatedSizes });
-                    await loadProducts();
-                    showAlert('Shoe stock updated!', 'success');
+        async function updateShoeStock(productId, sizeIndex, change, isDefault, eventObj) {
+            // Prevent multiple clicks and default behavior
+            const evt = eventObj || window.event;
+            if (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            }
+            
+            // Find the product item and specific shoe size element
+            const productItem = document.querySelector(`[data-product-id="${productId}"]`);
+            if (!productItem) return;
+            
+            const shoeSizeItems = productItem.querySelectorAll('.shoe-size-item');
+            const sizeItem = shoeSizeItems[sizeIndex];
+            if (!sizeItem) return;
+            
+            const stockSpan = sizeItem.querySelector('.shoe-stock-quantity');
+            if (!stockSpan) return;
+            
+            // Find and disable the clicked button temporarily
+            const button = evt ? evt.target.closest('button') : null;
+            if (button) {
+                button.disabled = true;
+            }
+            
+            // Get current stock value from display
+            const stockText = stockSpan.textContent;
+            const match = stockText.match(/(\d+)/);
+            let currentStock = match ? parseInt(match[1]) : 0;
+            const newStock = Math.max(0, currentStock + change);
+            
+            // Update display immediately (optimistic update)
+            const newText = stockText.replace(/\d+/, newStock);
+            stockSpan.textContent = newText;
+            stockSpan.style.transition = 'none';
+            stockSpan.style.color = '#25A525';
+            setTimeout(() => {
+                stockSpan.style.color = '';
+                stockSpan.style.transition = '';
+            }, 500);
+            
+            try {
+                if (isDefault) {
+                    const product = productManager.getProductById(productId);
+                    if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
+                        const updatedSizes = [...product.shoeSizes];
+                        updatedSizes[sizeIndex].qty = newStock;
+                        productManager.updateProduct(productId, { shoeSizes: updatedSizes });
+                        // Update the product in allProducts array
+                        const index = allProducts.findIndex(p => p.id === productId);
+                        if (index !== -1 && allProducts[index].shoeSizes) {
+                            allProducts[index].shoeSizes[sizeIndex].qty = newStock;
+                        }
+                    }
+                } else {
+                    const products = JSON.parse(localStorage.getItem('products') || '[]');
+                    const product = products.find(p => p.id === productId || p.originalId === productId);
+                    
+                    if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
+                        product.shoeSizes[sizeIndex].qty = newStock;
+                        localStorage.setItem('products', JSON.stringify(products));
+                        // Update the product in allProducts array
+                        const index = allProducts.findIndex(p => p.id === productId || p.originalId === productId);
+                        if (index !== -1 && allProducts[index].shoeSizes) {
+                            allProducts[index].shoeSizes[sizeIndex].qty = newStock;
+                        }
+                        // Trigger events for cross-tab sync
+                        window.dispatchEvent(new Event('storage'));
+                        window.dispatchEvent(new CustomEvent('productsUpdated'));
+                    }
                 }
-            } else {
-                const products = JSON.parse(localStorage.getItem('products') || '[]');
-                const product = products.find(p => p.id === productId || p.originalId === productId);
-                
-                if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
-                    product.shoeSizes[sizeIndex].qty = Math.max(0, product.shoeSizes[sizeIndex].qty + change);
-                    localStorage.setItem('products', JSON.stringify(products));
-                    // Trigger events for cross-tab sync
-                    window.dispatchEvent(new Event('storage'));
-                    window.dispatchEvent(new CustomEvent('productsUpdated'));
-                    await loadProducts();
-                    showAlert('Shoe stock updated!', 'success');
+            } catch (error) {
+                console.error('Error updating shoe stock:', error);
+                // Revert on error
+                stockSpan.textContent = stockText;
+            } finally {
+                // Re-enable button after a short delay
+                if (button) {
+                    setTimeout(() => {
+                        button.disabled = false;
+                    }, 200);
                 }
             }
         }
