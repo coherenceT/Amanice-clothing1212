@@ -2491,13 +2491,14 @@
                 const productId = product.id;
                 const isDefault = false; // All are admin-added
                 
-                // Unified stock display
-                let stockInfo = '';
+                // Calculate actual stock quantity
+                let actualStock = 0;
                 if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
-                    const totalStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
-                    stockInfo = `Stock: ${totalStock} (${product.shoeSizes.length} size(s))`;
+                    // Sum all shoe sizes for total stock
+                    actualStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
                 } else {
-                    stockInfo = `Stock: ${product.stockQuantity || 0}`;
+                    // Regular product stock
+                    actualStock = product.stockQuantity || 0;
                 }
 
                 // Format date
@@ -2522,7 +2523,7 @@
                                 ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
                                 ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
                                 <p><strong>Price:</strong> ${product.priceRange || (product.price ? 'R' + product.price.toFixed(2) : 'Price on request')}</p>
-                                <p><strong>Stock:</strong> <span class="stock-quantity-display">${product.stockQuantity || 0}</span></p>
+                                <p><strong>Stock:</strong> <span class="stock-quantity-display">${actualStock}</span></p>
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>
                             <div class="product-item-actions">
@@ -2573,13 +2574,14 @@
                 // Check if product is default - use the isDefault property from getAllProducts
                 const isDefault = product.isDefault === true;
                 const productId = product.id;
-                // Unified stock display for all product types
-                let stockInfo = '';
+                // Calculate actual stock quantity
+                let actualStock = 0;
                 if (product.isShoe && product.shoeSizes && product.shoeSizes.length > 0) {
-                    const totalStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
-                    stockInfo = `Stock: ${totalStock} (${product.shoeSizes.length} size(s))`;
+                    // Sum all shoe sizes for total stock
+                    actualStock = product.shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
                 } else {
-                    stockInfo = `Stock: ${product.stockQuantity || 0}`;
+                    // Regular product stock
+                    actualStock = product.stockQuantity || 0;
                 }
 
                 return `
@@ -2594,7 +2596,7 @@
                                 ${product.size ? `<p><strong>Size:</strong> ${product.size}</p>` : ''}
                                 ${product.isShoe && product.shoeBrand ? `<p><strong>Brand:</strong> ${product.shoeBrand}</p>` : ''}
                                 <p><strong>Price:</strong> ${product.priceRange || (product.price ? 'R' + product.price.toFixed(2) : 'Price on request')}</p>
-                                <p><strong>Stock:</strong> <span class="stock-quantity-display">${product.stockQuantity || 0}</span></p>
+                                <p><strong>Stock:</strong> <span class="stock-quantity-display">${actualStock}</span></p>
                                 ${product.stockNumber ? `<p><strong>Stock #:</strong> ${product.stockNumber}</p>` : ''}
                             </div>
                             <div class="product-item-actions">
@@ -2765,6 +2767,18 @@
                         const index = allProducts.findIndex(p => p.id === productId);
                         if (index !== -1 && allProducts[index].shoeSizes) {
                             allProducts[index].shoeSizes[sizeIndex].qty = newStock;
+                            // Update header stock display
+                            const headerStockSpan = productItem.querySelector('.stock-quantity-display');
+                            if (headerStockSpan) {
+                                const totalStock = allProducts[index].shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                                headerStockSpan.textContent = totalStock;
+                                headerStockSpan.style.transition = 'none';
+                                headerStockSpan.style.color = '#25A525';
+                                setTimeout(() => {
+                                    headerStockSpan.style.color = '';
+                                    headerStockSpan.style.transition = '';
+                                }, 500);
+                            }
                         }
                     }
                 } else {
@@ -2778,6 +2792,18 @@
                         const index = allProducts.findIndex(p => p.id === productId || p.originalId === productId);
                         if (index !== -1 && allProducts[index].shoeSizes) {
                             allProducts[index].shoeSizes[sizeIndex].qty = newStock;
+                            // Update header stock display
+                            const headerStockSpan = productItem.querySelector('.stock-quantity-display');
+                            if (headerStockSpan) {
+                                const totalStock = allProducts[index].shoeSizes.reduce((sum, size) => sum + (size.qty || 0), 0);
+                                headerStockSpan.textContent = totalStock;
+                                headerStockSpan.style.transition = 'none';
+                                headerStockSpan.style.color = '#25A525';
+                                setTimeout(() => {
+                                    headerStockSpan.style.color = '';
+                                    headerStockSpan.style.transition = '';
+                                }, 500);
+                            }
                         }
                         // Trigger events for cross-tab sync
                         window.dispatchEvent(new Event('storage'));
