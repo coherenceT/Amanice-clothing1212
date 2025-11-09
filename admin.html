@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         * {
             margin: 0;
@@ -1107,7 +1107,7 @@
                         <input type="file" id="productImage" accept="image/*" required>
                         <small>Upload a photo of your product</small>
                         <div class="image-preview-container">
-                            <img id="imagePreview" class="image-preview" alt="Preview">
+                        <img id="imagePreview" class="image-preview" alt="Preview">
                             <button type="button" class="image-preview-remove" onclick="removeImagePreview('imagePreview', 'productImage')" title="Remove image">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -1268,7 +1268,7 @@
                         <input type="file" id="sneakerImage" accept="image/*" required>
                         <small>Upload a photo of the sneakers</small>
                         <div class="image-preview-container">
-                            <img id="sneakerImagePreview" class="image-preview" alt="Preview">
+                        <img id="sneakerImagePreview" class="image-preview" alt="Preview">
                             <button type="button" class="image-preview-remove" onclick="removeImagePreview('sneakerImagePreview', 'sneakerImage')" title="Remove image">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -1356,7 +1356,7 @@
                         <input type="file" id="packImage" accept="image/*" required>
                         <small>Upload a photo of the clothing pack</small>
                         <div class="image-preview-container">
-                            <img id="packImagePreview" class="image-preview" alt="Preview">
+                        <img id="packImagePreview" class="image-preview" alt="Preview">
                             <button type="button" class="image-preview-remove" onclick="removeImagePreview('packImagePreview', 'packImage')" title="Remove image">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -1538,7 +1538,12 @@
         </div>
     </div>
 
-    <script src="scripts/productManager.js"></script>
+    <script src="js/uploadHandler.js"></script>
+    <script src="js/productManager.js"></script>
+    <script>
+        // Initialize upload handler
+        const uploadHandler = new UploadHandler();
+    </script>
     <script>
         // Initialize ProductManager
         const productManager = new ProductManager();
@@ -1676,7 +1681,7 @@
         }
 
         // Handle sneakers form submission
-        document.getElementById('sneakersForm').addEventListener('submit', function(e) {
+        document.getElementById('sneakersForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const imageInput = document.getElementById('sneakerImage');
@@ -1684,6 +1689,16 @@
             
             if (!file) {
                 showAlert('Please select an image', 'error');
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+                showAlert('Invalid file type. Only JPG, JPEG, PNG, and WEBP images are allowed.', 'error');
                 return;
             }
 
@@ -1706,37 +1721,28 @@
             
             progressContainer.classList.add('active');
             progressStatus.className = 'upload-progress-status uploading';
-            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
-            
-            // Simulate progress with realistic stages
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                if (progress <= 30) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
-                } else if (progress <= 60) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
-                    progressStatus.className = 'upload-progress-status uploading';
-                } else if (progress <= 85) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets folder...';
-                    progressStatus.className = 'upload-progress-status saving';
-                } else if (progress <= 95) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
-                }
-                
-                if (progress <= 95) {
-                    progressBar.style.width = progress + '%';
-                    progressPercentage.textContent = Math.round(progress) + '%';
-                }
-            }, 80);
+            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading image...';
+            progressBar.style.width = '30%';
+            progressPercentage.textContent = '30%';
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                clearInterval(progressInterval);
+            try {
+                // Use upload handler with progress callback
+                const result = await uploadHandler.upload(file, (progress, message) => {
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = progress + '%';
+                    if (message) {
+                        progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + message;
+                    }
+                });
+
+                // Upload successful
                 progressBar.style.width = '100%';
                 progressPercentage.textContent = '100%';
                 progressStatus.className = 'upload-progress-status complete';
                 progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
+
+                // Get the file path from response (already handles base64 if needed)
+                const imagePath = result.path; // Either server path or full data URL
                 
                 // Get and validate category FIRST
                 const selectedCategory = document.getElementById('sneakerCategory').value.trim().toLowerCase();
@@ -1748,17 +1754,25 @@
                     setTimeout(() => {
                         document.getElementById('sneakerCategory').style.borderColor = '';
                     }, 3000);
+                    // Reset UI
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     return;
                 }
                 
                 if (!['men', 'women'].includes(selectedCategory)) {
                     showAlert('Invalid category selected. Please choose Men\'s or Women\'s', 'error');
+                    // Reset UI
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     return;
                 }
 
                 const productData = {
                     id: Date.now().toString(),
-                    image: e.target.result,
+                    image: imagePath, // Use server path instead of base64
                     category: selectedCategory, // Use normalized lowercase category
                     type: document.getElementById('sneakerType').value,
                     gender: selectedCategory === 'men' ? 'male' : 'female',
@@ -1779,7 +1793,8 @@
                     category: selectedCategory,
                     type: productData.type,
                     brand: productData.shoeBrand,
-                    id: productData.id
+                    id: productData.id,
+                    imagePath: imagePath
                 });
 
                 productManager.saveProduct(productData);
@@ -1803,14 +1818,14 @@
                         progressPercentage.textContent = '0%';
                     }, 300);
                     
-                    showAlert(`Sneakers added successfully to ${categoryName} Collection!`, 'success');
-                    loadProducts();
-                    resetSneakersForm();
+                showAlert(`Sneakers added successfully to ${categoryName} Collection!`, 'success');
+                loadProducts();
+                resetSneakersForm();
                 }, 1500);
-            };
-            
-            reader.onerror = function() {
-                clearInterval(progressInterval);
+
+            } catch (error) {
+                // Handle upload error
+                console.error('Upload error:', error);
                 progressContainer.classList.remove('active');
                 progressBar.style.width = '0%';
                 progressPercentage.textContent = '0%';
@@ -1818,10 +1833,8 @@
                 progressStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Upload failed';
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
-                showAlert('Error uploading image. Please try again.', 'error');
-            };
-            
-            reader.readAsDataURL(file);
+                showAlert(`Error uploading image: ${error.message || 'Please try again.'}`, 'error');
+            }
         });
 
         function resetSneakersForm() {
@@ -1839,7 +1852,7 @@
         }
 
         // Handle kids packs form submission
-        document.getElementById('kidspacksForm').addEventListener('submit', function(e) {
+        document.getElementById('kidspacksForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const imageInput = document.getElementById('packImage');
@@ -1847,6 +1860,16 @@
             
             if (!file) {
                 showAlert('Please select an image', 'error');
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+                showAlert('Invalid file type. Only JPG, JPEG, PNG, and WEBP images are allowed.', 'error');
                 return;
             }
 
@@ -1864,56 +1887,35 @@
             
             progressContainer.classList.add('active');
             progressStatus.className = 'upload-progress-status uploading';
-            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
-            
-            // Simulate progress with realistic stages
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                if (progress <= 30) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
-                } else if (progress <= 60) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
-                    progressStatus.className = 'upload-progress-status uploading';
-                } else if (progress <= 85) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets/Kids folder...';
-                    progressStatus.className = 'upload-progress-status saving';
-                } else if (progress <= 95) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
-                }
-                
-                if (progress <= 95) {
-                    progressBar.style.width = progress + '%';
-                    progressPercentage.textContent = Math.round(progress) + '%';
-                }
-            }, 80);
+            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading image...';
+            progressBar.style.width = '30%';
+            progressPercentage.textContent = '30%';
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                clearInterval(progressInterval);
+            try {
+                // Use upload handler with progress callback
+                const result = await uploadHandler.upload(file, (progress, message) => {
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = progress + '%';
+                    if (message) {
+                        progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + message;
+                    }
+                });
+
+                // Upload successful
                 progressBar.style.width = '100%';
                 progressPercentage.textContent = '100%';
                 progressStatus.className = 'upload-progress-status complete';
-                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image saved to Assets/Kids folder!';
+                progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
+
+                // Get the file path from response (already handles base64 if needed)
+                const imagePath = result.path; // Either server path or full data URL
                 
                 // Get selected gender
                 const selectedGender = document.getElementById('packGender').value || 'unisex';
                 
-                // Generate a unique filename for the image
-                const timestamp = Date.now();
-                const fileExtension = file.name.split('.').pop() || 'jpg';
-                const sanitizedPackType = document.getElementById('packType').value
-                    .replace(/[^a-z0-9]/gi, '_')
-                    .toLowerCase()
-                    .substring(0, 30);
-                const imageFileName = `Kids_${sanitizedPackType}_${timestamp}.${fileExtension}`;
-                const imagePath = `Assets/${imageFileName}`;
-                
                 const productData = {
                     id: Date.now().toString(),
-                    image: e.target.result, // Keep base64 for display
-                    imagePath: imagePath, // Store the intended path
-                    imageFileName: imageFileName, // Store filename
+                    image: imagePath, // Use server path instead of base64
                     category: 'kids',
                     type: document.getElementById('packType').value,
                     gender: selectedGender,
@@ -1932,13 +1934,9 @@
                     category: 'kids',
                     type: productData.type,
                     gender: productData.gender,
-                    imagePath: productData.imagePath,
+                    imagePath: imagePath,
                     id: productData.id
                 });
-                
-                // Note: In a real application, you would upload the file to the server here
-                // For now, we store the base64 image and the intended path
-                // The image path indicates where it should be saved: Assets/Kids_[packtype]_[timestamp].jpg
 
                 productManager.saveProduct(productData);
                 
@@ -1958,15 +1956,15 @@
                         progressBar.style.width = '0%';
                         progressPercentage.textContent = '0%';
                     }, 300);
-                    
-                    showAlert('Kids pack added successfully to Kids Collection!', 'success');
-                    loadProducts();
-                    resetPacksForm();
+
+                showAlert('Kids pack added successfully to Kids Collection!', 'success');
+                loadProducts();
+                resetPacksForm();
                 }, 1500);
-            };
-            
-            reader.onerror = function() {
-                clearInterval(progressInterval);
+
+            } catch (error) {
+                // Handle upload error
+                console.error('Upload error:', error);
                 progressContainer.classList.remove('active');
                 progressBar.style.width = '0%';
                 progressPercentage.textContent = '0%';
@@ -1974,10 +1972,8 @@
                 progressStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Upload failed';
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
-                showAlert('Error uploading image. Please try again.', 'error');
-            };
-            
-            reader.readAsDataURL(file);
+                showAlert(`Error uploading image: ${error.message || 'Please try again.'}`, 'error');
+            }
         });
 
         function resetPacksForm() {
@@ -2112,7 +2108,7 @@
         }
 
         // Handle form submission
-        document.getElementById('productForm').addEventListener('submit', function(e) {
+        document.getElementById('productForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const imageInput = document.getElementById('productImage');
@@ -2120,6 +2116,16 @@
             
             if (!file) {
                 showAlert('Please select an image', 'error');
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+                showAlert('Invalid file type. Only JPG, JPEG, PNG, and WEBP images are allowed.', 'error');
                 return;
             }
 
@@ -2137,38 +2143,29 @@
             
             progressContainer.classList.add('active');
             progressStatus.className = 'upload-progress-status uploading';
-            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
-            
-            // Simulate progress with realistic stages
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                if (progress <= 30) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reading image file...';
-                } else if (progress <= 60) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing image...';
-                    progressStatus.className = 'upload-progress-status uploading';
-                } else if (progress <= 85) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Assets folder...';
-                    progressStatus.className = 'upload-progress-status saving';
-                } else if (progress <= 95) {
-                    progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Finalizing upload...';
-                }
-                
-                if (progress <= 95) {
-                    progressBar.style.width = progress + '%';
-                    progressPercentage.textContent = Math.round(progress) + '%';
-                }
-            }, 80);
+            progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading image...';
+            progressBar.style.width = '30%';
+            progressPercentage.textContent = '30%';
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                clearInterval(progressInterval);
+            try {
+                // Use upload handler with progress callback
+                const result = await uploadHandler.upload(file, (progress, message) => {
+                    progressBar.style.width = progress + '%';
+                    progressPercentage.textContent = progress + '%';
+                    if (message) {
+                        progressStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + message;
+                    }
+                });
+
+                // Upload successful
                 progressBar.style.width = '100%';
                 progressPercentage.textContent = '100%';
                 progressStatus.className = 'upload-progress-status complete';
                 progressStatus.innerHTML = '<i class="fas fa-check-circle"></i> Image uploaded successfully!';
-                
+
+                // Get the file path from response (already handles base64 if needed)
+                const imagePath = result.path; // Either server path or full data URL
+
                 // Get and validate category FIRST
                 const selectedCategory = document.getElementById('productCategory').value.trim().toLowerCase();
                 
@@ -2179,11 +2176,19 @@
                     setTimeout(() => {
                         document.getElementById('productCategory').style.borderColor = '';
                     }, 3000);
+                    // Reset UI
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     return;
                 }
                 
                 if (!['men', 'women', 'kids'].includes(selectedCategory)) {
                     showAlert('Invalid category selected. Please choose Men\'s, Women\'s, or Kids Collection', 'error');
+                    // Reset UI
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     return;
                 }
 
@@ -2204,12 +2209,16 @@
                     setTimeout(() => {
                         (productTypeCustom.style.display !== 'none' ? productTypeCustom : productTypeSelect).style.borderColor = '';
                     }, 3000);
+                    // Reset UI
+                    progressContainer.classList.remove('active');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     return;
                 }
 
                 const productData = {
                     id: Date.now().toString(),
-                    image: e.target.result,
+                    image: imagePath, // Use server path instead of base64
                     category: selectedCategory, // Use normalized lowercase category
                     type: productType, // Use trimmed product type
                     gender: document.getElementById('productGender').value,
@@ -2229,10 +2238,18 @@
                 if (productData.isShoe) {
                     if (!productData.shoeBrand) {
                         showAlert('Please enter shoe brand', 'error');
+                        // Reset UI
+                        progressContainer.classList.remove('active');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
                         return;
                     }
                     if (currentShoeSizes.length === 0) {
                         showAlert('Please add at least one shoe size', 'error');
+                        // Reset UI
+                        progressContainer.classList.remove('active');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
                         return;
                     }
                 }
@@ -2242,6 +2259,7 @@
                     category: selectedCategory,
                     type: productData.type,
                     id: productData.id,
+                    imagePath: imagePath,
                     willAppearOn: `product-type.html?type=${encodeURIComponent(productData.type)}&category=${selectedCategory}`
                 });
                 
@@ -2254,7 +2272,7 @@
                     name: productName,
                     price: productData.price,
                     description: productData.description,
-                    imageURL: productData.image,
+                    imageURL: imagePath, // Use server path
                     category: productData.category,
                     // Keep all original fields for compatibility
                     ...productData,
@@ -2301,10 +2319,10 @@
                     loadProducts();
                     resetForm();
                 }, 1500);
-            };
-            
-            reader.onerror = function() {
-                clearInterval(progressInterval);
+
+            } catch (error) {
+                // Handle upload error
+                console.error('Upload error:', error);
                 progressContainer.classList.remove('active');
                 progressBar.style.width = '0%';
                 progressPercentage.textContent = '0%';
@@ -2312,10 +2330,8 @@
                 progressStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Upload failed';
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalBtnText;
-                showAlert('Error uploading image. Please try again.', 'error');
-            };
-            
-            reader.readAsDataURL(file);
+                showAlert(`Error uploading image: ${error.message || 'Please try again.'}`, 'error');
+            }
         });
 
         function resetForm() {
@@ -2535,7 +2551,7 @@
                                 <button class="btn-edit" onclick="editProduct('${productId}', ${isDefault})">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                <button class="btn-delete" onclick="deleteProduct('${productId}', ${isDefault})">
+                                <button class="btn-delete" onclick="deleteProduct('${productId}', ${isDefault}, event)">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
                             </div>
@@ -2608,7 +2624,7 @@
                                 <button class="btn-edit" onclick="editProduct('${productId}', ${isDefault})">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                <button class="btn-delete" onclick="deleteProduct('${productId}', ${isDefault})">
+                                <button class="btn-delete" onclick="deleteProduct('${productId}', ${isDefault}, event)">
                                     <i class="fas fa-trash"></i> Delete
                                 </button>
                             </div>
@@ -2675,35 +2691,35 @@
             }, 500);
             
             try {
-                if (isDefault) {
-                    // For default products, get the product and update it
-                    const product = productManager.getProductById(productId);
-                    if (product) {
-                        const updatedData = {
+            if (isDefault) {
+                // For default products, get the product and update it
+                const product = productManager.getProductById(productId);
+                if (product) {
+                    const updatedData = {
                             stockQuantity: newStock
-                        };
-                        productManager.updateProduct(productId, updatedData);
+                    };
+                    productManager.updateProduct(productId, updatedData);
                         // Update the product in allProducts array
                         const index = allProducts.findIndex(p => p.id === productId);
                         if (index !== -1) {
                             allProducts[index].stockQuantity = newStock;
                         }
-                    }
-                } else {
-                    const products = JSON.parse(localStorage.getItem('products') || '[]');
-                    const product = products.find(p => p.id === productId || p.originalId === productId);
-                    
-                    if (product) {
+                }
+            } else {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const product = products.find(p => p.id === productId || p.originalId === productId);
+                
+                if (product) {
                         product.stockQuantity = newStock;
-                        localStorage.setItem('products', JSON.stringify(products));
+                    localStorage.setItem('products', JSON.stringify(products));
                         // Update the product in allProducts array
                         const index = allProducts.findIndex(p => p.id === productId || p.originalId === productId);
                         if (index !== -1) {
                             allProducts[index].stockQuantity = newStock;
                         }
-                        // Trigger events for cross-tab sync
-                        window.dispatchEvent(new Event('storage'));
-                        window.dispatchEvent(new CustomEvent('productsUpdated'));
+                    // Trigger events for cross-tab sync
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new CustomEvent('productsUpdated'));
                     }
                 }
             } catch (error) {
@@ -2762,12 +2778,12 @@
             }, 500);
             
             try {
-                if (isDefault) {
-                    const product = productManager.getProductById(productId);
-                    if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
-                        const updatedSizes = [...product.shoeSizes];
+            if (isDefault) {
+                const product = productManager.getProductById(productId);
+                if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
+                    const updatedSizes = [...product.shoeSizes];
                         updatedSizes[sizeIndex].qty = newStock;
-                        productManager.updateProduct(productId, { shoeSizes: updatedSizes });
+                    productManager.updateProduct(productId, { shoeSizes: updatedSizes });
                         // Update the product in allProducts array
                         const index = allProducts.findIndex(p => p.id === productId);
                         if (index !== -1 && allProducts[index].shoeSizes) {
@@ -2785,14 +2801,14 @@
                                 }, 500);
                             }
                         }
-                    }
-                } else {
-                    const products = JSON.parse(localStorage.getItem('products') || '[]');
-                    const product = products.find(p => p.id === productId || p.originalId === productId);
-                    
-                    if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
+                }
+            } else {
+                const products = JSON.parse(localStorage.getItem('products') || '[]');
+                const product = products.find(p => p.id === productId || p.originalId === productId);
+                
+                if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
                         product.shoeSizes[sizeIndex].qty = newStock;
-                        localStorage.setItem('products', JSON.stringify(products));
+                    localStorage.setItem('products', JSON.stringify(products));
                         // Update the product in allProducts array
                         const index = allProducts.findIndex(p => p.id === productId || p.originalId === productId);
                         if (index !== -1 && allProducts[index].shoeSizes) {
@@ -2810,9 +2826,9 @@
                                 }, 500);
                             }
                         }
-                        // Trigger events for cross-tab sync
-                        window.dispatchEvent(new Event('storage'));
-                        window.dispatchEvent(new CustomEvent('productsUpdated'));
+                    // Trigger events for cross-tab sync
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new CustomEvent('productsUpdated'));
                     }
                 }
             } catch (error) {
@@ -2842,7 +2858,19 @@
                         <label>Product Image</label>
                         <input type="file" id="editProductImage" accept="image/*">
                         <small>Leave empty to keep current image</small>
-                        <img src="${product.image}" alt="Current" style="max-width: 200px; margin-top: 0.5rem; border-radius: 8px;">
+                        <div style="position: relative; display: inline-block; margin-top: 0.5rem;">
+                            <img src="${product.image}" alt="Current" id="editCurrentImage" style="max-width: 200px; border-radius: 8px; display: block;">
+                            ${product.image && product.image.includes('Assets/') ? `
+                                <button type="button" onclick="deleteProductImage('${product.id}', '${product.image}', ${isDefault})" 
+                                        style="position: absolute; top: 5px; right: 5px; background: #ff4444; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);" 
+                                        title="Delete this image from server">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                        <small style="display: block; margin-top: 0.5rem; color: #666;">
+                            ${product.image && product.image.includes('Assets/') ? '⚠️ Deleting the image will remove it from the server permanently.' : ''}
+                        </small>
                     </div>
                     <div class="form-group" style="background: var(--cream); padding: 1.5rem; border-radius: var(--radius); border: 2px solid var(--accent);">
                         <label for="editCategory" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); display: block; margin-bottom: 0.75rem;">
@@ -2931,7 +2959,7 @@
                 });
             }
 
-            document.getElementById('editProductForm').addEventListener('submit', function(e) {
+            document.getElementById('editProductForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 // Get and validate category FIRST
@@ -2973,6 +3001,10 @@
                 }
                 
                 const imageInput = document.getElementById('editProductImage');
+                const oldProduct = isDefault 
+                    ? productManager.getProductById(productId)
+                    : JSON.parse(localStorage.getItem('products') || '[]').find(p => p.id === productId);
+                const oldImagePath = oldProduct ? (oldProduct.image || oldProduct.imageURL) : null;
                 
                 const updatedData = {
                     category: selectedCategory, // Use normalized lowercase category
@@ -2990,14 +3022,55 @@
                     willAppearOn: `product-type.html?type=${encodeURIComponent(updatedData.type)}&category=${selectedCategory}`
                 });
                 
+                // Handle new image upload
                 if (imageInput.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        updatedData.image = e.target.result;
+                    // Validate file type
+                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                    const file = imageInput.files[0];
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    
+                    if (!allowedTypes.includes(file.type) && !['jpg', 'jpeg', 'png', 'webp'].includes(fileExtension)) {
+                        showAlert('Invalid file type. Only JPG, JPEG, PNG, and WEBP images are allowed.', 'error');
+                        return;
+                    }
+
+                    // Show loading
+                    const submitBtn = document.querySelector('#editProductForm button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+                    try {
+                        // Upload new image
+                        // Use upload handler
+                        const result = await uploadHandler.upload(file);
+
+                        // Delete old image if it exists and is different
+                        if (oldImagePath && oldImagePath.includes('Assets/') && oldImagePath !== result.path && !oldImagePath.startsWith('data:')) {
+                            await deleteImage(oldImagePath);
+                        }
+
+                        // Update with new image path (already handles base64 if needed)
+                        const imagePath = result.path; // Either server path or full data URL
+                        
+                        updatedData.image = imagePath;
+                        updatedData.imageURL = imagePath;
+                        
                         saveProductChanges(productId, updatedData, isDefault);
-                    };
-                    reader.readAsDataURL(imageInput.files[0]);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        showAlert(`Error uploading image: ${error.message || 'Please try again.'}`, 'error');
+                    }
                 } else {
+                    // No new image - keep existing or keep it empty if it was deleted
+                    if (oldImagePath) {
+                        updatedData.image = oldImagePath;
+                        updatedData.imageURL = oldImagePath;
+                    }
                     saveProductChanges(productId, updatedData, isDefault);
                 }
             });
@@ -3028,18 +3101,163 @@
             document.getElementById('editModal').classList.remove('active');
         }
 
-        function deleteProduct(productId, isDefault) {
-            if (confirm('Are you sure you want to delete this product?')) {
+        /**
+         * Delete an image from the server
+         * @param {string} imagePath - Path to the image file (e.g., "Assets/uploads/filename.jpg")
+         * @returns {Promise<boolean>} - True if deletion successful, false otherwise
+         */
+        async function deleteImage(imagePath) {
+            if (!imagePath || imagePath.startsWith('data:') || !imagePath.includes('Assets/')) {
+                // Skip deletion if it's a base64 image or invalid path
+                return true;
+            }
+
+            try {
+                const response = await fetch('admin/delete.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        imagePath: imagePath
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    console.log('Image deleted successfully:', imagePath);
+                    return true;
+                } else {
+                    console.warn('Failed to delete image:', result.message);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error deleting image:', error);
+                return false;
+            }
+        }
+
+        /**
+         * Delete only the product image (not the product itself)
+         * @param {string} productId - ID of the product
+         * @param {string} imagePath - Path to the image file
+         * @param {boolean} isDefault - Whether the product is a default product
+         */
+        async function deleteProductImage(productId, imagePath, isDefault) {
+            if (!imagePath || !imagePath.includes('Assets/')) {
+                showAlert('Invalid image path. Cannot delete this image.', 'error');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete this image from the server?\n\nThe image will be permanently removed, but the product will remain.')) {
+                return;
+            }
+
+            try {
+                // Delete the image from server
+                const imageDeleted = await deleteImage(imagePath);
+                
+                if (imageDeleted) {
+                    // Update product to remove image reference
+                    const product = productManager.getProductById(productId);
+                    if (product) {
+                        // Set image to empty or placeholder
+                        if (isDefault) {
+                            productManager.updateProduct(productId, { 
+                                image: '', 
+                                imageURL: '' 
+                            });
+                        } else {
+                            const products = JSON.parse(localStorage.getItem('products') || '[]');
+                            const index = products.findIndex(p => p.id === productId || p.originalId === productId);
+                            if (index !== -1) {
+                                products[index].image = '';
+                                products[index].imageURL = '';
+                                localStorage.setItem('products', JSON.stringify(products));
+                            }
+                        }
+                    }
+
+                    // Update UI - hide the image in edit modal
+                    const editCurrentImage = document.getElementById('editCurrentImage');
+                    if (editCurrentImage) {
+                        editCurrentImage.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5JbWFnZSBEZWxldGVkPC90ZXh0Pjwvc3ZnPg==';
+                        editCurrentImage.alt = 'Image deleted';
+                    }
+
+                    // Trigger events for cross-tab sync
+                    window.dispatchEvent(new Event('storage'));
+                    window.dispatchEvent(new CustomEvent('productsUpdated'));
+                    
+                    showAlert('Image deleted successfully! The product remains but without an image. Upload a new image to replace it.', 'success');
+                    
+                    // Reload products to refresh display
+                    loadProducts();
+                } else {
+                    showAlert('Failed to delete image from server. Please try again.', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting product image:', error);
+                showAlert('Error deleting image. Please try again.', 'error');
+            }
+        }
+
+        /**
+         * Delete a product and its associated image
+         * @param {string} productId - ID of the product to delete
+         * @param {boolean} isDefault - Whether the product is a default product
+         * @param {Event} eventObj - Optional event object for button state updates
+         */
+        async function deleteProduct(productId, isDefault, eventObj) {
+            // Get product info before deletion
+            const product = productManager.getProductById(productId);
+            const imagePath = product ? (product.image || product.imageURL) : null;
+
+            if (!confirm('Are you sure you want to delete this product?' + (imagePath ? '\n\nThis will also delete the associated image file from the server.' : ''))) {
+                return;
+            }
+
+            // Show loading state
+            const evt = eventObj || window.event;
+            const deleteBtn = evt?.target?.closest('.btn-delete');
+            const originalBtnText = deleteBtn?.innerHTML;
+            if (deleteBtn) {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            }
+
+            try {
+                // Delete the image from server if it exists
+                if (imagePath) {
+                    const imageDeleted = await deleteImage(imagePath);
+                    if (!imageDeleted) {
+                        console.warn('Product deleted but image deletion may have failed:', imagePath);
+                    }
+                }
+
+                // Delete the product from localStorage
                 if (isDefault) {
                     productManager.deleteProduct(productId, true);
                 } else {
                     productManager.deleteProduct(productId, false);
                 }
+
                 // Trigger events for cross-tab sync
                 window.dispatchEvent(new Event('storage'));
                 window.dispatchEvent(new CustomEvent('productsUpdated'));
+                
                 loadProducts();
-                showAlert('Product deleted!', 'success');
+                showAlert('Product deleted successfully!' + (imagePath ? ' Image file also removed from server.' : ''), 'success');
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showAlert('Error deleting product. Please try again.', 'error');
+            } finally {
+                // Restore button state
+                if (deleteBtn && originalBtnText) {
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = originalBtnText;
+                }
             }
         }
 

@@ -2,7 +2,7 @@
   "products": [
     {
       "id": "men-jerseys",
-      "image": "Assets/Mens Sports Jerseys.jpg",
+      "image": "Assets/images/Mens Sports Jerseys.jpg",
       "category": "men",
       "type": "Jerseys",
       "gender": "male",
@@ -16,7 +16,7 @@
     },
     {
       "id": "men-jackets",
-      "image": "Assets/Mens Jackets.jpg",
+      "image": "Assets/images/Mens Jackets.jpg",
       "category": "men",
       "type": "Jackets",
       "gender": "male",
@@ -30,7 +30,7 @@
     },
     {
       "id": "men-hoodies",
-      "image": "Assets/Mens hoodiess.jpg",
+      "image": "Assets/images/Mens hoodiess.jpg",
       "category": "men",
       "type": "Hoodies",
       "gender": "male",
@@ -44,7 +44,7 @@
     },
     {
       "id": "men-trackpants",
-      "image": "Assets/MENS TRACKPANTS.jpg",
+      "image": "Assets/images/MENS TRACKPANTS.jpg",
       "category": "men",
       "type": "Trackpants",
       "gender": "male",
@@ -58,7 +58,7 @@
     },
     {
       "id": "men-formal-shoes",
-      "image": "Assets/Mens formal shoes.jpg",
+      "image": "Assets/images/Mens formal shoes.jpg",
       "category": "men",
       "type": "Formal Shoes",
       "gender": "male",
@@ -72,7 +72,7 @@
     },
     {
       "id": "men-sneakers",
-      "image": "Assets/Mens sneakers.jpg",
+      "image": "Assets/images/Mens sneakers.jpg",
       "category": "men",
       "type": "Sneakers",
       "gender": "male",
@@ -88,7 +88,7 @@
     },
     {
       "id": "men-tshirts",
-      "image": "Assets/Mens T Shirts.jpg",
+      "image": "Assets/images/Mens T Shirts.jpg",
       "category": "men",
       "type": "T-shirts",
       "gender": "male",
@@ -102,7 +102,7 @@
     },
     {
       "id": "men-sport-jerseys",
-      "image": "Assets/Mens sports jerseys 2.jpg",
+      "image": "Assets/images/Mens sports jerseys 2.jpg",
       "category": "men",
       "type": "Sport Jerseys",
       "gender": "male",
@@ -116,7 +116,7 @@
     },
     {
       "id": "men-swimming-shorts",
-      "image": "Assets/Mens swimming shorts .jpg",
+      "image": "Assets/images/Mens swimming shorts .jpg",
       "category": "men",
       "type": "Swimming Shorts",
       "gender": "male",
@@ -130,7 +130,7 @@
     },
     {
       "id": "men-cargo-shorts",
-      "image": "Assets/Mens Cargo Shorts.jpg",
+      "image": "Assets/images/Mens Cargo Shorts.jpg",
       "category": "men",
       "type": "Cargo Shorts",
       "gender": "male",
@@ -144,7 +144,7 @@
     },
     {
       "id": "men-jean-jackets",
-      "image": "Assets/Mens jean jackets.jpg",
+      "image": "Assets/images/Mens jean jackets.jpg",
       "category": "men",
       "type": "Jean Jackets",
       "gender": "male",
@@ -158,7 +158,7 @@
     },
     {
       "id": "men-jeans",
-      "image": "Assets/Mens jeans.jpg",
+      "image": "Assets/images/Mens jeans.jpg",
       "category": "men",
       "type": "Jeans",
       "gender": "male",
@@ -172,7 +172,7 @@
     },
     {
       "id": "men-chinos",
-      "image": "Assets/Mens chinos.jpg",
+      "image": "Assets/images/Mens chinos.jpg",
       "category": "men",
       "type": "Chinos",
       "gender": "male",
@@ -186,7 +186,7 @@
     },
     {
       "id": "men-formal-shirts",
-      "image": "Assets/Mens formal shirts .jpg",
+      "image": "Assets/images/Mens formal shirts .jpg",
       "category": "men",
       "type": "Formal Shirts",
       "gender": "male",
@@ -200,7 +200,7 @@
     },
     {
       "id": "men-sandals",
-      "image": "Assets/Mens sandals.jpg",
+      "image": "Assets/images/Mens sandals.jpg",
       "category": "men",
       "type": "Sandals",
       "gender": "male",
@@ -214,7 +214,7 @@
     },
     {
       "id": "men-socks",
-      "image": "Assets/Mens socks.jpg",
+      "image": "Assets/images/Mens socks.jpg",
       "category": "men",
       "type": "Socks",
       "gender": "male",
@@ -228,7 +228,7 @@
     },
     {
       "id": "women-jean-jackets",
-      "image": "Assets/Womens Jean jackets.jpg",
+      "image": "Assets/images/Womens Jean jackets.jpg",
       "category": "women",
       "type": "Jean Jackets",
       "gender": "female",
@@ -242,7 +242,7 @@
     },
     {
       "id": "women-tracksuits",
-      "image": "Assets/Womens tracksuits.jpg",
+      "image": "Assets/images/Womens tracksuits.jpg",
       "category": "women",
       "type": "Tracksuits",
       "gender": "female",
@@ -256,7 +256,7 @@
     },
     {
       "id": "women-jeans",
-      "image": "Assets/Womens Jeans.jpg",
+      "image": "Assets/images/Womens Jeans.jpg",
       "category": "women",
       "type": "Jeans",
       "gender": "female",
@@ -270,7 +270,7 @@
     },
     {
       "id": "women-gym-tights",
-      "image": "Assets/Gym tights.jpg",
+      "image": "Assets/images/Gym tights.jpg",
       "category": "women",
       "type": "Gym Tights",
       "gender": "female",
@@ -284,7 +284,7 @@
     },
     {
       "id": "women-shoes",
-      "image": "Assets/Ladies shoes.jpg",
+      "image": "Assets/images/Ladies shoes.jpg",
       "category": "women",
       "type": "Shoes",
       "gender": "female",
@@ -298,7 +298,7 @@
     },
     {
       "id": "women-sneakers",
-      "image": "Assets/Ladies takkies.jpg",
+      "image": "Assets/images/Ladies takkies.jpg",
       "category": "women",
       "type": "Sneakers",
       "gender": "female",
@@ -314,7 +314,7 @@
     },
     {
       "id": "women-dresses",
-      "image": "Assets/Ladies dresses.jpg",
+      "image": "Assets/images/Ladies dresses.jpg",
       "category": "women",
       "type": "Dresses",
       "gender": "female",
@@ -328,7 +328,7 @@
     },
     {
       "id": "women-normal-jackets",
-      "image": "Assets/Womens Jackets.jpg",
+      "image": "Assets/images/Womens Jackets.jpg",
       "category": "women",
       "type": "Normal Jackets",
       "gender": "female",
@@ -342,7 +342,7 @@
     },
     {
       "id": "women-sandals",
-      "image": "Assets/Womens sandals.jpg",
+      "image": "Assets/images/Womens sandals.jpg",
       "category": "women",
       "type": "Sandals",
       "gender": "female",
@@ -356,7 +356,7 @@
     },
     {
       "id": "women-formal-trousers",
-      "image": "Assets/WOMENS FORMAL PANTS.jpg",
+      "image": "Assets/images/WOMENS FORMAL PANTS.jpg",
       "category": "women",
       "type": "Formal Trousers",
       "gender": "female",
@@ -370,7 +370,7 @@
     },
     {
       "id": "women-tight-types",
-      "image": "Assets/All tight types.jpg",
+      "image": "Assets/images/All tight types.jpg",
       "category": "women",
       "type": "All Tight Types",
       "gender": "female",
@@ -384,7 +384,7 @@
     },
     {
       "id": "women-blouses",
-      "image": "Assets/Ladies Blouses.jpg",
+      "image": "Assets/images/Ladies Blouses.jpg",
       "category": "women",
       "type": "Blouses",
       "gender": "female",
@@ -398,7 +398,7 @@
     },
     {
       "id": "women-skirts",
-      "image": "Assets/Womens skirts.jpg",
+      "image": "Assets/images/Womens skirts.jpg",
       "category": "women",
       "type": "Skirts",
       "gender": "female",
@@ -412,7 +412,7 @@
     },
     {
       "id": "women-tshirts",
-      "image": "Assets/Womens T shirts.jpg",
+      "image": "Assets/images/Womens T shirts.jpg",
       "category": "women",
       "type": "T-shirts",
       "gender": "female",
@@ -426,7 +426,7 @@
     },
     {
       "id": "women-nightwear",
-      "image": "Assets/Womens nightwear.jpg",
+      "image": "Assets/images/Womens nightwear.jpg",
       "category": "women",
       "type": "Nightwear (Gowns & Bonnets)",
       "gender": "female",
@@ -440,7 +440,7 @@
     },
     {
       "id": "women-bras",
-      "image": "Assets/Bras.jpg",
+      "image": "Assets/images/Bras.jpg",
       "category": "women",
       "type": "Bras",
       "gender": "female",
@@ -454,7 +454,7 @@
     },
     {
       "id": "women-socks",
-      "image": "Assets/Socks for women.jpg",
+      "image": "Assets/images/Socks for women.jpg",
       "category": "women",
       "type": "Socks",
       "gender": "female",
@@ -468,7 +468,7 @@
     },
     {
       "id": "kids-jackets",
-      "image": "Assets/Kids jackets.jpg",
+      "image": "Assets/images/Kids jackets.jpg",
       "category": "kids",
       "type": "Jackets",
       "gender": "unisex",
@@ -482,7 +482,7 @@
     },
     {
       "id": "kids-hoodies",
-      "image": "Assets/Boys hoodies.jpg",
+      "image": "Assets/images/Boys hoodies.jpg",
       "category": "kids",
       "type": "Hoodies",
       "gender": "unisex",
@@ -496,7 +496,7 @@
     },
     {
       "id": "kids-trackpants",
-      "image": "Assets/Kids trackpants.jpg",
+      "image": "Assets/images/Kids trackpants.jpg",
       "category": "kids",
       "type": "Trackpants",
       "gender": "unisex",
@@ -510,7 +510,7 @@
     },
     {
       "id": "kids-jeans",
-      "image": "Assets/Kids jeans.jpg",
+      "image": "Assets/images/Kids jeans.jpg",
       "category": "kids",
       "type": "Jeans",
       "gender": "unisex",
@@ -524,7 +524,7 @@
     },
     {
       "id": "kids-tshirts",
-      "image": "Assets/Kids T shirts.jpg",
+      "image": "Assets/images/Kids T shirts.jpg",
       "category": "kids",
       "type": "T-shirts",
       "gender": "unisex",
@@ -538,7 +538,7 @@
     },
     {
       "id": "kids-shorts",
-      "image": "Assets/Kids shorts.jpg",
+      "image": "Assets/images/Kids shorts.jpg",
       "category": "kids",
       "type": "Shorts",
       "gender": "unisex",
@@ -552,7 +552,7 @@
     },
     {
       "id": "kids-clothing-packs",
-      "image": "Assets/Kids packs 1.jpg",
+      "image": "Assets/images/Kids packs 1.jpg",
       "category": "kids",
       "type": "Kids Clothing Packs",
       "gender": "unisex",

@@ -100,7 +100,7 @@ class ProductDisplay {
         if (menSneakers) {
             featuredItems.push({
                 title: "Men's Sneakers",
-                image: menSneakers.image || "Assets/Mens sneakers.jpg",
+                image: menSneakers.image || "Assets/images/Mens sneakers.jpg",
                 description: menSneakers.description || "Stylish and comfortable sneakers for men in various sizes and styles.",
                 price: menSneakers.priceRange || "R100 - R790",
                 link: "sneakers.html"
@@ -109,7 +109,7 @@ class ProductDisplay {
             // Default men's sneakers
             featuredItems.push({
                 title: "Men's Sneakers",
-                image: "Assets/Mens sneakers.jpg",
+                image: "Assets/images/Mens sneakers.jpg",
                 description: "Stylish and comfortable sneakers for men in various sizes and styles.",
                 price: "R100 - R790",
                 link: "sneakers.html"
@@ -120,7 +120,7 @@ class ProductDisplay {
         if (womenSneakers) {
             featuredItems.push({
                 title: "Women's Sneakers",
-                image: womenSneakers.image || "Assets/Ladies takkies.jpg",
+                image: womenSneakers.image || "Assets/images/Ladies takkies.jpg",
                 description: womenSneakers.description || "Trendy sneakers for women in all sizes and colors.",
                 price: womenSneakers.priceRange || "R100 - R590",
                 link: "sneakers.html"
@@ -129,7 +129,7 @@ class ProductDisplay {
             // Default women's sneakers
             featuredItems.push({
                 title: "Women's Sneakers",
-                image: "Assets/Ladies takkies.jpg",
+                image: "Assets/images/Ladies takkies.jpg",
                 description: "Trendy sneakers for women in all sizes and colors.",
                 price: "R100 - R590",
                 link: "sneakers.html"
@@ -140,7 +140,7 @@ class ProductDisplay {
         if (kidsPacks) {
             featuredItems.push({
                 title: "Kids Clothing Packs",
-                image: kidsPacks.image || "Assets/Kids packs 1.jpg",
+                image: kidsPacks.image || "Assets/images/Kids packs 1.jpg",
                 description: kidsPacks.description || "Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.",
                 price: kidsPacks.priceRange || "R120",
                 link: "kids-packs.html"
@@ -149,7 +149,7 @@ class ProductDisplay {
             // Default kids packs
             featuredItems.push({
                 title: "Kids Clothing Packs",
-                image: "Assets/Kids packs 1.jpg",
+                image: "Assets/images/Kids packs 1.jpg",
                 description: "Complete outfits for children aged 0-14 years. Each pack contains 5-7 items depending on sizes and ages.",
                 price: "R120",
                 link: "kids-packs.html"
