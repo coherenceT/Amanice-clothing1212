@@ -1,18 +1,15 @@
 /**
  * Universal Upload Handler
- * Works with PHP hosting, serverless functions, cloud storage, and client-side storage
+ * Works with PHP hosting (Hostking), cloud storage (ImgBB), and client-side storage
  */
 
 class UploadHandler {
     constructor() {
-        this.uploadEndpoints = [
-            'admin/upload.php',
-            '/.netlify/functions/upload',
-            '/api/upload'
-        ];
+        // PHP upload endpoint for traditional hosting (Hostking)
+        this.phpUploadEndpoint = 'admin/upload.php';
+        
         // ImgBB API key (free at https://api.imgbb.com/)
         // You can get a free API key by registering at imgbb.com
-        // For now, we'll use a public demo key that may have rate limits
         // Replace with your own key for production use
         this.imgbbApiKey = null; // Set to your ImgBB API key if available
     }
@@ -276,39 +273,19 @@ class UploadHandler {
             }
         }
 
-        // Try PHP upload (traditional hosting)
-        if (progressCallback) progressCallback(30, 'Trying server upload...');
+        // Try PHP upload (traditional hosting - Hostking)
+        if (progressCallback) progressCallback(40, 'Uploading to server...');
         try {
-            const result = await this.uploadWithFormData(file, 'admin/upload.php');
+            const result = await this.uploadWithFormData(file, this.phpUploadEndpoint);
             if (progressCallback) progressCallback(100, 'Upload successful!');
             return result;
         } catch (error) {
             console.log('PHP upload failed:', error.message);
         }
 
-        // Try Netlify function
-        if (progressCallback) progressCallback(40, 'Trying Netlify function...');
-        try {
-            const result = await this.uploadWithFormData(file, '/.netlify/functions/upload');
-            if (progressCallback) progressCallback(100, 'Upload successful!');
-            return result;
-        } catch (error) {
-            console.log('Netlify function failed:', error.message);
-        }
-
-        // Try Vercel function with base64
-        if (progressCallback) progressCallback(50, 'Trying Vercel function...');
-        try {
-            const result = await this.uploadWithBase64(file, '/api/upload');
-            if (progressCallback) progressCallback(100, 'Upload successful!');
-            return result;
-        } catch (error) {
-            console.log('Vercel function failed:', error.message);
-        }
-
         // Fallback to client-side storage (base64 in localStorage)
-        // This always works and is reliable for static sites
-        if (progressCallback) progressCallback(70, 'Using browser storage...');
+        // This works when server upload fails or for offline use
+        if (progressCallback) progressCallback(60, 'Using browser storage...');
         try {
             const result = await this.storeAsBase64(file);
             if (progressCallback) progressCallback(100, 'Upload successful!');

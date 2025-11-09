@@ -5,10 +5,8 @@
 The website supports multiple upload methods that are tried in order:
 
 1. **ImgBB Cloud Storage** (if API key is configured) - Recommended for production
-2. **PHP Server Upload** (if using traditional PHP hosting)
-3. **Netlify Functions** (if deployed on Netlify)
-4. **Vercel Functions** (if deployed on Vercel)
-5. **Browser Storage (Base64)** - Always works as fallback ✅
+2. **PHP Server Upload** (for PHP hosting like Hostking) - Primary method ✅
+3. **Browser Storage (Base64)** - Fallback when server upload fails ✅
 
 ## Current Status
 
@@ -17,8 +15,8 @@ The website supports multiple upload methods that are tried in order:
 - Images are stored in the browser's localStorage
 - Images work offline
 - Images persist across sessions
-- No server configuration needed
-- Works on all hosting platforms (Netlify, Vercel, GitHub Pages, etc.)
+- Works as fallback when PHP server upload fails
+- Ideal for PHP hosting (Hostking) with admin/upload.php
 
 ## Optional: Set Up ImgBB Cloud Storage (Recommended)
 
@@ -102,12 +100,11 @@ If you see errors about localStorage being full:
 
 ### Supported Hosting Platforms
 
-✅ **Works on all platforms:**
-- Netlify
-- Vercel
-- GitHub Pages
-- Traditional PHP hosting
-- Any static hosting service
+✅ **Primary platform:**
+- PHP hosting (Hostking) - Uses admin/upload.php for server uploads
+
+✅ **Fallback method:**
+- Browser storage (localStorage) - Works on any platform when server upload fails
 
 ### File Format Support
 

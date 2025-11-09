@@ -16,11 +16,11 @@
  */
 
 // Database configuration
-// TODO: Update these with your actual Hostking MySQL credentials
+// Hostking MySQL credentials
 $servername = "localhost";
-$username = "my_db_user";        // Change this to your database username
-$password = "my_db_password";    // Change this to your database password
-$dbname = "ama_nice_db";         // Change this to your database name
+$username = "acvlvqmw_ama_nice_db";
+$password = "Rzx8q6f8nHbyTKw7JX6t";
+$dbname = "acvlvqmw_ama_nice_db";
 
 // Create connection using mysqli
 $conn = new mysqli($servername, $username, $password, $dbname);

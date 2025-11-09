@@ -1797,7 +1797,7 @@
                     imagePath: imagePath
                 });
 
-                productManager.saveProduct(productData);
+                await productManager.saveProduct(productData);
                 
                 // Trigger storage event for cross-tab sync
                 window.dispatchEvent(new Event('storage'));
@@ -1938,7 +1938,7 @@
                     id: productData.id
                 });
 
-                productManager.saveProduct(productData);
+                await productManager.saveProduct(productData);
                 
                 // Trigger storage event for cross-tab sync
                 window.dispatchEvent(new Event('storage'));
@@ -2369,8 +2369,8 @@
                 productsLoaded = true;
             }
             
-            // Force reload products to get latest data
-            allProducts = productManager.getAllProducts();
+            // Force reload products to get latest data from database
+            allProducts = await productManager.getAllProducts();
             // Update recently added section
             displayRecentlyAdded();
             // Clear and reapply filters to refresh display
@@ -2693,12 +2693,12 @@
             try {
             if (isDefault) {
                 // For default products, get the product and update it
-                const product = productManager.getProductById(productId);
+                const product = await productManager.getProductById(productId);
                 if (product) {
                     const updatedData = {
                             stockQuantity: newStock
                     };
-                    productManager.updateProduct(productId, updatedData);
+                    await productManager.updateProduct(productId, updatedData);
                         // Update the product in allProducts array
                         const index = allProducts.findIndex(p => p.id === productId);
                         if (index !== -1) {
@@ -2779,11 +2779,11 @@
             
             try {
             if (isDefault) {
-                const product = productManager.getProductById(productId);
+                const product = await productManager.getProductById(productId);
                 if (product && product.shoeSizes && product.shoeSizes[sizeIndex]) {
                     const updatedSizes = [...product.shoeSizes];
                         updatedSizes[sizeIndex].qty = newStock;
-                    productManager.updateProduct(productId, { shoeSizes: updatedSizes });
+                    await productManager.updateProduct(productId, { shoeSizes: updatedSizes });
                         // Update the product in allProducts array
                         const index = allProducts.findIndex(p => p.id === productId);
                         if (index !== -1 && allProducts[index].shoeSizes) {
@@ -3076,25 +3076,26 @@
             });
         }
 
-        function saveProductChanges(productId, updatedData, isDefault) {
-            if (isDefault) {
-                productManager.updateProduct(productId, updatedData);
-            } else {
-                const products = JSON.parse(localStorage.getItem('products') || '[]');
-                const index = products.findIndex(p => p.id === productId);
-                if (index !== -1) {
-                    products[index] = { ...products[index], ...updatedData };
-                    localStorage.setItem('products', JSON.stringify(products));
+        async function saveProductChanges(productId, updatedData, isDefault) {
+            try {
+                if (isDefault) {
+                    await productManager.updateProduct(productId, updatedData);
+                } else {
+                    // For database products, also update via API
+                    await productManager.updateProduct(productId, updatedData);
                 }
+                
+                // Trigger events for cross-tab sync
+                window.dispatchEvent(new Event('storage'));
+                window.dispatchEvent(new CustomEvent('productsUpdated'));
+                
+                await loadProducts();
+                closeEditModal();
+                showAlert('Product updated successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving product changes:', error);
+                showAlert('Error updating product: ' + error.message, 'error');
             }
-            
-            // Trigger events for cross-tab sync
-            window.dispatchEvent(new Event('storage'));
-            window.dispatchEvent(new CustomEvent('productsUpdated'));
-            
-            loadProducts();
-            closeEditModal();
-            showAlert('Product updated successfully!', 'success');
         }
 
         function closeEditModal() {
@@ -3160,23 +3161,13 @@
                 
                 if (imageDeleted) {
                     // Update product to remove image reference
-                    const product = productManager.getProductById(productId);
+                    const product = await productManager.getProductById(productId);
                     if (product) {
-                        // Set image to empty or placeholder
-                        if (isDefault) {
-                            productManager.updateProduct(productId, { 
-                                image: '', 
-                                imageURL: '' 
-                            });
-                        } else {
-                            const products = JSON.parse(localStorage.getItem('products') || '[]');
-                            const index = products.findIndex(p => p.id === productId || p.originalId === productId);
-                            if (index !== -1) {
-                                products[index].image = '';
-                                products[index].imageURL = '';
-                                localStorage.setItem('products', JSON.stringify(products));
-                            }
-                        }
+                        // Set image to empty or placeholder - update via API for both default and database products
+                        await productManager.updateProduct(productId, { 
+                            image: '', 
+                            imageURL: '' 
+                        });
                     }
 
                     // Update UI - hide the image in edit modal
@@ -3211,7 +3202,7 @@
          */
         async function deleteProduct(productId, isDefault, eventObj) {
             // Get product info before deletion
-            const product = productManager.getProductById(productId);
+            const product = await productManager.getProductById(productId);
             const imagePath = product ? (product.image || product.imageURL) : null;
 
             if (!confirm('Are you sure you want to delete this product?' + (imagePath ? '\n\nThis will also delete the associated image file from the server.' : ''))) {
@@ -3236,11 +3227,11 @@
                     }
                 }
 
-                // Delete the product from localStorage
+                // Delete the product from database
                 if (isDefault) {
-                    productManager.deleteProduct(productId, true);
+                    await productManager.deleteProduct(productId, true);
                 } else {
-                    productManager.deleteProduct(productId, false);
+                    await productManager.deleteProduct(productId, false);
                 }
 
                 // Trigger events for cross-tab sync

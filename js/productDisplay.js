@@ -23,8 +23,8 @@ class ProductDisplay {
         await this.productManager.loadDefaultProducts();
         console.log(`📚 Default products loaded: ${this.productManager.defaultProducts.length}`);
         
-        // Get ALL products (default + admin-added)
-        const products = this.productManager.getAllProducts();
+        // Get ALL products (default + admin-added from database)
+        const products = await this.productManager.getAllProducts();
         
         console.log(`📦 Total products loaded: ${products.length}`);
         console.log(`👤 Admin products in localStorage: ${JSON.parse(localStorage.getItem('products') || '[]').length}`);
